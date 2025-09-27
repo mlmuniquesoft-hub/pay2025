@@ -104,10 +104,17 @@ $_SESSION['token']="uerutgeruioer";
 	function TtalShopping($user, $cons=''){
 		global $mysqli;
 		$SponsorReceiveshop=mysqli_fetch_assoc($mysqli->query("SELECT SUM(shopping) AS asmSponsorshop FROM `upgrade` WHERE `sponsor`='".$user."'"));
-		$DepositReceiveshop=mysqli_fetch_assoc($mysqli->query("SELECT SUM(shop) AS asmDepositshop FROM `game_return` WHERE `user`='".$user."'"));
-		$DepositReceiveWorldshop=mysqli_fetch_assoc($mysqli->query("SELECT SUM(shop) AS asmDeposit2shop FROM `game_return2` WHERE `user`='".$user."'"));
-		$BinaryReceiveshop=mysqli_fetch_assoc($mysqli->query("SELECT SUM(shop) AS asmBinaryshop FROM `binary_income` WHERE `user`='".$user."'"));
-		$GenerationReceiveshop=mysqli_fetch_assoc($mysqli->query("SELECT SUM(shop) AS asmGenerationshop FROM `generation_income` WHERE `user`='".$user."'"));
+		// Handle null values
+		if($SponsorReceiveshop['asmSponsorshop'] == null) {
+			$SponsorReceiveshop['asmSponsorshop'] = 0;
+		}
+		
+		// Using 0 for shop columns since they don't exist in the database
+		$DepositReceiveshop = array('asmDepositshop' => 0);
+		$DepositReceiveWorldshop = array('asmDeposit2shop' => 0);
+		$BinaryReceiveshop = array('asmBinaryshop' => 0);
+		$GenerationReceiveshop = array('asmGenerationshop' => 0);
+		
 		if($cons!=''){
 			$shopping=$GenerationReceiveshop['asmGenerationshop']+$BinaryReceiveshop['asmBinaryshop']+$DepositReceiveWorldshop['asmDeposit2shop']+$DepositReceiveshop['asmDepositshop'];
 		}else{
@@ -177,17 +184,23 @@ $_SESSION['token']="uerutgeruioer";
 	
 	function RemainingReturnPer($user){
 		global $mysqli;
+		$shopping = TtalShopping($user);
 		$DepositReceive=TtalIncome($user,1);
 		$MemberUpgrade=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS asmUpgrade FROM `upgrade` WHERE `user`='".$user."'"));
 		$ExpectyedReturn=$MemberUpgrade['asmUpgrade']*4;
 		$remainReturn=$ExpectyedReturn-$DepositReceive;
-		$retuu=((($DepositReceive+$shopping)*400)/$ExpectyedReturn);
-		if($retuu>0){
-			return $retuu;
+		
+		// Prevent division by zero
+		if($ExpectyedReturn > 0){
+			$retuu=((($DepositReceive+$shopping)*400)/$ExpectyedReturn);
+			if($retuu>0){
+				return $retuu;
+			}else{
+				return 0;
+			}
 		}else{
 			return 0;
 		}
-		
 	}
 	
 	

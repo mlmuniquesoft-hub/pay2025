@@ -14,9 +14,16 @@
 		$ProfileInfo = mysqli_fetch_array($result1); 
 		
 		$jkfghkd=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `package` WHERE `serial`='".$memberInfo['pack']."'"));
+	// Handle null package data with default values
+	if($jkfghkd === null) {
+		$jkfghkd = array(
+			'pack_amn' => 0,
+			'pack' => 'Default Package'
+		);
+	}
 		$Tiell=$_GET['title'];
 		if($Tiell==''){
-			$Tiell=" NZ Robo Trading";
+			$Tiell=" Capitol Money Pay";
 		}
 	}
 ?>
