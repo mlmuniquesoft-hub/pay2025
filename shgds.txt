@@ -1,0 +1,33 @@
+>> Debit/Credit 
+
+ >> Table Column
+   *Date
+   *Received From
+   *Current Dollar Rate (BDT) Manual
+   *BTC Unit (Satoshi)
+   *Total Amount 
+	>> Dollar
+	>> BDT
+   *Quimilitive Balance
+        >> Dollar & Satoshi (Full Amount)
+	>> Remark (Note)
+   *Debit
+	>> Transfer To ID
+	>> Self & Others Transfer
+	>> Purpase 
+	>> Dollar & Satoshi (Full Amount)
+	>> Remark (Note)
+-----------------------------------------------
+
+ >> Site (Cash Collection)
+    * BTC Sale
+    * Dollar & Satoshi
+    * Cash Received
+    * Remark (Note)
+    * Expenditure
+	>> Purpose
+	>> Medium 
+	>> AMount (BDT)
+	>> Remark (Note) 
+
+

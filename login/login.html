@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign Up Capitol Money Pay</title>
+
+    <!-- Font Icon -->
+    <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="vendor/jquery-ui/jquery-ui.min.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Main css -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/loading.css">
+	<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+</head>
+<body style="padding:120px 0;background-image:url('images/login_page.jpg');background-position:fixed;">
+
+    <div class="main">
+
+        <section class="signup">
+            <!-- <img src="images/signup-bg.jpg" alt=""> -->
+            <div class="container" style="background: #92918be0;">
+                <div class="signup-content">
+                    <form method="POST" id="login-form" class="signup-form" style="padding: 58px 15px 0px 15px;height: auto;">
+                        
+						<div class="form-row">
+                            <div class="form-group" style="width:100%;">
+                                <label >User ID</label>
+                                <div class="input-group ">
+									<i class="fas fa-user"></i>
+									<input type="text" class="form-input" name="user_id" id="user_id" />
+								</div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group" style="width: 100%;">
+                                <label for="password">Password</label>
+                                <div class="input-group ">
+									<i class="fas fa-key"></i>
+									<input type="password" class="form-input" name="password" id="password"/>
+								</div>
+                            </div>
+                        </div>
+						<div class="form-row">
+                            <div class="form-group" style="width: 100%;">
+                                <div id="qrcode"></div>
+                            </div>
+                        </div>
+						
+                        <div class="form-group sdfsd">
+                            <button type="submit" name="submit" id="submit" class="form-submit" >Submit <span style="fornt-size:34px;" id="loadin"></span></button>
+                           
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- JS -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="js/qrcode.min.js"></script>
+	<script >
+		var tokenn;
+		$("#submit").on("click", function(e){
+			var erter=$.ajax({
+				method:"GET",
+				url:"/authenticator/verify",
+				data:{token:'886528',key:"nvdt wioa bmsr zk5z 745l kmea pscy 2nxu"},
+				success:function(ress){
+				console.log(ress);
+				if(ress!='null'){
+					console.log(ress);
+				}else{
+					console.log("null111");
+				}
+				
+				/*let hdgf=ress.split("+");
+				tokenn=hdgf[0];
+				let fsdfs=hdgf[1];
+					console.log(ress);
+					var fgfd=$.ajax({
+						method:"GET",
+						url:"aath.php",
+						data:{keyK:fsdfs}
+					});
+					fgfd.done((ress)=>{
+						console.log(hdgf);
+						console.log(ress);
+						//new QRCode(document.getElementById("qrcode"), hdgf[2]);
+					});
+					*/
+				}
+			});
+		})
+		$("#signup-form").on("submit", function(e){
+			e.preventDefault();
+			e.stopPropagation();
+			
+		});
+	</script>
+    <script src="vendor/jquery-ui/jquery-ui.min.js"></script>
+    <script src="vendor/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="vendor/jquery-validation/dist/additional-methods.min.js"></script>
+   
+    
+	<script >
+		
+	
+		(function($) {
+
+
+    $('#login-form').validate({
+        rules : {
+            user_id : {
+                required: true,
+            },
+            password : {
+                required: true
+            }
+            
+        },
+		
+        onfocusout: function(element) {
+            $(element).valid();
+        },
+		submitHandler:function(form){
+			let data=$("#login-form").serializeArray();
+			$(".Ertyy").remove();
+			const resf=$.ajax({
+				method:"POST",
+				url:'login_action.php',
+				dataType:'json',
+				data:data,
+				beforeSend:function(){
+					$("#submit").html('<div class="ld ld-spinner ld-clock"></div>');
+				},
+				success: function(ress){
+					if(ress.sts=='success'){
+					$("#submit").before('<span class="text-center text-success Ertyy">'+ress.mess+'</span>');
+						setTimeout(function(){
+							location.href=ress.url;
+							console.log(ress.url);
+						},1000);
+					}else{
+						$("#submit").html('Submit');
+						$("#submit").before('<span class="text-center text-danger Ertyy">'+ress.mess+'</span>');
+					}
+				}
+			})
+		}
+    });
+
+
+})(jQuery);
+	</script>
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--<meta http-equiv="content-type" content="text/html;charset=UTF-8" />--><!-- /Added by HTTrack -->
+<head>
+  
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Capitol Money Pay Login</title>
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" type="image/x-icon" />
+    <!-- For iPhone -->
+    <link rel="apple-touch-icon-precomposed" href="../assets/images/apple-touch-icon-57-precomposed.png">
+    <!-- For iPhone 4 Retina display -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/images/apple-touch-icon-114-precomposed.png">
+    <!-- For iPad -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/images/apple-touch-icon-72-precomposed.png">
+    <!-- For iPad Retina display -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/images/apple-touch-icon-144-precomposed.png">
+
+    <!-- CORE CSS FRAMEWORK - START -->
+    <link href="../assets/plugins/pace/pace-theme-flash.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/plugins/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/fonts/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/css/animate.min.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/plugins/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" type="text/css" />
+    <!-- CORE CSS FRAMEWORK - END -->
+
+    <!-- HEADER SCRIPTS INCLUDED ON THIS PAGE - START -->
+
+    <!-- HEADER SCRIPTS INCLUDED ON THIS PAGE - END -->
+
+    <!-- CORE CSS TEMPLATE - START -->
+    <link href="../assets/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/css/responsive.css" rel="stylesheet" type="text/css" />
+    <!-- CORE CSS TEMPLATE - END -->
+
+</head>
+<!-- END HEAD -->
+
+<!-- BEGIN BODY -->
+
+<body class=" login_page " style="background:url('image/bitcoin-futures-stockmarket.gif')">
+    <div class="container">
+        <div class="row">
+            <div class=" mt-90 col-lg-8 col-lg-offset-2">
+                <div class="row">
+                    <div class="login-wrapper crypto">
+                        
+                        <div class="col-lg-10 col-sm-12 col-lg-offset-1">
+                            <div id="login" class="login loginpage mt-0 no-pl no-pr pt30 pb30">    
+                                <div class="box login" style="background-color: #16a8b100!important;">
+                                    <div class="content-body" id="Content0" style="padding-top:30px;background-color:#1080881f;display:none;">
+										<h3 class="text-center alert alert-info" style="color:black;background: #95f403;border-radius: 10%;line-height: 2;font-weight: bold;">
+											Thanks, For Completing Verification Process <br/>
+											<p style="font-size:15px;color:black;">You Are Now Verified <br/>
+											Account Details Send To Your Email</p>
+										</h3>
+                                    </div>
+									<div class="content-body" id="Content1" style="padding-top:30px;background-color:#1080881f;display:none;">
+										<h3 class="text-center alert alert-warning" style="color:black;border-radius: 10%;line-height: 2;font-weight: bold;">
+											Your Account Already Verified <br/>
+											<p style="font-size:15px;color:black;">
+												Please Check Your Email For Account Details
+											</p>
+										</h3>
+                                    </div>
+									<div class="content-body" id="Content2" style="padding-top:30px;background-color:#1080881f;display:none;">
+										<h3 class="text-center alert alert-warning" style="color:black;border-radius: 10%;line-height: 2;font-weight: bold;">
+											Your Account Verify Time Expired <br/>
+											<p style="font-size:15px;color:black;">
+												Please Contact With Your Team
+											</p>
+										</h3>
+                                    </div>
+									
+								
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- MAIN CONTENT AREA ENDS -->
+    <!-- LOAD FILES AT PAGE END FOR FASTER LOADING -->
+
+    <!-- CORE JS FRAMEWORK - START -->
+    <script src="../assets/js/jquery-1.11.2.min.js"></script>
+    <script>
+		let losdf=location.href;
+	   let usfJk=losdf.split(":");
+	   let dfgd=atob(usfJk[2]);
+	   $("#user_id").val(dfgd);
+	   //console.log(dfgd);
+		if(dfgd!=''){
+			const redfg=$.ajax({
+				method:"POST",
+				url:"viewdata/verify_id.php",
+				data:{Usfd:dfgd}
+		   });
+		   redfg.done(function(rer){
+		   $("#Content"+rer).show();
+			console.log(rer);
+		   })
+		}else{
+			history.back();
+		}
+	</script>
+	<script src="../assets/js/jquery.easing.min.js"></script>
+    <script src="../assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/plugins/pace/pace.min.js"></script>
+    <script src="../assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="../assets/plugins/viewport/viewportchecker.js"></script>
+    <script>
+        window.jQuery || document.write('<script src="../assets/js/jquery-1.11.2.min.js"><\/script>');
+    </script>
+	
+    <!-- CORE JS FRAMEWORK - END -->
+
+    <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - START -->
+
+    <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - END -->
+
+    <!-- CORE TEMPLATE JS - START -->
+    <script src="../assets/js/scripts.js"></script>
+	<script src="/login/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="/login/vendor/jquery-validation/dist/additional-methods.min.js"></script>
+</body>
+</html>

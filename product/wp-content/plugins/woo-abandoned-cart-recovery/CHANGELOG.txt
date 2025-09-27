@@ -1,0 +1,117 @@
+/**1.0.6 - 2022.05.12 **/
+- Updated: Update support file
+- Fixed: Email templates sometimes cause errors with cart block
+- Fixed: Error with invalid coupons
+- Fixed: Error with test email
+
+/**1.0.5 - 2022.03.21 **/
+- Updated: Compatible with WooCommerce 6.3 and WP 5.9
+- Updated: Updated support
+- Updated: Compatible with WPML
+- Updated: Compatible with Polylang
+
+/**1.0.4.8 - 2022.01.08 **/
+- Fixed: Filter member in abandoned cart
+- Fixed: Price tax in report table
+
+/**1.0.4.7 - 2021.12.21 **/
+- Fixed: Price sort in report table
+- Updated: An option to remove the product link in the product detail in the abandoned emails
+
+/**1.0.4.6 - 2021.08.04 **/
+- Fixed: Remove expired records
+
+/**1.0.4.5 - 2021.07.20 **/
+- Updated: Report recovered cart
+
+/**1.0.4.4 - 2021.06.25 **/
+- Fixed: Escaped variable, textdomain in translate function
+
+/**1.0.4.3 - 2021.06.22 **/
+- Fixed: Escaped variable, update chartjs, define file location
+
+/**1.0.4.1 - 2021.06.18 **/
+- Fixed: Check nonce
+
+/**1.0.4 - 2021.06.01 **/
+- Update: Dashboard notices
+
+/**1.0.3.9 - 2021.04.16 **/
+- Fixed: Bug with Funnel Builder
+
+/**1.0.3.8 - 2021.02.18 **/
+- Update: Add option redirect to cart or checkout page when use recover link
+
+/**1.0.3.7 - 2020.12.18 **/
+- Fixed: Modify column in database
+
+/**1.0.3.6 - 2020.12.17 **/
+- Fixed: Query error
+
+/**1.0.3.5 - 2020.12.12 **/
+- Fixed: Compatible with WooCommerce Coupon Box & WooCommerce Lucky Wheel
+
+/**1.0.3.4 - 2020.12.09 **/
+- Fixed: Report page
+
+/**1.0.3.2 - 2020.10.09 **/
+- Fixed: save abandoned cart method
+
+/**1.0.3.1 - 2020.08.31 **/
+- Fixed: Send email reminder after checkout
+
+/**1.0.3 - 2020.06.22 **/
+- Fixed: Email header option
+
+/**1.0.2.9 - 2020.05.21 **/
+- Fixed: Encode checkout button url
+
+/**1.0.2.8 - 2020.04.23 **/
+- Update: Support file
+- Update: Detect AspiegelBot spam bot
+
+/**1.0.2.7 - 2020.04.02 **/
+- Update: Support file
+
+/**1.0.2.6 - 2020.03.17 **/
+- Update: Add .pot file to translate
+
+/**1.0.2.5 - 2020.03.14 **/
+- Fixed: Capture with user logged in
+
+/**1.0.2.4 - 2020.01.08 **/
+- Update: Display coupon code
+
+/**1.0.2.3 - 2019.11.16 **/
+- Update: Compatible with WP 5.3
+
+/**1.0.2.2 - 2019.10.16 **/
+- Fixed: Recover link
+
+/**1.0.2.1 - 2019.10.07 **/
+- Updated: Update read me
+
+/**1.0.2 - 2019.10.01 **/
+- Updated: Update email template
+
+/**1.0.1.2 - 2019.08.01**/
+- Fixed: Readme file
+
+/**1.0.1.1 - 2019.07.31**/
+- Fixed: New Pro feature
+
+/**1.0.1 - 2019.07.29**/
+- Updated: New email template
+- Added: Link premium version
+
+/**1.0.0.3 - 2019.06.05**/
+-Fixed: assign email template
+
+/**1.0.0.2 - 2019.05.29**/
+-Fixed: Load support file
+
+/**1.0.0.1 - 2019.05.22**/
+-Fixed: Custom email template
+
+/**1.0.0 - 2019.05.10**/
+- First release

@@ -1,0 +1,101 @@
+
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Cabin:400,700,600"/>
+        <link href="/tree/style.css" rel="stylesheet" type="text/css">
+  
+        <div class="overflow">
+            <div>
+                <ul class="tree">
+                    <li>
+                        <div>
+							<img src="" />
+						</div>
+                        <div>
+						Name: Mainur<br/>
+						Mobile: 01738531695
+						</div>
+                        
+                        <ul>
+                            <li>
+                                <div>1.1</div>
+                                <ul>
+                                    <li>
+                                        <div>1.1.1</div>
+                                    </li>
+                                    <li>
+                                        <div>1.1.2</div>
+                                    </li>
+                                    <li>
+                                        <div>1.1.3</div>
+                                        <ul>
+                                            <li>
+                                                <div>1.1.3.1</div>
+                                                <ul>
+                                                    <li>
+                                                        <div>1.1.3.1.1</div>
+                                                    </li>
+                                                    <li>
+                                                        <div>1.1.3.1.2</div>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <div>1.1.3.1</div>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div>1.2</div>
+                                <ul>
+                                    <li>
+                                        <div>1.2.1</div>
+                                    </li>
+                                    <li>
+                                        <div>1.2.2</div>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div>1.3</div>
+                                <ul>
+                                    <li>
+                                        <div>1.3.1</div>
+                                    </li>
+                                    <li>
+                                        <div>1.3.2</div>
+                                    </li>
+                                    <li>
+                                        <div>1.3.3</div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    <script src="/tree/ajax/libs/jquery/3.1.1/jquery.js"></script>
+    <script src="/tree/ajax/libs/jquery-migrate/3.0.0/jquery-migrate.js"></script>
+    <script src="/tree/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+    <script src="/tree/js/jquery.tree.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.tree').tree_structure({
+                'add_option': false,
+                'edit_option': false,
+                'delete_option': false,
+                'confirm_before_delete': false,
+                'animate_option': false,
+                'fullwidth_option': false,
+                'align_option': 'center',
+                'draggable_option': true
+            });
+        });
+    </script>
+    <script>
+        $(".accordion-header").click(function() {
+            $(this).toggleClass("active").next(".accordion-content").slideToggle();
+        });
+    </script>
