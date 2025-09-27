@@ -1,12 +1,22 @@
 <?php
-	if(!isset($_SESSION['token']))
-    	{
-    	header("Location:../index.html");
-    	exit();
-    	}
-	else
-	{    	
-
+	// PHP 8.2 compatibility: Only check session if not already in member context
+	$in_member_context = (strpos($_SERVER['PHP_SELF'], '/member/') !== false) || 
+	                     (isset($_SESSION['roboMember']));
+	
+	if (!$in_member_context) {
+		// Admin area session check
+		if (session_status() == PHP_SESSION_NONE) {
+			session_start();
+		}
+		
+		if(!isset($_SESSION['token'])) {
+			if (!headers_sent()) {
+				header("Location:../index.html");
+				exit();
+			}
+		}
+	}
+	
 	$host="localhost";
 	$database="robo_adminMlm2";
 	$user="root";
@@ -28,7 +38,6 @@
 	{
 	  echo "Failed to connect to MySQL Database " . mysqli_connect_error();
 	  exit();
-	}
 	}
 		
 	$timezone = "Pacific/Auckland"; // Asia/Dacca

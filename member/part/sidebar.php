@@ -75,8 +75,9 @@
                     </li>
 					
 					<?php 
-						if($memberInfo['pack']>0){ 
-							if(RemainingReturn($member)>0){
+						// PHP 8.2 compatibility: Check variables exist and have valid values
+						if(isset($memberInfo) && is_array($memberInfo) && isset($memberInfo['pack']) && $memberInfo['pack'] > 0){ 
+							if(isset($member) && function_exists('RemainingReturn') && RemainingReturn($member) > 0){
 					?>
 					<style>
 						.lds-ellipsis {
@@ -213,9 +214,10 @@
                             <li>
                                 <a class="" href="index.php?route=generation_bonus&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Generation Bonus'); ?>">Generation Bonus</a>
                             </li>
-							<?php
+                            <?php
 								$jkhgfd=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) as touu FROM `upgrade` WHERE `user`='".$member."'"));
-								if($jkhgfd['touu']>=3000){
+								// PHP 8.2 compatibility: Check for null result
+								if($jkhgfd && isset($jkhgfd['touu']) && $jkhgfd['touu']>=3000){
 							?>
 							 <li>
                                 <a class="" href="index.php?route=global_bonus&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Generation Bonus'); ?>">Global Bonus</a>
@@ -317,9 +319,11 @@
 				color:white;
 			}
 		</style>
+		<!-- Temporarily disabled Google Translate to test dropdown functionality
 		<script type="text/javascript">
 			function googleTranslateElementInit() {
 			  new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
 			}
 			</script>
 		<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+		-->

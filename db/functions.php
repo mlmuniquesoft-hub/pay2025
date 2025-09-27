@@ -88,6 +88,14 @@ $_SESSION['token']="uerutgeruioer";
 		$DepositReceiveWorld=mysqli_fetch_assoc($mysqli->query("SELECT SUM(curent_bal) AS asmDeposit2 FROM `game_return2` WHERE `user`='".$user."'"));
 		$BinaryReceive=mysqli_fetch_assoc($mysqli->query("SELECT SUM(slot_match) AS asmBinary FROM `binary_income` WHERE `user`='".$user."'"));
 		$GenerationReceive=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS asmGeneration FROM `generation_income` WHERE `user`='".$user."'"));
+		
+		// PHP 8.2 compatibility: Handle null results
+		$SponsorReceive['asmSponsor'] = $SponsorReceive['asmSponsor'] ?? 0;
+		$DepositReceive['asmDeposit'] = $DepositReceive['asmDeposit'] ?? 0;
+		$DepositReceiveWorld['asmDeposit2'] = $DepositReceiveWorld['asmDeposit2'] ?? 0;
+		$BinaryReceive['asmBinary'] = $BinaryReceive['asmBinary'] ?? 0;
+		$GenerationReceive['asmGeneration'] = $GenerationReceive['asmGeneration'] ?? 0;
+		
 		if($cons!=''){
 			$income=$GenerationReceive['asmGeneration']+$BinaryReceive['asmBinary']+$DepositReceiveWorld['asmDeposit2']+$DepositReceive['asmDeposit'];
 		}else{
@@ -141,6 +149,14 @@ $_SESSION['token']="uerutgeruioer";
 		$DepositReceiveWorld=mysqli_fetch_assoc($mysqli->query("SELECT SUM(curent_bal) AS asmDeposit2 FROM `game_return2` $consd"));
 		$BinaryReceive=mysqli_fetch_assoc($mysqli->query("SELECT SUM(slot_match) AS asmBinary FROM `binary_income` $consd"));
 		$GenerationReceive=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS asmGeneration FROM `generation_income` $consd"));
+		
+		// PHP 8.2 compatibility: Handle null results
+		$SponsorReceive['asmSponsor'] = $SponsorReceive['asmSponsor'] ?? 0;
+		$DepositReceive['asmDeposit'] = $DepositReceive['asmDeposit'] ?? 0;
+		$DepositReceiveWorld['asmDeposit2'] = $DepositReceiveWorld['asmDeposit2'] ?? 0;
+		$BinaryReceive['asmBinary'] = $BinaryReceive['asmBinary'] ?? 0;
+		$GenerationReceive['asmGeneration'] = $GenerationReceive['asmGeneration'] ?? 0;
+		
 		$income=$GenerationReceive['asmGeneration']+$BinaryReceive['asmBinary']+$DepositReceiveWorld['asmDeposit2']+$DepositReceive['asmDeposit']+$SponsorReceive['asmSponsor'];
 		if($income>0){
 			return $income;
@@ -174,6 +190,12 @@ $_SESSION['token']="uerutgeruioer";
 		$shopping = TtalShopping($user);
 		$DepositReceive=TtalIncome($user,1);
 		$MemberUpgrade=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS asmUpgrade FROM `upgrade` WHERE `user`='".$user."'"));
+		
+		// PHP 8.2 compatibility: Check for null result
+		if($MemberUpgrade === null || !isset($MemberUpgrade['asmUpgrade'])) {
+			$MemberUpgrade['asmUpgrade'] = 0;
+		}
+		
 		$ExpectyedReturn=$MemberUpgrade['asmUpgrade']*4;
 		$remainReturn=($ExpectyedReturn-($shopping+$DepositReceive));
 		if($remainReturn>0){

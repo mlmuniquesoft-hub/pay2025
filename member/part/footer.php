@@ -319,13 +319,86 @@
 	<!-- Highcharts for dashboard charts -->
 	<script src="/assets2/js/highcharts.js"></script>
 	<script src="/assets2/js/highcharts-3d.js"></script>
+	<!-- CORE TEMPLATE JS - Must load before other scripts -->
+	<script src="/assets/js/scripts.js"></script>
+	<!-- Slick Carousel JS - Must load before main.js -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 	<script src="/assets2/js/main.js"></script>
+	
+	<!-- Dropdown Functionality Script -->
+	<script>
+	console.log("=== DROPDOWN DEBUG START ===");
+	
+	$(document).ready(function() {
+		console.log("jQuery DOM Ready");
+		console.log("jQuery version:", $.fn.jquery);
+		
+		// Check elements
+		var menuWrapper = $('#main-menu-wrapper');
+		var menuLinks = $('#main-menu-wrapper li a');
+		var subMenus = $('.sub-menu');
+		
+		console.log("Menu wrapper found:", menuWrapper.length);
+		console.log("Menu links found:", menuLinks.length);  
+		console.log("Sub-menus found:", subMenus.length);
+		
+		// Check if CRYPTOKIT_SETTINGS exists
+		if(typeof CRYPTOKIT_SETTINGS !== 'undefined') {
+			console.log("CRYPTOKIT_SETTINGS exists - original script should work");
+		} else {
+			console.log("CRYPTOKIT_SETTINGS missing - using manual implementation");
+		}
+		
+		// Manual dropdown implementation
+		console.log("Setting up dropdown handlers...");
+		
+		$('#main-menu-wrapper li a').off('click').on('click', function(e) {
+			console.log("Menu clicked:", $(this).find('.title').text());
+			
+			var hasSubMenu = $(this).next().hasClass('sub-menu');
+			console.log("Has sub-menu:", hasSubMenu);
+			
+			if (!hasSubMenu) {
+				console.log("No sub-menu - allowing navigation");
+				return true;
+			}
+			
+			e.preventDefault();
+			console.log("Preventing default and toggling menu");
+			
+			var $parent = $(this).parent();
+			var $sub = $(this).next('.sub-menu');
+			var $arrow = $(this).find('.arrow');
+			
+			// Close other open menus
+			$('#main-menu-wrapper li.open').not($parent).each(function() {
+				$(this).removeClass('open');
+				$(this).find('.sub-menu').slideUp(200);
+				$(this).find('.arrow').removeClass('open');
+			});
+			
+			// Toggle current menu
+			if ($parent.hasClass('open')) {
+				console.log("Closing menu");
+				$parent.removeClass('open');
+				$arrow.removeClass('open');
+				$sub.slideUp(200);
+			} else {
+				console.log("Opening menu");
+				$parent.addClass('open');
+				$arrow.addClass('open');
+				$sub.slideDown(200);
+			}
+		});
+		
+		console.log("=== DROPDOWN SETUP COMPLETE ===");
+	});
+	</script>
 	
     
     <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - END -->
 
-    <!-- CORE TEMPLATE JS - START -->
-    <script src="/assets/js/scripts.js"></script>
+    <!-- CORE TEMPLATE JS ALREADY LOADED ABOVE -->
     <!-- END CORE TEMPLATE JS - END -->
 	<script>
 		if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent) 
