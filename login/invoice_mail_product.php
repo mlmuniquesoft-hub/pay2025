@@ -68,7 +68,7 @@ $message2='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transit											<a hre
 							<tr>
 								<td align="center" colspan="2">
 									<div style="line-height: 24px;margin-top: 20%;">
-										<a href="https://nzrobotrade.com/member/nz-login.html" target="_blank" class="btn btn-danger block-center" style="
+										<a href="https://capitolmoneypay.com/member/nz-login.html" target="_blank" class="btn btn-danger block-center" style="
 											color: #f7f2f2;
 											border: 1px solid;
 											padding: 10px 40px 15px 37px;

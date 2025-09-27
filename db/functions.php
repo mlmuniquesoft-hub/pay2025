@@ -1,5 +1,5 @@
 <?php
-session_start();
+// session_start();
 $_SESSION['token']="uerutgeruioer";
 	require_once("db.php");
 	
@@ -171,6 +171,7 @@ $_SESSION['token']="uerutgeruioer";
 	
 	function RemainingReturn($user){
 		global $mysqli;
+		$shopping = TtalShopping($user);
 		$DepositReceive=TtalIncome($user,1);
 		$MemberUpgrade=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS asmUpgrade FROM `upgrade` WHERE `user`='".$user."'"));
 		$ExpectyedReturn=$MemberUpgrade['asmUpgrade']*4;

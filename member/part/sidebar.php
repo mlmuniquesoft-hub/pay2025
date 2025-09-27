@@ -46,7 +46,7 @@
                         </a>
                     </li>
 					<li class="">
-                        <a href="https://nzrobotrade.com/product/" target="blank">
+                        <a href="https://capitolmoneypay.com/product/" target="blank">
                             <i class="fa fa-shopping-cart">
                                 
                             </i>

@@ -52,7 +52,7 @@
 					<br/>
 					<p><a style='margin:12px 0px;display:block;text-decoration:none;background: #ffad46!important;border-color: #ffad46!important;color: #fff!important;padding:10px;font-size:32px;text-align:center;' href='#'>$code</a> </p>
 					<br/>
-					Thanks By, NZ Robo Trade Team<br/>
+					Thanks By, Capitol Money Pay Team<br/>
 					<a href='mailto:support@capitolmoneypay.com'>support@capitolmoneypay.com</a>
 					
 				";

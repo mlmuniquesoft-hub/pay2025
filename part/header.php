@@ -14,7 +14,7 @@
 	<!-- favicon icon -->
 	<link rel="icon" href="#">
 
-	<title>NZ Robo Trade</title>
+	<title>Capitol Money Pay</title>
 
 	<!-- Main style css -->
 	<link rel="stylesheet" href="css/style.css">

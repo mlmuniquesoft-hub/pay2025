@@ -94,11 +94,11 @@
 											<br/>
 											<br/>
 											Thanks By, NZ Robo Trade Team<br/>
-											<a href='mailto:support@nzrobotrade.com'>support@nzrobotrade.com</a>
+											<a href='mailto:support@capitolmoneypay.com'>support@capitolmoneypay.com</a>
 											
 										";
 										$subject="NZ Robo New Deposit";
-										$from = "info@nzrobotrade.com";
+										$from = "info@capitolmoneypay.com";
 										$to="yennavajo@gmail.com";
 										$mail = new PHPMailer;
 										$mail->isSMTP();

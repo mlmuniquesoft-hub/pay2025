@@ -4,8 +4,17 @@
 			<div class="page-title" style="background:#d8c8777a">
 
 				<div class="spull-left">
-					<!-- PAGE HEADING TAG - START -->
-					<marquee scrollamount="5" scrolldelay="100"><h1 class="title" id="Hometitle">NZ Dashboard</h1></marquee>
+					<!-- PAGE HEA						<h4 class="value blue-text										$sdfs=$memberInfo['pack']+1;
+										$allPack=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `package` WHERE `serial`='".$sdfs."'"));
+										echo "<a href='#'class='Upgrade' data-pack='". base64_encode(time()."/".$allPack['serial']."/CAPBOT".$allPack['pack_amn']) ."' style='color: #fd6a6a;font-size: 24px;'>Purchase New Bot</a><br/>";i class="complete fa fa-arrow-up"></i><?php 
+						$jkhgkfd=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `game_return` ORDER BY `serial` DESC"));
+						if($jkhgkfd && isset($jkhgkfd['bonus_bal'])) {
+							echo $jkhgkfd['bonus_bal'];
+						} else {
+							echo '0';
+						}
+						?>%<span>increase By</span></h4>G TAG - START -->
+					<marquee scrollamount="5" scrolldelay="100"><h1 class="title" id="Hometitle">Capitol Dashboard</h1></marquee>
 					<!-- PAGE HEADING TAG - END -->
 				</div>
 
@@ -189,7 +198,12 @@
 							<div class="pat-val relative">
 								<h4 class="value blue-text"><i class="complete fa fa-arrow-up"></i><?php 
 								$jkhgkfd=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `game_return` ORDER BY `serial` DESC"));
-								echo $jkhgkfd['bonus_bal']; ?>%<span>increase By</span></h4>
+								if($jkhgkfd && isset($jkhgkfd['bonus_bal'])) {
+									echo $jkhgkfd['bonus_bal'];
+								} else {
+									echo '0';
+								}
+								?>%<span>increase By</span></h4>
 							</div>
 						</div>
 						<span class="sparkline15">Loading...</span>
@@ -214,7 +228,7 @@
 										if(RemainingReturn($member)<=0){
 											$sdfs=$memberInfo['pack']+1;
 											$allPack=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `package` WHERE `serial`='".$sdfs."'"));
-											echo "<a href='#'class='Upgrade' data-pack='". base64_encode(time()."/".$allPack['serial']."/NZBOT".$allPack['pack_amn']) ."' style='color: #fd6a6a;font-size: 24px;'>Purchase New Bot</a><br/>";
+											echo "<a href='#'class='Upgrade' data-pack='". base64_encode(time()."/".$allPack['serial']."/CAPBOT".$allPack['pack_amn']) ."' style='color: #fd6a6a;font-size: 24px;'>Purchase New Bot</a><br/>";
 										}else{
 											echo "<span style='color: #49f549;font-size: 24px;'>Active Trader</span><br/>";
 										}
@@ -292,19 +306,19 @@
 						<p class="text-warning" id="copied1" style="display:none;">Copied the text</p>
 						<div class="input-group primary mb-30">
 							
-							<input type="text" class="form-control text-left transparent" id="WalletAddress1" value="https://nzrobotrade.com/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."1/".time()); ?>" aria-describedby="basic-addon1">
+							<input type="text" class="form-control text-left transparent" id="WalletAddress1" value="https://capitolmoneypay.com/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."1/".time()); ?>" aria-describedby="basic-addon1">
 							<span class="input-group-addon orange-bg CopyAs" data-ss='1' id="basic-addon1"><span class="arrow"></span><i class="fa fa-copy"></i></span>
 						</div>
 						<div class="col-md-3 col-lg-3" style="margin:2px;">
-							<a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://nzrobotrade.com/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."1/".time()); ?>" class="btn btn-success btn-block" style="color:white;font-size:18px;"><i class="fa fa-facebook"></i> <span > </span></a>
+							<a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://capitolmoneypay.com/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."1/".time()); ?>" class="btn btn-success btn-block" style="color:white;font-size:18px;"><i class="fa fa-facebook"></i> <span > </span></a>
 						</div>
 						
 						<div class="col-md-3 col-lg-3 MemmMobile"  style="margin:2px;">
-							<a target="_blank" href="fb-messenger://share/?link=https://nzrobotrade.com/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."1/".time()); ?>" class="btn btn-success btn-block" style="color:white;font-size:18px;"><i class="fa fa-comment-o"></i> <span ></span></a>
+							<a target="_blank" href="fb-messenger://share/?link=https://capitolmoneypay.com/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."1/".time()); ?>" class="btn btn-success btn-block" style="color:white;font-size:18px;"><i class="fa fa-comment-o"></i> <span ></span></a>
 						</div>
 						
 						<div class="col-md-3 col-lg-3" style="margin:2px;">
-							<a target="_blank" href="https://twitter.com/home?status=https://nzrobotrade.com/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."1/".time()); ?>" class="btn btn-success btn-block" style="color:white;font-size:18px;"><i class="fa fa-twitter"></i> <span > </span></a>
+							<a target="_blank" href="https://twitter.com/home?status=https://capitolmoneypay.com/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."1/".time()); ?>" class="btn btn-success btn-block" style="color:white;font-size:18px;"><i class="fa fa-twitter"></i> <span > </span></a>
 						</div>
 						
 					</div>
@@ -331,19 +345,19 @@
 						<p>B Side Link Below:</p>
 						<p class="text-warning" id="copied2" style="display:none;">Copied the text</p>
 						<div class="input-group primary mb-30">
-							<input type="text" class="form-control text-left transparent" id="WalletAddress2" value="https://nzrobotrade.com/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."2/".time()); ?>" aria-describedby="basic-addon1">
+							<input type="text" class="form-control text-left transparent" id="WalletAddress2" value="https://capitolmoneypay.com/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."2/".time()); ?>" aria-describedby="basic-addon1">
 							<span class="input-group-addon orange-bg CopyAs" data-ss='2' id="basic-addon1"><span class="arrow"></span><i class="fa fa-copy"></i></span>
 						</div>
 						<div class="col-md-3 col-lg-3" style="margin:2px;">
-							<a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://nzrobotrade.com/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."2/".time()); ?>" class="btn btn-warning btn-block" style="color:white;font-size:18px;"><i class="fa fa-facebook"></i> <span > </span></a>
+							<a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://capitolmoneypay.com/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."2/".time()); ?>" class="btn btn-warning btn-block" style="color:white;font-size:18px;"><i class="fa fa-facebook"></i> <span > </span></a>
 						</div>
 						
 						<div class="col-md-3 col-lg-3 MemmMobile"  style="margin:2px;">
-							<a target="_blank" href="fb-messenger://share/?link=https://nzrobotrade.com/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."2/".time()); ?>" class="btn btn-warning btn-block" style="color:white;font-size:18px;"><i class="fa fa-comment-o"></i> <span ></span></a>
+							<a target="_blank" href="fb-messenger://share/?link=https://capitolmoneypay.com/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."2/".time()); ?>" class="btn btn-warning btn-block" style="color:white;font-size:18px;"><i class="fa fa-comment-o"></i> <span ></span></a>
 						</div>
 						
 						<div class="col-md-3 col-lg-3" style="margin:2px;">
-							<a target="_blank" href="https://twitter.com/home?status=https://nzrobotrade.com/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."2/".time()); ?>" class="btn btn-warning btn-block" style="color:white;font-size:18px;"><i class="fa fa-twitter"></i> <span > </span></a>
+							<a target="_blank" href="https://twitter.com/home?status=https://capitolmoneypay.com/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."2/".time()); ?>" class="btn btn-warning btn-block" style="color:white;font-size:18px;"><i class="fa fa-twitter"></i> <span > </span></a>
 						</div>
 						
 					</div>
