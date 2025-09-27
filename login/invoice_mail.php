@@ -1,11 +1,11 @@
 <?php
-$message2='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transiti											<a href="https://capitolmoneypay.com/member/nz-login.html" target="_blank" class="btn btn-danger block-center" style="nal//EN" "http://www.w3.org/TR/html4/loose.dtd">
+$message2='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 	<head>
 	  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	  <meta name="viewport" content="width=device-width, initial-scale=1">
 	  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	  <title>NZ Robo Trade</title>
+	  <title>Capitol Money Pay</title>
 		
 	</head>
     <body>
@@ -14,11 +14,11 @@ $message2='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transiti											<a hr
         	    <div>
         	        <img src="https://capitolmoneypay.com/images/logo111111.png" alt="logo" border="0" style="height: 100px;width: 100px;" />
 					 <p>
-						Overbergveien 246 1397 NESOYA <br/>
-						Palmerston North <br/>
-						West Coast, NZ 6004 <br/>
+						1600 Pennsylvania Avenue NW <br/>
+						Washington <br/>
+						DC, USA 20500 <br/>
 						support@capitolmoneypay.com <br/>
-						+64.47261300 <br/>
+						+1.202.456.1414 <br/>
 					</p>
 				</div> 
         	    <div  style="background-color: #fbfcfd; border-top: thick double #cccccc; text-align: left;">
@@ -38,7 +38,7 @@ $message2='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transiti											<a hr
 							<h3 style="color: #126aab;">Your Robot Details</h3>
              	            <tr style="line-height: 26px;">
              	                <th>Robot Name</th>
-             	                <td>: NZBOT'.floor($PackAInfo['pack_amn']).'</td>
+             	                <td>: CAPBOT'.floor($PackAInfo['pack_amn']).'</td>
              	            </tr>
              	            <tr style="line-height: 26px;">
              	                <th>Bot Quantity</th>
@@ -69,7 +69,7 @@ $message2='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transiti											<a hr
 							<tr>
 								<td align="center" colspan="2">
 									<div style="line-height: 24px;margin-top: 20%;">
-										<a href="https://nzrobotrade.com/member/nz-login.html" target="_blank" class="btn btn-danger block-center" style="
+										<a href="https://capitolmoneypay.com/member/nz-login.html" target="_blank" class="btn btn-danger block-center" style="
 											color: #f7f2f2;
 											border: 1px solid;
 											padding: 10px 40px 15px 37px;
