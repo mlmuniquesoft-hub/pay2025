@@ -17,27 +17,27 @@
 	// 	die();
 	// }
 	
-	$urtye="power";
-	$iiuu=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `member_total` WHERE `user`='".$urtye."'"));
-	$leftall=explode(",", strtolower($iiuu['totalLeftId']));
-	$rightall=explode(",", strtolower($iiuu['totalrightId']));
-	$ttt=array_merge($leftall,$rightall);
-	if(!in_array($userID,$ttt)){
-		array_push($rett,0);
-		array_push($rett,"Sorry For Inconvenience, Withdrawal Process Is Under Construction. Advance Phase Appearing Soon.");
-		echo json_encode($rett);
-		die();
-	}
+	// $urtye="power";
+	// $iiuu=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `member_total` WHERE `user`='".$urtye."'"));
+	// $leftall=explode(",", strtolower($iiuu['totalLeftId']));
+	// $rightall=explode(",", strtolower($iiuu['totalrightId']));
+	// $ttt=array_merge($leftall,$rightall);
+	// if(!in_array($userID,$ttt)){
+	// 	array_push($rett,0);
+	// 	array_push($rett,"Sorry For Inconvenience, Withdrawal Process Is Under Construction. Advance Phase Appearing Soon.");
+	// 	echo json_encode($rett);
+	// 	die();
+	// }
 	
 	
-	$SuspendUser=array("bdboss01","bdboss02","bdboss03","bdboss04","bdboss05","bdboss06","bdboss07","bdboss08","murad","rural","haider01","aileronbd","airwing","rangpurbd","kingbd");
-	$Chedfg=strtolower($userID);
-	if(in_array($Chedfg,$SuspendUser)){
-		array_push($rett,0);
-		array_push($rett,"Withdrawal System Upgrading....., Try Later");
-		echo json_encode($rett);
-		die();
-	}
+	// $SuspendUser=array("bdboss01","bdboss02","bdboss03","bdboss04","bdboss05","bdboss06","bdboss07","bdboss08","murad","rural","haider01","aileronbd","airwing","rangpurbd","kingbd");
+	// $Chedfg=strtolower($userID);
+	// if(in_array($Chedfg,$SuspendUser)){
+	// 	array_push($rett,0);
+	// 	array_push($rett,"Withdrawal System Upgrading....., Try Later");
+	// 	echo json_encode($rett);
+	// 	die();
+	// }
 	
 	
 	// $ghfdhs=date("D");
