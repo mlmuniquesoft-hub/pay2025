@@ -9,6 +9,7 @@
 	if(function_exists('date_default_timezone_set')) date_default_timezone_set($timezone);	
 	$Invoice=$_POST['Asd'];
 	$Pacsdf=explode("/", base64_decode($_POST['AccF']));
+	$customAmount = isset($_POST['customAmount']) ? floatval($_POST['customAmount']) : 0;
 	
 	$date=date("Y-m-d");
 	
@@ -17,7 +18,12 @@
 
 	$rett=array();
 	
-	
+	// Validate custom amount
+	if($customAmount < 100) {
+		$rett['sts']=0;
+		$rett['mess']="Minimum investment amount is $100";
+		die(json_encode($rett));
+	}
 	
 	if($TransCode==''){
 		$rett['sts']=0;
@@ -29,135 +35,133 @@
 	
 	$CheckUs=mysqli_num_rows($kjhgd);
 	if($CheckUs>0){
-		$packfg=$mysqli->query("SELECT * FROM `package` WHERE `serial`='".$Pacsdf[2]."'");
-		$CheckRecei=mysqli_num_rows($packfg);
-		if($CheckRecei<1){
-			$rett['sts']=0;
-			$rett['mess']=" Robot Not Valid";
-			die(json_encode($rett));
-		}
-		$PackAInfo=mysqli_fetch_assoc($packfg);
+		// Use custom amount instead of predefined package
+		$investmentAmount = $customAmount;
+		$activationFee = 10;
+		$totalRequired = $investmentAmount + $activationFee;
+		
 		$MemberInfo=mysqli_fetch_assoc($kjhgd);
-		if($MemberInfo['pack']>=$PackAInfo['serial']){
-			$rett['sts']=1;
-			$rett['mess']="Your NZ Robo Plan Already Active";
+		
+		// Check if user already has an active investment
+		$existingInvestment = mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) as total_invested FROM `upgrade` WHERE `user`='".$user."'"));
+		if($existingInvestment['total_invested'] > 0) {
+			$rett['sts']=0;
+			$rett['mess']="You already have an active investment. Multiple investments not allowed.";
 			die(json_encode($rett));
 		}
 		
 		$dfgKKj=remainAmn($user);
-		$HHjk=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) as prevAmn FROM `upgrade` WHERE `user`='".$user."'"));
-		$charge=0;
-		if($HHjk['prevAmn']>0){
-			$require_amn=$PackAInfo['pack_amn']-$HHjk['prevAmn'];
-		}else{
-			$require_amn=$PackAInfo['pack_amn'];
-			$charge=10;
-		}
 		
-		
-		if($require_amn+$charge>$dfgKKj){
+		if($totalRequired > $dfgKKj){
 			$rett['sts']=0;
-			$rett['mess']="Insufficient Fund";
+			$rett['mess']="Insufficient Fund. Required: $".number_format($totalRequired, 2)." | Available: $".number_format($dfgKKj, 2);
 			die(json_encode($rett));
 		}
 		$Chhfgd=count($rett);
 		if($Chhfgd==0){
-			$SponsorBonus=((($require_amn*$PackAInfo['direct_com'])/100)*0.60);
-			$Shopping=((($require_amn*$PackAInfo['direct_com'])/100)*0.40);
-			/*$remailKj=RemainingReturn($MemberInfo['sponsor']);
-			if($remailKj>0){
-				
-				if($SponsorBonus>=$remailKj){
-					$SponsorBonus=$remailKj;
-				}
-			}else{
-				$SponsorBonus=0;
+			// Calculate returns based on investment range
+			$dailyRate = 0;
+			$packageName = "";
+			if($investmentAmount >= 100 && $investmentAmount <= 999) {
+				$dailyRate = 0.5;
+				$packageName = "Basic Package";
+			} elseif($investmentAmount >= 1000 && $investmentAmount <= 4999) {
+				$dailyRate = 0.7;
+				$packageName = "Premium Package";
+			} else {
+				$dailyRate = 1.0;
+				$packageName = "VIP Package";
 			}
-			*/
-			$ActivaDate=date("Y-m-d H:i:s");
-			$mysqli->query("INSERT INTO `upgrade`( `user`, `package`, `amount`, `bonus`, `shopping`, `sponsor`, `upline`,  `invoice`,  `charge`,  `date`) VALUES ('".$user."','".$PackAInfo['pack']."','".$require_amn."','".$SponsorBonus."','".$Shopping."','".$MemberInfo['sponsor']."','".$MemberInfo['upline']."','".$Invoice."','".$charge."','".$ActivaDate."')");
-			$mysqli->query("UPDATE `member` SET `paid`='1',`pack`='".$PackAInfo['serial']."' WHERE `user`='".$user."'");
+
+			// Calculate sponsor bonus (10% of investment amount)
+			$SponsorBonus = ($investmentAmount * 0.10);
+			$Shopping = ($investmentAmount * 0.00); // 0% shopping bonus
 			
-			$description="$$SponsorBonus Sponsor Bonus and $$Shopping Shopping Bonus Added";
+			$ActivaDate=date("Y-m-d H:i:s");
+			
+			// Insert upgrade record
+			$mysqli->query("INSERT INTO `upgrade`( `user`, `package`, `amount`, `bonus`, `shopping`, `sponsor`, `upline`, `invoice`, `charge`, `date`) VALUES ('".$user."','".$packageName."','".$investmentAmount."','".$SponsorBonus."','".$Shopping."','".$MemberInfo['sponsor']."','".$MemberInfo['upline']."','".$Invoice."','".$activationFee."','".$ActivaDate."')");
+			
+			// Update member status
+			$mysqli->query("UPDATE `member` SET `paid`='1',`pack`='1' WHERE `user`='".$user."'");
+			
+			// Add sponsor bonus to sponsor's account
+			$description="$".number_format($SponsorBonus, 2)." Sponsor Bonus from ".$user." (".$packageName.")";
 			$mysqli->query("INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) VALUES ('".$MemberInfo['sponsor']."', '".$date."', '".$description."', '".$SponsorBonus."','credit')");
 			
-			$description=$PackAInfo['pack']."($$require_amn) D.Bot Purchase Completed";
-			$mysqli->query("INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) VALUES ('".$user."', '".$date."', '".$description."', '".$SponsorBonus."','debit')");
+			// Add debit record for user
+			$description="$".number_format($investmentAmount, 2)." ".$packageName." Investment + $".number_format($activationFee, 2)." Activation Fee";
+			$mysqli->query("INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) VALUES ('".$user."', '".$date."', '".$description."', '".$totalRequired."','debit')");
 			
 			
 			$ProfileInfo=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `profile` WHERE `user`='".$MemberInfo['log_user']."' OR `user`='".$user."'"));
 			$name=$ProfileInfo['name'];
 			$to=$ProfileInfo['email'];
 			$code=str_shuffle(substr(time(),3));
-			$jkhf=$PackAInfo['pack'];
-			$gjkdfhg=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `profile` WHERE `user`='".$MemberInfo['log_user']."' OR `user`='".$MemberInfo['user']."'"));
-			$name0=$gjkdfhg['name'];
-			include('../../login/invoice_mail.php');
 			
-			$subject="NZ Robo Bot Order Invoice";
-			$from = "info@nzrobotrade.com";
-			/*$headers = "From:" . $from;
-			$headers  = 'MIME-Version: 1.0' . "\r\n";
-			$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-			$headers .= "From: NZ Robo Trade $Invoice <info@nzrobotrade.com>" . "\r\n";
-			mail($to,$subject,$message2,$headers);*/
-			$mail = new PHPMailer;
-			$mail->isSMTP();
-			//$mail->SMTPDebug = 3; 
-			$mail->CharSet  = 'UTF-8';
-			$mail->Host = 'localhost';
-			$mail->Port = 25;
-			$mail->SMTPSecure = 'tls'; 
-			$mail->SMTPOptions = array(
-			   'ssl' => array(
-			   'verify_peer' => false,
-			   'verify_peer_name' => false,
-			   'allow_self_signed' => true
-			  )
-			);
-			$mail->SMTPAuth = true;
-			$mail->Username = $from;
-			$mail->Password = 'Mm123678@#';
-			$mail->setFrom($from, "NZ Robo Trade $Invoice");
-			$mail->addAddress($to, $name0);
-			$mail->Subject = $subject;
-			$mail->msgHTML($message2);
-			$mail->send();
-			if($SponsorBonus==0){
-				$jkhfks=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `member` WHERE `user`='".$MemberInfo['sponsor']."'"));
-				$jkhfks2=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `profile` WHERE `user`='".$jkhfks['log_user']."' OR `user`='".$jkhfks['user']."'"));
-				$name=$jkhfks2['name'];
-				$to=$jkhfks2['email'];
-				$message="
-				<h3 style='font-size:22px'>Hello $name,</h3><br/>
-				<p style='font-size:16px'>
-					Thanks, For Being With Robo Trade.
-				<br/>
-				<br/>
-					New D-Bot Purchased On Your Team. You Miss This Opportunity. Be Care About Future. Purchase Your Product Don't Miss Next.
-				</p>
+			// Send confirmation email using PHPMailer
+			$mail = new PHPMailer(true);
+			try {
+				$mail->isSMTP();
+				$mail->CharSet = 'UTF-8';
+				$mail->Host = 'localhost';
+				$mail->Port = 25;
+				$mail->SMTPSecure = 'tls';
+				$mail->SMTPAuth = true;
+				$mail->Username = 'info@capitolmoneypay.com';
+				$mail->Password = 'Mm123678@#';
 				
+				$mail->setFrom('info@capitolmoneypay.com', 'Capitol Money Pay');
+				$mail->addAddress($to, $name);
+				$mail->addReplyTo('support@capitolmoneypay.com', 'Capitol Money Pay Support');
 				
-				<br/>
-				<br/>
-				Thanks By, NZ Robo Trade Team<br/>
-				<a href='mailto:support@nzrobotrade.com'>support@nzrobotrade.com</a>
+				$mail->isHTML(true);
+				$mail->Subject = "🎉 Investment Activated Successfully - Capitol Money Pay";
+				$mail->Body = "
+				<html>
+				<body style='font-family: Arial, sans-serif; background-color: #f4f4f6; margin: 0; padding: 20px;'>
+					<div style='max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);'>
+						<div style='background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0;'>
+							<h1 style='margin: 0; font-size: 28px;'>🎉 Investment Activated!</h1>
+							<p style='margin: 10px 0 0 0; opacity: 0.9;'>Welcome to Capitol Money Pay</p>
+						</div>
+						<div style='padding: 30px;'>
+							<h2 style='color: #1f2937; margin-top: 0;'>Hello $name,</h2>
+							<p style='color: #374151; line-height: 1.6;'>Congratulations! Your investment has been successfully activated.</p>
+							
+							<div style='background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 20px; margin: 20px 0; border-radius: 5px;'>
+								<h3 style='margin: 0 0 15px 0; color: #1e40af;'>Investment Details:</h3>
+								<table style='width: 100%;'>
+									<tr><td><strong>Plan:</strong></td><td>$packageName</td></tr>
+									<tr><td><strong>Investment:</strong></td><td>$".number_format($investmentAmount, 2)."</td></tr>
+									<tr><td><strong>Activation Fee:</strong></td><td>$".number_format($activationFee, 2)."</td></tr>
+									<tr><td><strong>Daily Rate:</strong></td><td>$dailyRate% (Mon-Fri)</td></tr>
+									<tr><td><strong>Daily Return:</strong></td><td>$".number_format($investmentAmount * $dailyRate / 100, 2)."</td></tr>
+								</table>
+							</div>
+							
+							<p style='color: #374151;'>Your investment will start generating returns from the next business day. Returns are credited Monday through Friday.</p>
+							<p style='color: #059669; font-weight: bold;'>Thank you for choosing Capitol Money Pay!</p>
+						</div>
+						<div style='background: #f9fafb; padding: 20px; text-align: center; border-radius: 0 0 10px 10px; border-top: 1px solid #e5e7eb;'>
+							<p style='margin: 0; color: #6b7280; font-size: 14px;'>Capitol Money Pay Team</p>
+							<p style='margin: 5px 0 0 0; color: #9ca3af; font-size: 12px;'>support@capitolmoneypay.com</p>
+						</div>
+					</div>
+				</body>
+				</html>";
 				
-			";
-			$subject="Activation Alert";
-			$from = "info@nzrobotrade.com";
-			$headers = "From:" . $from;
-			$headers  = 'MIME-Version: 1.0' . "\r\n";
-			$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-			$headers .= "From: New D-Bot Purchased <info@nzrobotrade.com>" . "\r\n";
-			mail($to,$subject,$message,$headers);
+				$mail->send();
+			} catch (Exception $e) {
+				// Log error but don't fail the transaction
 			}
 			
-			
-			$dfdsfds=file_get_contents("https://nzrobotrade.com/member/viewdata/update_score.php?Usfd=$user");
-			
 			$rett['sts']=1;
-			$rett['mess']="Order Submitted Successfully";
+			$rett['mess']="🎉 Investment activated successfully! You invested $".number_format($investmentAmount, 2)." in the $packageName with $dailyRate% daily returns.";
+			die(json_encode($rett));
+		}else{
+			$rett['sts']=0;
+			$rett['mess']="Transaction processing failed. Please try again.";
 			die(json_encode($rett));
 		}
 	}else{
