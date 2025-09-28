@@ -158,30 +158,112 @@
 		$ResetLink="?key=" . base64_encode($key."/".$remainTime);
 		
 		$message="
-			<h3 style='font-size:22px'>Hello $name,</h3><br/>
-			<p style='font-size:16px'>
-			This is a fund $Transtype request  for <a href='https://capitolmoneypay.com/'>capitolmoneypay.com </a>- amount: $$NumberOfToken someone try to $Transtype your fund. If you have not initiated this request, nothing needs to be done.
-			<br/>
-			<br/>
-			If you have initiated this, please <br/>
-			</p>
-			<a style='margin:12px 0px;display:block;text-decoration:none;background: #ffad46!important;border-color: #ffad46!important;color: #fff!important;padding:10px;font-size:32px;text-align:center;' href='https://capitolmoneypay.com/update_withdraw.php$ResetLink'>Click Here</a> 
-			<br/>
-			<p style='font-size:16px'>
-			to proceed your $Transtype. This link will work for ONE hour from the time of receipt.
-			<p>
-			<br/>
-			<br/>
-			Thanks By, NZ Robo Trade Team<br/>
-			<a href='mailto:support@capitolmoneypay.com'>support@capitolmoneypay.com</a>
-			
+		<!DOCTYPE html>
+		<html lang='en'>
+		<head>
+			<meta charset='UTF-8'>
+			<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+			<title>Capitol Money Pay - Transaction Request</title>
+		</head>
+		<body style='margin:0; padding:0; font-family: Arial, sans-serif; background-color: #f4f4f4;'>
+			<div style='max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);'>
+				
+				<!-- Header with Logo -->
+				<div style='background: linear-gradient(135deg, #1E3A8A, #3B82F6); padding: 30px; text-align: center;'>
+					<img src='https://capitolmoneypay.com/assets/images/cmp-logo.svg' alt='Capitol Money Pay' style='height: 60px; width: auto; margin-bottom: 20px;'>
+					<h1 style='color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;'>Transaction Request</h1>
+					<p style='color: #E5E7EB; margin: 10px 0 0 0; font-size: 16px;'>Security Verification Required</p>
+				</div>
+				
+				<!-- Content Body -->
+				<div style='padding: 40px 30px;'>
+					<h2 style='color: #1F2937; font-size: 24px; margin: 0 0 20px 0;'>Hello $name,</h2>
+					
+					<div style='background-color: #FEF3C7; border-left: 4px solid #F59E0B; padding: 20px; margin: 20px 0; border-radius: 5px;'>
+						<p style='margin: 0; color: #92400E; font-size: 16px; font-weight: 500;'>
+							⚠️ <strong>Security Alert:</strong> Someone is requesting to $Transtype funds from your account.
+						</p>
+					</div>
+					
+					<div style='background-color: #F3F4F6; padding: 20px; border-radius: 8px; margin: 20px 0;'>
+						<h3 style='color: #374151; margin: 0 0 15px 0; font-size: 18px;'>Transaction Details:</h3>
+						<table style='width: 100%; border-collapse: collapse;'>
+							<tr>
+								<td style='padding: 8px 0; color: #6B7280; font-weight: 500;'>Platform:</td>
+								<td style='padding: 8px 0; color: #1F2937;'><a href='https://capitolmoneypay.com/' style='color: #3B82F6; text-decoration: none;'>capitolmoneypay.com</a></td>
+							</tr>
+							<tr>
+								<td style='padding: 8px 0; color: #6B7280; font-weight: 500;'>Amount:</td>
+								<td style='padding: 8px 0; color: #059669; font-weight: bold; font-size: 18px;'>$$NumberOfToken</td>
+							</tr>
+							<tr>
+								<td style='padding: 8px 0; color: #6B7280; font-weight: 500;'>Transaction Type:</td>
+								<td style='padding: 8px 0; color: #1F2937; text-transform: capitalize;'>$Transtype</td>
+							</tr>
+						</table>
+					</div>
+					
+					<p style='color: #4B5563; line-height: 1.6; font-size: 16px; margin: 25px 0;'>
+						If you <strong>did not</strong> initiate this request, please ignore this email - no action is needed.
+					</p>
+					
+					<p style='color: #4B5563; line-height: 1.6; font-size: 16px; margin: 25px 0;'>
+						If you <strong>did</strong> initiate this transaction, please click the button below to proceed:
+					</p>
+					
+					<!-- CTA Button -->
+					<div style='text-align: center; margin: 30px 0;'>
+						<a href='https://capitolmoneypay.com/update_withdraw.php$ResetLink' 
+						   style='display: inline-block; 
+								  background: linear-gradient(135deg, #F59E0B, #D97706); 
+								  color: #ffffff; 
+								  padding: 15px 40px; 
+								  text-decoration: none; 
+								  border-radius: 8px; 
+								  font-size: 18px; 
+								  font-weight: bold;
+								  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+								  transition: all 0.3s ease;'>
+							🔐 Verify & Proceed
+						</a>
+					</div>
+					
+					<div style='background-color: #EFF6FF; border: 1px solid #DBEAFE; padding: 15px; border-radius: 6px; margin: 25px 0;'>
+						<p style='margin: 0; color: #1E40AF; font-size: 14px;'>
+							⏰ <strong>Important:</strong> This verification link will expire in <strong>1 hour</strong> from the time of receipt for security reasons.
+						</p>
+					</div>
+				</div>
+				
+				<!-- Footer -->
+				<div style='background-color: #F9FAFB; padding: 30px; text-align: center; border-top: 1px solid #E5E7EB;'>
+					<img src='https://capitolmoneypay.com/assets/images/logos/cmp-logo-small.svg' alt='CMP' style='height: 30px; width: auto; margin-bottom: 15px;'>
+					<p style='color: #6B7280; margin: 0 0 10px 0; font-size: 14px;'>
+						Thanks by <strong style='color: #1F2937;'>Capitol Money Pay Team</strong>
+					</p>
+					<p style='color: #9CA3AF; margin: 0; font-size: 12px;'>
+						Need help? Contact us at 
+						<a href='mailto:support@capitolmoneypay.com' style='color: #3B82F6; text-decoration: none;'>support@capitolmoneypay.com</a>
+					</p>
+					<div style='margin-top: 20px; padding-top: 15px; border-top: 1px solid #E5E7EB;'>
+						<p style='color: #9CA3AF; margin: 0; font-size: 11px;'>
+							© 2024 Capitol Money Pay. All rights reserved.<br>
+							This is an automated security email. Please do not reply to this message.
+						</p>
+					</div>
+				</div>
+			</div>
+		</body>
+		</html>
 		";
-		$subject="Transaction Request (CF-$Tittle)";
+		$subject="🔐 Capitol Money Pay - Transaction Verification Required (CF-$Tittle)";
 		$from = "info@capitolmoneypay.com";
-		$headers = "From:" . $from;
-		$headers  = 'MIME-Version: 1.0' . "\r\n";
-		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-		$headers .= "From: Capitol Money Pay $Tittle  <info@capitolmoneypay.com>" . "\r\n";
+		$headers = "From:" . $from . "\r\n";
+		$headers .= 'MIME-Version: 1.0' . "\r\n";
+		$headers .= 'Content-type: text/html; charset=UTF-8' . "\r\n";
+		$headers .= "From: Capitol Money Pay Security <info@capitolmoneypay.com>" . "\r\n";
+		$headers .= "Reply-To: support@capitolmoneypay.com" . "\r\n";
+		$headers .= "X-Mailer: Capitol Money Pay System" . "\r\n";
 		mail($to,$subject,$message,$headers);
 		
 		array_push($rett, 1);
