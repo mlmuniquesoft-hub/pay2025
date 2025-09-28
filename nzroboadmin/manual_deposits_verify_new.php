@@ -31,14 +31,6 @@ if(isset($_POST['action'])) {
         $update_sql = "UPDATE manual_deposits SET status = '$status', admin_note = '$admin_note', updated_at = NOW() WHERE id = $deposit_id";
         
         if($mysqli->query($update_sql)) {
-            // If approved, add balance to user account
-            if($status == 'approved') {
-                $deposit_info = $mysqli->query("SELECT user, amount FROM manual_deposits WHERE id = $deposit_id")->fetch_assoc();
-                if($deposit_info) {
-                    // Add to user balance - using profile table structure
-                    $mysqli->query("UPDATE profile SET balance = balance + {$deposit_info['amount']} WHERE user = '{$deposit_info['user']}'");
-                }
-            }
             $_SESSION['success'] = "Deposit $status successfully!";
         } else {
             $_SESSION['error'] = 'Error updating deposit: ' . $mysqli->error;

@@ -232,11 +232,12 @@ $_SESSION['token']="uerutgeruioer";
 		$AdminReceive=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS asmAdmin FROM `admin_trans_receive` WHERE `user_receive`='".$user."'"));
 		$DepositBtc=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS asmSatoshi FROM `req_fund` WHERE `user`='".$user."'"));
 		$DolarAmount=$DepositBtc['asmSatoshi'];
-		
+		$DepositMenual=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS asmSatoshi FROM `manual_deposits` WHERE `user`='".$user."'"));
+		$MenualDolarAmount=$DepositMenual['asmSatoshi'];
 		$MemberReceive=mysqli_fetch_assoc($mysqli->query("SELECT SUM(ammount) AS asmMember FROM `trans_receive` WHERE `user_receive`='".$user."' AND `type`='Transfer'"));
 		$iNcome=TtalIncome($user);
 		$shopping=TtalShopping($user);
-		$TotalIn=$iNcome+$DolarAmount+$MemberReceive['asmMember']+$AdminReceive['asmAdmin'];
+		$TotalIn=$iNcome+$DolarAmount+$MemberReceive['asmMember']+$AdminReceive['asmAdmin']+$MenualDolarAmount;
 		
 		$MemberTrans=mysqli_fetch_assoc($mysqli->query("SELECT SUM(ammount) AS asmTrans FROM `trans_receive` WHERE `user_trans`='".$user."' AND `type`='Transfer'"));
 		$MemberWithdraw=mysqli_fetch_assoc($mysqli->query("SELECT SUM(ammount) AS asmWithdraw FROM `trans_receive` WHERE `user_trans`='".$user."' AND `type`='Withdraw' AND `status`!='Cancel'"));
@@ -260,10 +261,12 @@ $_SESSION['token']="uerutgeruioer";
 		$AdminReceive=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS asmAdmin FROM `admin_trans_receive` WHERE `user_receive`='".$user."'"));
 		$DepositBtc=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS asmSatoshi FROM `req_fund` WHERE `user`='".$user."'"));
 		$DolarAmount=$DepositBtc['asmSatoshi'];
+		$DepositMenual=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS asmSatoshi FROM `manual_deposits` WHERE `user`='".$user."'"));
+		$MenualDolarAmount=$DepositMenual['asmSatoshi'];
 		$MemberReceive=mysqli_fetch_assoc($mysqli->query("SELECT SUM(ammount) AS asmMember FROM `trans_receive` WHERE `user_receive`='".$user."' AND `type`='Transfer'"));
 		$iNcome=TtalIncome($user);
 		$shopping=TtalShopping($user);
-		$TotalIn=$iNcome+$DolarAmount+$MemberReceive['asmMember']+$AdminReceive['asmAdmin'];
+		$TotalIn=$iNcome+$DolarAmount+$MemberReceive['asmMember']+$AdminReceive['asmAdmin']+$MenualDolarAmount;
 		
 		$MemberTrans=mysqli_fetch_assoc($mysqli->query("SELECT SUM(ammount) AS asmTrans FROM `trans_receive` WHERE `user_trans`='".$user."' AND `type`='Transfer'"));
 		$MemberWithdraw=mysqli_fetch_assoc($mysqli->query("SELECT SUM(ammount) AS asmWithdraw FROM `trans_receive` WHERE `user_trans`='".$user."' AND `type`='Withdraw' AND `status`!='Cancel'"));
