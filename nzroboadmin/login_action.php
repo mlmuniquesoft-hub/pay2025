@@ -1,10 +1,10 @@
 <?php
     session_start();
 	if((isset($_SESSION['num_login_fail']))||(!isset($_SESSION['token']))){
-		if($_SESSION['num_login_fail'] == 4){
-			if(time() - $_SESSION['last_login_time'] < 10*60 ){    
+		if(isset($_SESSION['num_login_fail']) && $_SESSION['num_login_fail'] == 4){
+			if(isset($_SESSION['last_login_time']) && time() - $_SESSION['last_login_time'] < 10*60 ){    
 				$ErrorMessage="Hacking Suspect Please wait for 10 minutes Then Try again .";
-				header("Location: login.php?ErrorMessage=$ErrorMessage");
+				header("Location: index.php?ErrorMessage=$ErrorMessage");
 				exit();
 
 			}else{
@@ -14,11 +14,11 @@
 		}      
 	}
 		      
-	if($_SESSION['num_login_fail']<4){
+	if(!isset($_SESSION['num_login_fail']) || $_SESSION['num_login_fail'] < 4){
 		include ("../db/db.php"); 
 			
-		$user = $_POST['userid'];
-		$dpass = $_POST['userPassOne'];
+		$user = isset($_POST['userid']) ? $_POST['userid'] : '';
+		$dpass = isset($_POST['userPassOne']) ? $_POST['userPassOne'] : '';
 		
 		$query = "select * from admin where user_id='".$user."' and password='".$dpass."'";	
 		$result=$mysqli->query($query);

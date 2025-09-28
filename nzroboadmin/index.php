@@ -67,7 +67,7 @@
 		<div class="row">
 			<div class="col-sm-3"></div>
 			<div class="col-sm-6" style="background-color: rgba(220, 233, 245, 0.81); padding: 20px; border: 1px solid rgb(204, 204, 204); border-radius: 10px;">
-				<form class="form-horizontal" action="login_action.php" method="post">
+				<form class="form-horizontal" action="./login_action.php" method="post">
 					<div class="form-group">
 						<div class="col-sm-12">
 							<h3 align="center">Admin Panel Login & Control</h3>
