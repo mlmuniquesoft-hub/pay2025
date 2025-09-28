@@ -282,7 +282,9 @@ if(!isset($_SESSION['Admin'])){
                 $total_users = ($user_count_check && $user_count_check['total']) ? (int)$user_count_check['total'] : 0;
                 
                 if($total_users > 200) {
-                    $error = "Warning: Large user base ($total_users users) detected. This may cause timeout. Consider using cron job: 'php db/cron_generation_bonus.php $target_date'";
+                    $error = "Warning: Large user base ($total_users users) detected. This may cause timeout. Choose an option below:<br>
+                             <strong>Option 1:</strong> Use cron job: <code>php db/cron_generation_bonus.php $target_date</code><br>
+                             <strong>Option 2:</strong> <a href='generation_batch_processor.php?date=$target_date' target='_blank' style='color: #007cba; text-decoration: underline;'>Use Web-Based Batch Processor</a> (processes 100 users at a time)";
                 } else {
                     // Execute generation bonuses for smaller user bases
                     require_once '../db/generation.php';

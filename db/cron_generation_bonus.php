@@ -14,9 +14,15 @@ set_time_limit(0); // No time limit for CLI
 ini_set('memory_limit', '1G');
 error_reporting(-1);
 
-// Check if running from command line
-if(php_sapi_name() !== 'cli') {
-    echo "This script should be run from command line only.\n";
+// Output start message immediately
+echo "🎯 Generation Bonus Processing Script Starting...\n";
+echo "PHP SAPI: " . php_sapi_name() . "\n";
+
+// Check if running from command line (allow both cli and cgi-fcgi for flexibility)
+$allowed_sapis = ['cli', 'cgi-fcgi', 'cli-server'];
+if(!in_array(php_sapi_name(), $allowed_sapis)) {
+    echo "❌ This script should be run from command line only.\n";
+    echo "Current SAPI: " . php_sapi_name() . "\n";
     exit(1);
 }
 
@@ -24,6 +30,14 @@ if(php_sapi_name() !== 'cli') {
 require_once 'db.php';
 require_once 'functions.php';
 require_once 'generation.php';
+
+// Test database connection first
+if (!$mysqli) {
+    echo "❌ Database connection failed: " . mysqli_connect_error() . "\n";
+    exit(1);
+}
+
+echo "✅ Database connection successful\n";
 
 // Set timezone
 $timezone = "Asia/Dacca";
