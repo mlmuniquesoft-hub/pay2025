@@ -32,13 +32,13 @@
     <title>Capitol Money Pay</title>
 
     <!-- Font Icon -->
-    <link rel="stylesheet" href="https://coop-crowds.com/signup/fonts/material-icon/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="https://capitolmoneypay.com/signup/fonts/material-icon/css/material-design-iconic-font.min.css">
 	
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <!-- Main css -->
-    <link rel="stylesheet" href="https://coop-crowds.com/signup/css/style.css">
-    <link rel="stylesheet" href="https://coop-crowds.com/signup/css/style2.css">
-    <link rel="stylesheet" href="https://coop-crowds.com/signup/css/jquery.ccpicker.css">
+    <link rel="stylesheet" href="https://capitolmoneypay.com/signup/css/style.css">
+    <link rel="stylesheet" href="https://capitolmoneypay.com/signup/css/style2.css">
+    <link rel="stylesheet" href="https://capitolmoneypay.com/signup/css/jquery.ccpicker.css">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 </head>
 <body style=" background: #fffcfc;padding:0;">
@@ -79,7 +79,13 @@
 														$BTScdf=$uiyeri[16];
 														$NumberOfToken=$Amount*0.92;
 														
-														echo '<h3 class="alert alert-success">Your Transaction Approved</h3>';
+														echo '<div class="alert alert-success" style="text-align: center; margin: 20px 0;">';
+														echo '<h3><i class="fas fa-check-circle"></i> Withdrawal Approved Successfully!</h3>';
+														echo '<p>Your withdrawal request has been verified and approved.</p>';
+														echo '<p><strong>Amount:</strong> $'.$NumberOfToken.'</p>';
+														echo '<p>The transaction is now pending admin payment.</p>';
+														echo '</div>';
+														
 														$user=$hgdfd['user'];
 														$jkdfhd=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `member` WHERE `user`='".$user."'"));
 														$jkdfhd2=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `profile` WHERE `user`='".$jkdfhd['log_user']."' OR `user`='".$user."'"));
@@ -202,17 +208,33 @@
 														// Log error but don't stop processing
 													}
 												}																										
-												// Safely get withdraw fund processing result
+												// Process withdrawal fund with better error handling
 												try {
-													$erter=file_get_contents("https://capitolmoneypay.com/member/viewdata/withdraw_fund2.php?serial=$serial");
+													$withdrawResult = file_get_contents("https://capitolmoneypay.com/member/viewdata/withdraw_fund2.php?serial=$serial");
+													$resultData = json_decode($withdrawResult, true);
+													
+													if($resultData && isset($resultData[0]) && $resultData[0] == 1) {
+														echo '<div class="alert alert-info" style="margin-top: 15px;">';
+														echo '<p><i class="fas fa-info-circle"></i> Transaction record created successfully in database.</p>';
+														echo '</div>';
+													} else {
+														echo '<div class="alert alert-warning" style="margin-top: 15px;">';
+														echo '<p><i class="fas fa-exclamation-triangle"></i> Withdrawal approved but there may have been a database issue.</p>';
+														echo '</div>';
+													}
 												} catch (Exception $e) {
-													// Handle error gracefully
+													echo '<div class="alert alert-warning" style="margin-top: 15px;">';
+													echo '<p><i class="fas fa-exclamation-triangle"></i> Withdrawal approved but could not verify database update.</p>';
+													echo '</div>';
+												}
+												} else { 
+													echo '<div class="alert alert-info" style="text-align: center; margin: 20px 0;">';
+													echo '<h3><i class="fas fa-check-circle"></i> Request Approved Successfully!</h3>';
+													echo '<p>Your request has been verified and approved.</p>';
+													echo '</div>';
 												}
 											}
-										}
-										?>
-										
-										<?php 
+										?>										<?php 
 											} else { 
 										?>
 										<h3 class="alert alert-danger">There Is No More Transaction Initiated By You</h3>
@@ -240,9 +262,9 @@
 	</section>
     </div>
     <!-- JS -->
-    <script src="https://coop-crowds.com/signup/js/jquery.min.js"></script>
-    <script src="https://coop-crowds.com/signup/js/main.js"></script>
-	 <script src="https://coop-crowds.com/signup/js/jquery.validate.min.js"></script>
-	 <script src="https://coop-crowds.com/signup/js/signup.js"></script>
+    <script src="https://capitolmoneypay.com/signup/js/jquery.min.js"></script>
+    <script src="https://capitolmoneypay.com/signup/js/main.js"></script>
+	 <script src="https://capitolmoneypay.com/signup/js/jquery.validate.min.js"></script>
+	 <script src="https://capitolmoneypay.com/signup/js/signup.js"></script>
 	</body>
 </html>
