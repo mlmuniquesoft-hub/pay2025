@@ -325,74 +325,191 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 	<script src="/assets2/js/main.js"></script>
 	
-	<!-- Dropdown Functionality Script -->
-	<script>
-	console.log("=== DROPDOWN DEBUG START ===");
+	<!-- Bulletproof Dropdown System -->
+	<style>
+	/* Force override all existing styles */
+	#main-menu-wrapper ul.wraplist li .sub-menu {
+		display: none !important;
+		visibility: hidden !important;
+		opacity: 0 !important;
+		position: static !important;
+		background: #1a1a1a !important;
+		border-left: 3px solid #007bff !important;
+		margin: 0 !important;
+		padding: 0 !important;
+		list-style: none !important;
+		box-shadow: inset 2px 0 10px rgba(0,0,0,0.3) !important;
+		border-radius: 0 !important;
+		width: 100% !important;
+		max-height: 0 !important;
+		overflow: hidden !important;
+		transition: all 0.3s ease !important;
+		z-index: 999 !important;
+	}
 	
-	$(document).ready(function() {
-		console.log("jQuery DOM Ready");
-		console.log("jQuery version:", $.fn.jquery);
+	#main-menu-wrapper ul.wraplist li.dropdown-active .sub-menu {
+		display: block !important;
+		visibility: visible !important;
+		opacity: 1 !important;
+		max-height: 500px !important;
+	}
+	
+	#main-menu-wrapper ul.wraplist li .sub-menu li {
+		border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+		padding: 0 !important;
+		margin: 0 !important;
+		list-style: none !important;
+		background: none !important;
+		width: 100% !important;
+	}
+	
+	#main-menu-wrapper ul.wraplist li .sub-menu li:last-child {
+		border-bottom: none !important;
+	}
+	
+	#main-menu-wrapper ul.wraplist li .sub-menu li a {
+		display: block !important;
+		padding: 10px 15px 10px 35px !important;
+		color: #cccccc !important;
+		text-decoration: none !important;
+		font-size: 13px !important;
+		border: none !important;
+		background: none !important;
+		transition: all 0.2s ease !important;
+		width: auto !important;
+		height: auto !important;
+		line-height: 1.4 !important;
+		font-weight: normal !important;
+		white-space: nowrap !important;
+	}
+	
+	#main-menu-wrapper ul.wraplist li .sub-menu li a:hover,
+	#main-menu-wrapper ul.wraplist li .sub-menu li a:focus {
+		background: #007bff !important;
+		color: #ffffff !important;
+		padding-left: 40px !important;
+		text-decoration: none !important;
+		transform: none !important;
+	}
+	
+	#main-menu-wrapper ul.wraplist li .arrow {
+		float: right !important;
+		margin-top: 5px !important;
+		transition: transform 0.3s ease !important;
+		font-size: 10px !important;
+		color: #999 !important;
+		width: auto !important;
+		height: auto !important;
+	}
+	
+	#main-menu-wrapper ul.wraplist li .arrow:after {
+		content: '▼' !important;
+		font-family: Arial, sans-serif !important;
+		font-size: 10px !important;
+		color: #999 !important;
+	}
+	
+	#main-menu-wrapper ul.wraplist li.dropdown-active .arrow {
+		transform: rotate(180deg) !important;
+	}
+	
+	#main-menu-wrapper ul.wraplist li.dropdown-active .arrow:after {
+		color: #007bff !important;
+	}
+	
+	/* Debug indicator */
+	.dropdown-debug {
+		position: fixed;
+		top: 10px;
+		right: 10px;
+		background: red;
+		color: white;
+		padding: 5px;
+		z-index: 9999;
+		font-size: 12px;
+	}
+	</style>
+	
+	<script>
+	// Bulletproof dropdown system - runs immediately
+	(function() {
+		console.log("🔧 Loading bulletproof dropdown system...");
 		
-		// Check elements
-		var menuWrapper = $('#main-menu-wrapper');
-		var menuLinks = $('#main-menu-wrapper li a');
-		var subMenus = $('.sub-menu');
+		// Add debug indicator
+		$('body').append('<div class="dropdown-debug">Dropdown System Loading...</div>');
 		
-		console.log("Menu wrapper found:", menuWrapper.length);
-		console.log("Menu links found:", menuLinks.length);  
-		console.log("Sub-menus found:", subMenus.length);
-		
-		// Check if CRYPTOKIT_SETTINGS exists
-		if(typeof CRYPTOKIT_SETTINGS !== 'undefined') {
-			console.log("CRYPTOKIT_SETTINGS exists - original script should work");
-		} else {
-			console.log("CRYPTOKIT_SETTINGS missing - using manual implementation");
-		}
-		
-		// Manual dropdown implementation
-		console.log("Setting up dropdown handlers...");
-		
-		$('#main-menu-wrapper li a').off('click').on('click', function(e) {
-			console.log("Menu clicked:", $(this).find('.title').text());
+		function initDropdowns() {
+			console.log("🎯 Initializing dropdowns...");
 			
-			var hasSubMenu = $(this).next().hasClass('sub-menu');
-			console.log("Has sub-menu:", hasSubMenu);
+			// Clear ALL existing event handlers
+			$('#main-menu-wrapper').off();
+			$('#main-menu-wrapper a').off();
+			$('#main-menu-wrapper li').off();
 			
-			if (!hasSubMenu) {
-				console.log("No sub-menu - allowing navigation");
-				return true;
-			}
-			
-			e.preventDefault();
-			console.log("Preventing default and toggling menu");
-			
-			var $parent = $(this).parent();
-			var $sub = $(this).next('.sub-menu');
-			var $arrow = $(this).find('.arrow');
-			
-			// Close other open menus
-			$('#main-menu-wrapper li.open').not($parent).each(function() {
-				$(this).removeClass('open');
-				$(this).find('.sub-menu').slideUp(200);
-				$(this).find('.arrow').removeClass('open');
+			// Find all menu items with dropdowns
+			var dropdownItems = $('#main-menu-wrapper ul.wraplist li').filter(function() {
+				return $(this).find('.sub-menu').length > 0;
 			});
 			
-			// Toggle current menu
-			if ($parent.hasClass('open')) {
-				console.log("Closing menu");
-				$parent.removeClass('open');
-				$arrow.removeClass('open');
-				$sub.slideUp(200);
-			} else {
-				console.log("Opening menu");
-				$parent.addClass('open');
-				$arrow.addClass('open');
-				$sub.slideDown(200);
-			}
-		});
+			console.log("📋 Found dropdown items:", dropdownItems.length);
+			$('.dropdown-debug').text('Found ' + dropdownItems.length + ' dropdowns');
+			
+			// Add click handlers to main links
+			dropdownItems.each(function(index) {
+				var $item = $(this);
+				var $link = $item.children('a').first();
+				var $submenu = $item.find('.sub-menu').first();
+				var title = $link.find('.title').text() || 'Item ' + index;
+				
+				console.log("🔗 Setting up dropdown:", title);
+				
+				$link.on('click.bulletproof', function(event) {
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+					
+					console.log("🖱️ Clicked dropdown:", title);
+					$('.dropdown-debug').text('Clicked: ' + title);
+					
+					// Close all other dropdowns
+					$('#main-menu-wrapper ul.wraplist li.dropdown-active').not($item).removeClass('dropdown-active');
+					
+					// Toggle current dropdown
+					if ($item.hasClass('dropdown-active')) {
+						$item.removeClass('dropdown-active');
+						console.log("📤 Closing:", title);
+					} else {
+						$item.addClass('dropdown-active');
+						console.log("📥 Opening:", title);
+					}
+					
+					return false;
+				});
+			});
+			
+			// Prevent submenu clicks from bubbling
+			$('#main-menu-wrapper .sub-menu a').on('click.bulletproof', function(event) {
+				event.stopPropagation();
+				console.log("🎯 Submenu click:", $(this).text());
+			});
+			
+			console.log("✅ Dropdown system ready!");
+			setTimeout(function() {
+				$('.dropdown-debug').text('System Ready ✓');
+			}, 1000);
+		}
 		
-		console.log("=== DROPDOWN SETUP COMPLETE ===");
-	});
+		// Initialize when DOM is ready
+		if (document.readyState === 'loading') {
+			$(document).ready(initDropdowns);
+		} else {
+			initDropdowns();
+		}
+		
+		// Also try after a delay to override any late-loading scripts
+		setTimeout(initDropdowns, 2000);
+		
+	})();
 	</script>
 	
     
