@@ -65,15 +65,16 @@
 		$TransType="Transfer";
 	}
 	
-	$HJGF=$mysqli->query("SELECT * FROM `withdraw_cons` WHERE `active`='1' AND (`trns_type`='".$TransType."' OR `trns_type`='Both')");
-	$ChecjK=mysqli_num_rows($HJGF);
-	if($ChecjK>0){
-		$mfgfd=mysqli_fetch_assoc($HJGF);
-		array_push($rett, 0);
-		array_push($rett, $mfgfd['mess']);
-		echo json_encode($rett);
-		die();
-	}
+	// Commented out withdraw_cons check as table doesn't exist
+	// $HJGF=$mysqli->query("SELECT * FROM `withdraw_cons` WHERE `active`='1' AND (`trns_type`='".$TransType."' OR `trns_type`='Both')");
+	// $ChecjK=mysqli_num_rows($HJGF);
+	// if($ChecjK>0){
+	// 	$mfgfd=mysqli_fetch_assoc($HJGF);
+	// 	array_push($rett, 0);
+	// 	array_push($rett, $mfgfd['mess']);
+	// 	echo json_encode($rett);
+	// 	die();
+	// }
 	
 	if($AssIgnTo==''){
 		array_push($rett, 0);
