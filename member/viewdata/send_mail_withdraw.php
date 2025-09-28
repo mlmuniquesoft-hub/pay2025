@@ -9,13 +9,13 @@
 		$userID=$_SESSION['roboMember'];
 	}
 	$userID=strtolower($userID);
-	$jhdfg=mysqli_num_rows($mysqli->query("SELECT * FROM `member` WHERE `user`='".$userID."' AND `pack`>'0'"));
-	if($jhdfg<1){
-		array_push($rett,0);
-		array_push($rett,"Please, Purchase One Bot & Try Again.");
-		echo json_encode($rett);
-		die();
-	}
+	// $jhdfg=mysqli_num_rows($mysqli->query("SELECT * FROM `member` WHERE `user`='".$userID."' AND `pack`>'0'"));
+	// if($jhdfg<1){
+	// 	array_push($rett,0);
+	// 	array_push($rett,"Please, Purchase One Bot & Try Again.");
+	// 	echo json_encode($rett);
+	// 	die();
+	// }
 	
 	$urtye="power";
 	$iiuu=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `member_total` WHERE `user`='".$urtye."'"));
