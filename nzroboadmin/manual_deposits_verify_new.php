@@ -33,10 +33,10 @@ if(isset($_POST['action'])) {
         if($mysqli->query($update_sql)) {
             // If approved, add balance to user account
             if($status == 'approved') {
-                $deposit_info = $mysqli->query("SELECT user_id, usd_amount FROM manual_deposits WHERE id = $deposit_id")->fetch_assoc();
+                $deposit_info = $mysqli->query("SELECT user, amount FROM manual_deposits WHERE id = $deposit_id")->fetch_assoc();
                 if($deposit_info) {
-                    // Add to user balance (you may need to adjust this based on your balance table structure)
-                    $mysqli->query("UPDATE balance SET bcpp_taka = bcpp_taka + {$deposit_info['usd_amount']} WHERE user_id = '{$deposit_info['user_id']}'");
+                    // Add to user balance - using profile table structure
+                    $mysqli->query("UPDATE profile SET balance = balance + {$deposit_info['amount']} WHERE user = '{$deposit_info['user']}'");
                 }
             }
             $_SESSION['success'] = "Deposit $status successfully!";
