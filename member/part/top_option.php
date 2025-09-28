@@ -145,7 +145,7 @@
 									<li class="unread status-available">
                                         <a href="javascript:;">
                                             <div class="user-img">
-                                                <img src="/images/logo111111.png" alt="user-image" class="img-circle img-inline">
+                                                <img src="/assets/images/cmp-logo.svg" alt="Capitol Money Pay" class="img-circle img-inline" style="height: 40px; width: auto;">
                                             </div>
                                             <div>
                                                 <span class="name" >

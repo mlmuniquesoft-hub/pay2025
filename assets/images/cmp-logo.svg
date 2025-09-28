@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFA500;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E3A8A;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,0.3)"/>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="30" cy="30" r="25" fill="url(#blueGradient)" filter="url(#shadow)"/>
+  
+  <!-- CMP Letters in circle -->
+  <text x="30" y="38" font-family="Arial, sans-serif" font-size="18" font-weight="bold" 
+        text-anchor="middle" fill="white">CMP</text>
+  
+  <!-- Capitol Money Pay text -->
+  <text x="70" y="25" font-family="Arial, sans-serif" font-size="16" font-weight="bold" 
+        fill="url(#blueGradient)">Capitol</text>
+  <text x="70" y="42" font-family="Arial, sans-serif" font-size="12" font-weight="normal" 
+        fill="url(#goldGradient)">Money Pay</text>
+  
+  <!-- Decorative elements -->
+  <circle cx="160" cy="15" r="2" fill="url(#goldGradient)"/>
+  <circle cx="170" cy="20" r="1.5" fill="url(#goldGradient)" opacity="0.7"/>
+  <circle cx="175" cy="12" r="1" fill="url(#goldGradient)" opacity="0.5"/>
+  
+  <!-- Currency symbol -->
+  <text x="180" y="45" font-family="Arial, sans-serif" font-size="14" font-weight="bold" 
+        fill="url(#goldGradient)">$</text>
+</svg>

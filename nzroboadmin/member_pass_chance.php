@@ -123,7 +123,7 @@
     
         <div id="site_title">
             <h1><a href="#" target="_parent">
-                <img src="../images/header-logo.png" alt="Global Friends Club" />
+                <img src="../assets/images/cmp-logo.svg" alt="Capitol Money Pay" style="height: 40px;" />
            </a></h1>
         </div> <!-- end of site_title -->
         
