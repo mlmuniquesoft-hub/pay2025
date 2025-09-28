@@ -293,7 +293,7 @@
 			$mail->Body = $message;
 			
 			$mail->send();
-			$emailStatus = "sent successfully via PHPMailer";
+			$emailStatus = "sent successfully.";
 		} catch (Exception $e) {
 			$emailStatus = "failed: " . $mail->ErrorInfo;
 		}

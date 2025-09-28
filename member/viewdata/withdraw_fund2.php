@@ -4,28 +4,43 @@
 	require_once("../../db/db.php");
 	require_once("../../db/functions.php");
 	$conn=$mysqli;
+	
+	if(!isset($_GET['serial'])){
+		echo json_encode([0, "Invalid request"]);
+		die();
+	}
+	
 	$serial=$_GET['serial'];
 	$dfgjkdf=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `widraw_req` WHERE `serial`='".$serial."'"));
+	
+	if(!$dfgjkdf){
+		echo json_encode([0, "Withdrawal request not found"]);
+		die();
+	}
+	
 	$userID=$dfgjkdf['user'];
 
+	// Decode the withdrawal queue to get transaction details
 	$ueyuer=base64_decode($dfgjkdf['withdraw_que']);
 	$uiyeri=explode(",",$ueyuer);
 	
-	$hsgf=count($uiyeri[11]);
+	$hsgf=strlen($uiyeri[11]);
 	$Amount=substr($uiyeri[11],1,$hsgf-2);
 	$NumberOfToken=$Amount;
-	$BalanceSts=remainAmn22($userID);
+	
+	// Since balance was already checked when withdrawal was requested,
+	// and the withdrawal is marked as Pending (already deducted),
+	// we just need to complete the transaction
 	
 	$rett=array();
 	
-	
-	if($NumberOfToken>$BalanceSts['final']){
+	// Double check balance to prevent overdraft
+	$currentBalance=remainAmn($userID);
+	if($currentBalance < 0){
 		array_push($rett,0);
-		array_push($rett,"Insufficient Balance");
+		array_push($rett,"Insufficient Balance - Transaction cannot be completed");
 		echo json_encode($rett);
 		die();
-		
-		
 	}
 	
 	
@@ -33,12 +48,9 @@
 	$tax=0;
 	$comm=0;
 	if($countU==0){
-		//$UserInf=mysqli_fetch_assoc($djfgh);
-		//$AssIgnTo=$UserInf['user'];
-		
 		$date=date("Y-m-d");
+		
 		if($dfgjkdf['type']=='Withdraw'){
-			
 			$method=$uiyeri[16];
 			$hfgsd=strlen($method);
 			$method=substr($method,1,$hfgsd-2);
@@ -54,10 +66,25 @@
 			$messager="Transfer Successful";
 		}
 		
-		$mysqli->query($ueyuer);
-				 
+		// Execute the base64 encoded withdrawal query but modify it to set status as 'Complete'
+		$decodedQuery = base64_decode($dfgjkdf['withdraw_que']);
+		
+		// Replace 'Pending' with 'Complete' in the query before executing
+		$finalQuery = str_replace("'Pending'", "'Complete'", $decodedQuery);
+		
+		$insertResult = $mysqli->query($finalQuery);
+		
+		if(!$insertResult){
+			array_push($rett,0);
+			array_push($rett,"Database error: Could not create transaction record - " . $mysqli->error);
+			echo json_encode($rett);
+			die();
+		}
+		
+		// Add transaction to view table for user's transaction history
 		$mysqli->query("INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) VALUES ('".$userID."', '".$date."', '".$description."', '".$NumberOfToken."','Debit')");
 		
+		// Remove the withdrawal request from pending queue
 		$mysqli->query("DELETE FROM `widraw_req` WHERE `serial`='".$serial."'");
 		
 		array_push($rett,1);
