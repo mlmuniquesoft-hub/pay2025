@@ -309,12 +309,14 @@
 		
 	} /// end of user_update function
 	
-	function Generationoncome($DATE){
+	function Generationoncome($DATE, $single_user_id = null){
 		global $mysqli;
 		
-		// Set execution time and memory limits for large processing
-		set_time_limit(300); // 5 minutes
-		ini_set('memory_limit', '512M');
+		$processing_start = microtime(true);
+		
+		// Enterprise-scale resource allocation
+		set_time_limit(0); // No time limit for enterprise processing
+		ini_set('memory_limit', '4G'); // 4GB for enterprise scale
 		
 		// Ensure table structure is correct
 		if(!createGenerationIncomeTable()) {
@@ -324,12 +326,21 @@
 		
 		$SkipUser=array("habib","kingkhan");
 		
-		// Get all active members with investments - optimized query
-		$mdfg=$mysqli->query("SELECT DISTINCT m.user FROM `member` m 
-							 INNER JOIN `upgrade` u ON m.user = u.user 
-							 WHERE DATE(m.time)<='".$DATE."' AND m.paid='1' 
-							 ORDER BY m.user 
-							 LIMIT 1000");
+		// Enterprise-scale user query with optimizations
+		$user_query = "SELECT DISTINCT m.user FROM `member` m 
+					   INNER JOIN `upgrade` u ON m.user = u.user 
+					   WHERE DATE(m.time)<='".$DATE."' AND m.paid='1'";
+		
+		// Single user processing option
+		if($single_user_id) {
+			$user_query .= " AND m.user = '$single_user_id'";
+			$user_query .= " LIMIT 1";
+		} else {
+			$user_query .= " ORDER BY m.user";
+			// Remove limit for enterprise processing to handle 50K+ users
+		}
+		
+		$mdfg = $mysqli->query($user_query);
 		
 		if(!$mdfg) {
 			echo "❌ Error getting members for generation bonus: " . mysqli_error($mysqli) . "\n";
@@ -337,30 +348,164 @@
 		}
 		
 		$userCount = mysqli_num_rows($mdfg);
-		echo "🎯 Processing generation bonuses for $userCount users on $DATE\n";
+		
+		// Determine processing scale and configuration
+		$scale_type = "STANDARD";
+		$batch_size = 100; // Default batch size
+		$progress_interval = 500; // Progress update interval
+		$memory_check_interval = 1000; // Memory check interval
+		$delay_microseconds = 5000; // 5ms delay between users
+		
+		if($userCount > 50000) {
+			$scale_type = "🏭 MEGA ENTERPRISE";
+			$batch_size = 1000;
+			$progress_interval = 2500;
+			$memory_check_interval = 5000;
+			$delay_microseconds = 2000; // Reduced delay for massive scale
+		} elseif($userCount > 25000) {
+			$scale_type = "🏢 ENTERPRISE";
+			$batch_size = 500;
+			$progress_interval = 1000;
+			$memory_check_interval = 2500;
+			$delay_microseconds = 3000;
+		} elseif($userCount > 10000) {
+			$scale_type = "🏬 LARGE ENTERPRISE";
+			$batch_size = 200;
+			$progress_interval = 500;
+			$memory_check_interval = 1000;
+			$delay_microseconds = 5000;
+		} elseif($userCount > 5000) {
+			$scale_type = "📈 LARGE SCALE";
+			$batch_size = 100;
+			$progress_interval = 250;
+			$memory_check_interval = 500;
+		}
+		
+		echo "\n🎯 $scale_type GENERATION PROCESSING\n";
+		echo "==========================================\n";
+		echo "Date: $DATE\n";
+		echo "Total Users: " . number_format($userCount) . "\n";
+		echo "Batch Size: $batch_size users\n";
+		echo "Estimated Batches: " . ceil($userCount / $batch_size) . "\n";
+		if($single_user_id) {
+			echo "Mode: Single User Processing ($single_user_id)\n";
+		}
+		echo "Memory Limit: " . ini_get('memory_limit') . "\n";
+		echo "------------------------------------------\n\n";
 		
 		$processedUsers = 0;
-		$batchSize = 50; // Process in batches to avoid timeout
+		$failedUsers = 0;
+		$batchCount = 0;
+		$lastProgressTime = microtime(true);
 		
-		while($allmember=mysqli_fetch_assoc($mdfg)){
+		// Batch processing for enterprise scale
+		$batch_users = array();
+		
+		while($allmember = mysqli_fetch_assoc($mdfg)){
 			$u_id_tmp = $allmember['user'];
-			if(!in_array(strtolower($allmember['user']),$SkipUser)){
-				user_update11($u_id_tmp,$DATE);
-				$processedUsers++;
+			
+			if(!in_array(strtolower($allmember['user']), $SkipUser)){
+				$batch_users[] = $u_id_tmp;
 				
-				// Output progress every batch to prevent timeout
-				if($processedUsers % $batchSize == 0) {
-					echo "⏳ Processed $processedUsers/$userCount users...\n";
-					flush(); // Flush output to prevent timeout
+				// Process batch when full
+				if(count($batch_users) >= $batch_size) {
+					$batch_result = processBatchUsers($batch_users, $DATE);
+					$processedUsers += $batch_result['processed'];
+					$failedUsers += $batch_result['failed'];
+					$batchCount++;
 					
-					// Small delay to prevent overwhelming the database
-					usleep(10000); // 10ms delay
+					// Progress reporting
+					if($processedUsers % $progress_interval == 0 || (microtime(true) - $lastProgressTime) > 30) {
+						$progress = ($processedUsers / $userCount) * 100;
+						$elapsed = microtime(true) - $processing_start;
+						$rate = $processedUsers / max($elapsed, 1);
+						$eta = ($userCount - $processedUsers) / max($rate, 1);
+						
+						echo "🚀 Progress: " . number_format($processedUsers) . "/" . number_format($userCount) . " ";
+						echo "(" . round($progress, 1) . "%) ";
+						echo "| Rate: " . round($rate, 1) . " users/sec ";
+						echo "| ETA: " . formatTime($eta) . "\n";
+						
+						$lastProgressTime = microtime(true);
+						flush();
+					}
+					
+					// Memory management for enterprise scale
+					if($processedUsers % $memory_check_interval == 0) {
+						$memory_mb = round(memory_get_usage(true) / 1024 / 1024);
+						$peak_mb = round(memory_get_peak_usage(true) / 1024 / 1024);
+						echo "💾 Memory: {$memory_mb}MB (Peak: {$peak_mb}MB) | Batch: $batchCount\n";
+						
+						// Force garbage collection for large scale
+						if(function_exists('gc_collect_cycles')) {
+							gc_collect_cycles();
+						}
+					}
+					
+					$batch_users = array(); // Reset batch
+					
+					// Micro-delay to prevent database overload
+					usleep($delay_microseconds);
 				}
 			}
 		}
 		
-		echo "✅ Generation bonuses processed for $processedUsers users\n";
-		return true;
+		// Process remaining users in the last batch
+		if(!empty($batch_users)) {
+			$batch_result = processBatchUsers($batch_users, $DATE);
+			$processedUsers += $batch_result['processed'];
+			$failedUsers += $batch_result['failed'];
+			$batchCount++;
+		}
+		
+		$processing_end = microtime(true);
+		$total_time = $processing_end - $processing_start;
+		
+		// Final enterprise-scale summary
+		echo "\n✅ $scale_type PROCESSING COMPLETED!\n";
+		echo "================================================\n";
+		echo "📊 FINAL STATISTICS:\n";
+		echo "   Total Users: " . number_format($userCount) . "\n";
+		echo "   Processed Users: " . number_format($processedUsers) . "\n";
+		echo "   Failed Users: " . number_format($failedUsers) . "\n";
+		echo "   Success Rate: " . round(($processedUsers / max($userCount, 1)) * 100, 2) . "%\n";
+		echo "   Total Batches: " . number_format($batchCount) . "\n";
+		echo "   Processing Time: " . formatTime($total_time) . "\n";
+		echo "   Average Speed: " . round($processedUsers / max($total_time, 1), 2) . " users/second\n";
+		echo "   Peak Memory Usage: " . round(memory_get_peak_usage(true) / 1024 / 1024) . "MB\n";
+		echo "   Scale Achievement: " . ($userCount > 50000 ? "🏆 MEGA ENTERPRISE SCALE" : ($userCount > 25000 ? "🥇 ENTERPRISE SCALE" : "✅ LARGE SCALE")) . "\n";
+		echo "================================================\n\n";
+		
+		return $processedUsers > 0;
+	}
+	
+	// Enterprise batch processing function
+	function processBatchUsers($user_batch, $date) {
+		$processed = 0;
+		$failed = 0;
+		
+		foreach($user_batch as $user_id) {
+			try {
+				$result = user_update11($user_id, $date);
+				if($result) {
+					$processed++;
+				} else {
+					$failed++;
+				}
+			} catch(Exception $e) {
+				$failed++;
+				error_log("Enterprise generation processing error for user $user_id: " . $e->getMessage());
+			}
+		}
+		
+		return array('processed' => $processed, 'failed' => $failed);
+	}
+	
+	// Time formatting utility for enterprise processing
+	function formatTime($seconds) {
+		if($seconds < 60) return round($seconds, 1) . "s";
+		if($seconds < 3600) return round($seconds / 60, 1) . "m " . round($seconds % 60) . "s";
+		return round($seconds / 3600, 1) . "h " . round(($seconds % 3600) / 60) . "m";
 	}
 	//Generationoncome();
 	

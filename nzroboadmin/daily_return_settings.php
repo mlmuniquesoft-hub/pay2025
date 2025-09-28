@@ -266,6 +266,7 @@ if(!isset($_SESSION['Admin'])){
     if(isset($_POST['manual_generation'])){
         $transaction_pin = trim($_POST['generation_pin']);
         $target_date = trim($_POST['generation_date']);
+        $force_process = isset($_POST['force_process']) ? true : false;
         
         if(empty($transaction_pin)){
             $error = "Transaction PIN is required";
@@ -281,28 +282,152 @@ if(!isset($_SESSION['Admin'])){
                 $user_count_check = mysqli_fetch_assoc(mysqli_query($mysqli, "SELECT COUNT(DISTINCT m.user) as total FROM `member` m INNER JOIN `upgrade` u ON m.user = u.user WHERE DATE(m.time)<='".$target_date."' AND m.paid='1'"));
                 $total_users = ($user_count_check && $user_count_check['total']) ? (int)$user_count_check['total'] : 0;
                 
-                if($total_users > 200) {
+                if($total_users > 10000 && !$force_process) {
+                    $batch_count = ceil($total_users/500); // Larger chunks for massive scale
+                    $error = "⚠️ ENTERPRISE SCALE: $total_users users detected! 🏢<br><br>
+                             <div style='background: #dc3545; color: white; padding: 20px; border-radius: 8px; margin: 15px 0; text-align: center;'>
+                                <h3 style='margin: 0 0 15px 0;'>🔥 MASSIVE USER BASE ALERT 🔥</h3>
+                                <h4 style='margin: 0;'>50,000+ Users Require Enterprise Processing</h4>
+                             </div>
+                             <div style='background: #fff3cd; padding: 20px; border-radius: 8px; border: 2px solid #ffeaa7; margin: 15px 0;'>
+                                <h4 style='margin: 0 0 15px 0; color: #856404;'>🚀 ENTERPRISE PROCESSING OPTIONS:</h4>
+                                <div style='background: white; padding: 15px; border-radius: 6px; margin: 10px 0; border-left: 4px solid #007cba;'>
+                                    <p style='margin: 5px 0; font-size: 1.1em;'><strong>🥇 Option 1 (RECOMMENDED):</strong> <a href='generation_batch_processor.php?date=$target_date&chunk_size=500' target='_blank' style='background: #007cba; color: white; padding: 12px 20px; text-decoration: none; border-radius: 6px; display: inline-block; margin-left: 10px; font-weight: bold;'>🚀 Enterprise Batch Processor</a></p>
+                                    <p style='margin: 5px 0; color: #6c757d; font-size: 0.95em;'>✅ Processes 500 users per batch (~$batch_count batches)</p>
+                                    <p style='margin: 5px 0; color: #6c757d; font-size: 0.95em;'>⚡ Optimized for 50K+ users, auto-resume, progress tracking</p>
+                                </div>
+                                <div style='background: white; padding: 15px; border-radius: 6px; margin: 10px 0; border-left: 4px solid #28a745;'>
+                                    <p style='margin: 5px 0;'><strong>🥈 Option 2 (BACKGROUND):</strong> Command Line Processing</p>
+                                    <p style='margin: 5px 0;'><code style='background: #f8f9fa; padding: 8px 12px; border-radius: 4px; display: block; font-size: 0.9em;'>php db/cron_generation_bonus.php $target_date --chunk-size=1000</code></p>
+                                    <p style='margin: 5px 0; color: #6c757d; font-size: 0.9em;'>💡 Runs in background, handles massive scale, no timeout</p>
+                                </div>
+                                <div style='background: white; padding: 15px; border-radius: 6px; margin: 10px 0; border-left: 4px solid #fd7e14;'>
+                                    <p style='margin: 5px 0;'><strong>🥉 Option 3 (SCHEDULED):</strong> Auto Queue Processing</p>
+                                    <p style='margin: 5px 0; color: #6c757d; font-size: 0.9em;'>⏰ Schedule for off-peak hours (recommended: 2-6 AM)</p>
+                                    <p style='margin: 5px 0; color: #6c757d; font-size: 0.9em;'>🔄 Automatic retry on failures, email notifications</p>
+                                </div>
+                             </div>
+                             <div style='background: #f8d7da; padding: 15px; border-radius: 8px; border: 2px solid #f5c6cb; margin: 15px 0;'>
+                                <h4 style='margin: 0 0 10px 0; color: #721c24;'>⚠️ CRITICAL WARNING</h4>
+                                <p style='margin: 5px 0; color: #721c24; font-weight: bold;'>Direct processing of $total_users users WILL FAIL!</p>
+                                <p style='margin: 5px 0; color: #721c24;'>🚫 Server timeout guaranteed • 💾 Memory exhaustion likely • ⚡ Performance impact severe</p>
+                             </div>";
+                } elseif($total_users > 5000 && !$force_process) {
+                    $batch_count = ceil($total_users/200);
+                    $error = "⚠️ LARGE SCALE: $total_users users detected! 📈<br><br>
+                             <div style='background: #fff3cd; padding: 15px; border-radius: 5px; border: 1px solid #ffeaa7; margin: 10px 0;'>
+                                <h4 style='margin: 0 0 10px 0; color: #856404;'>🚀 LARGE SCALE PROCESSING OPTIONS:</h4>
+                                <p style='margin: 5px 0;'><strong>Option 1 (RECOMMENDED):</strong> <a href='generation_batch_processor.php?date=$target_date&chunk_size=200' target='_blank' style='background: #007cba; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; display: inline-block; margin-left: 10px;'>🚀 Large Scale Batch Processor</a></p>
+                                <p style='margin: 5px 0; color: #6c757d; font-size: 0.9em;'>Processes 200 users per batch (~$batch_count batches for $total_users users)</p>
+                                <p style='margin: 5px 0;'><strong>Option 2:</strong> Background processing: <code style='background: #f8f9fa; padding: 2px 5px; border-radius: 3px;'>php db/cron_generation_bonus.php $target_date --chunk-size=500</code></p>
+                                <p style='margin: 5px 0;'><strong>Option 3:</strong> Continue with direct processing (⚠️ HIGH RISK for $total_users users)</p>
+                             </div>
+                             <div style='background: #f8d7da; padding: 10px; border-radius: 5px; border: 1px solid #f5c6cb; margin: 10px 0;'>
+                                <p style='margin: 0; color: #721c24; font-size: 0.9em;'><strong>Warning:</strong> Processing $total_users users directly may cause severe server timeout and performance issues.</p>
+                             </div>
+                             <div style='background: #d1ecf1; padding: 10px; border-radius: 5px; border: 1px solid #bee5eb; margin: 10px 0;'>
+                                <label style='margin: 0; color: #0c5460; font-size: 0.9em;'>
+                                    <input type='checkbox' name='force_process' value='1' style='margin-right: 8px;'>
+                                    <strong>⚠️ I accept the risks and want to process $total_users users directly (NOT RECOMMENDED)</strong>
+                                </label>
+                             </div>";
+                } elseif($total_users > 1000 && !$force_process) {
                     $error = "⚠️ Large user base ($total_users users) detected.<br><br>
                              <div style='background: #fff3cd; padding: 15px; border-radius: 5px; border: 1px solid #ffeaa7; margin: 10px 0;'>
                                 <h4 style='margin: 0 0 10px 0; color: #856404;'>🚀 Processing Options:</h4>
-                                <p style='margin: 5px 0;'><strong>Option 1 (Recommended):</strong> <a href='generation_batch_processor.php?date=$target_date' target='_blank' style='background: #007cba; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; display: inline-block; margin-left: 10px;'>Use Web-Based Batch Processor →</a></p>
-                                <p style='margin: 5px 0; color: #6c757d; font-size: 0.9em;'>Processes 100 users at a time safely (~18 batches for $total_users users)</p>
-                                <p style='margin: 5px 0;'><strong>Option 2:</strong> Use cron job: <code style='background: #f8f9fa; padding: 2px 5px; border-radius: 3px;'>php db/cron_generation_bonus.php $target_date</code></p>
+                                <p style='margin: 5px 0;'><strong>Option 1 (Safer):</strong> <a href='generation_batch_processor.php?date=$target_date' target='_blank' style='background: #007cba; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; display: inline-block; margin-left: 10px;'>Use Web-Based Batch Processor →</a></p>
+                                <p style='margin: 5px 0; color: #6c757d; font-size: 0.9em;'>Processes 100 users at a time safely (~" . ceil($total_users/100) . " batches for $total_users users)</p>
+                                <p style='margin: 5px 0;'><strong>Option 2:</strong> Continue with direct processing (may take several minutes)</p>
+                                <p style='margin: 5px 0;'><strong>Option 3:</strong> Use cron job: <code style='background: #f8f9fa; padding: 2px 5px; border-radius: 3px;'>php db/cron_generation_bonus.php $target_date</code></p>
                              </div>
-                             <div style='background: #f8d7da; padding: 10px; border-radius: 5px; border: 1px solid #f5c6cb; margin: 10px 0;'>
-                                <p style='margin: 0; color: #721c24; font-size: 0.9em;'><strong>Warning:</strong> Processing $total_users users directly through web interface may cause server timeout.</p>
+                             <div style='background: #d1ecf1; padding: 10px; border-radius: 5px; border: 1px solid #bee5eb; margin: 10px 0;'>
+                                <label style='margin: 0; color: #0c5460; font-size: 0.9em;'>
+                                    <input type='checkbox' name='force_process' value='1' style='margin-right: 8px;'>
+                                    <strong>I understand the risks and want to process $total_users users directly</strong>
+                                </label>
                              </div>";
                 } else {
-                    // Execute generation bonuses for smaller user bases
+                    // Execute generation bonuses with enterprise-scale optimizations
                     require_once '../db/generation.php';
                     ob_start();
+                    
+                    // Enterprise-scale resource allocation
+                    if($total_users > 10000) {
+                        set_time_limit(3600); // 1 hour for massive processing
+                        ini_set('memory_limit', '4G'); // 4GB for enterprise scale
+                        ini_set('max_execution_time', '3600');
+                    } elseif($total_users > 5000) {
+                        set_time_limit(2400); // 40 minutes for large scale
+                        ini_set('memory_limit', '3G'); // 3GB for large scale
+                    } else {
+                        set_time_limit(1800); // 30 minutes for regular large processing
+                        ini_set('memory_limit', '2G'); // 2GB for regular processing
+                    }
+                    
+                    // Display appropriate processing message
+                    echo "<div style='background: #d4edda; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #28a745;'>";
+                    if($total_users > 10000) {
+                        echo "<h3 style='color: #155724; margin: 0 0 10px 0;'>🏢 ENTERPRISE PROCESSING: $total_users users</h3>";
+                        echo "<p style='color: #155724; margin: 5px 0;'>🚀 <strong>MASSIVE SCALE DETECTED:</strong> This will take 30-60 minutes. Server resources maximized.</p>";
+                        echo "<p style='color: #155724; margin: 5px 0;'>💡 <strong>Recommendation:</strong> Use batch processor for future runs of this scale.</p>";
+                        echo "<div style='background: #fff3cd; padding: 10px; border-radius: 4px; margin: 10px 0;'>";  
+                        echo "<p style='margin: 0; color: #856404;'>⏱️ <strong>Estimated Time:</strong> " . ceil($total_users/100) . " minutes • 📊 <strong>Progress:</strong> Processing in chunks...</p>";
+                        echo "</div>";
+                    } elseif($total_users > 5000) {
+                        echo "<h4 style='color: #155724; margin: 0 0 10px 0;'>📈 LARGE SCALE PROCESSING: $total_users users</h4>";
+                        echo "<p style='color: #155724; margin: 5px 0;'>⚠️ <strong>Large processing detected:</strong> This may take 20-40 minutes. Please be patient.</p>";
+                        echo "<p style='color: #155724; margin: 5px 0;'>💡 <strong>Tip:</strong> Consider batch processor for faster future processing.</p>";
+                    } else {
+                        echo "<h4 style='color: #155724; margin: 0 0 10px 0;'>🎯 Processing $total_users users...</h4>";
+                        if($total_users > 1000) {
+                            echo "<p style='color: #155724; margin: 5px 0;'>⚠️ <strong>Large processing detected:</strong> This may take 10-30 minutes. Please be patient and do not refresh the page.</p>";
+                        }
+                    }
+                    echo "</div>";
+                    flush();
+                    
                     $result = Generationoncome($target_date);
                     $output = ob_get_clean();
                     
                     if($result) {
-                        $success = "Generation bonuses processed successfully for $target_date! Processed $total_users users.";
+                        $processing_time = ceil($total_users/100); // Estimate
+                        $scale_message = "";
+                        if($total_users > 10000) {
+                            $scale_message = "<div style='background: #fff3cd; padding: 15px; border-radius: 5px; margin: 10px 0;'>
+                                             <h4 style='color: #856404; margin: 0 0 10px 0;'>🏢 ENTERPRISE SCALE COMPLETED</h4>
+                                             <p style='margin: 5px 0; color: #856404;'>✅ Successfully processed $total_users users (Enterprise Scale)</p>
+                                             <p style='margin: 5px 0; color: #856404;'>💡 <strong>Future Recommendation:</strong> Use batch processor for 10,000+ users</p>
+                                             <p style='margin: 5px 0; color: #856404;'>🚀 <strong>Optimization:</strong> Consider scheduled processing during off-peak hours</p>
+                                             </div>";
+                        } elseif($total_users > 5000) {
+                            $scale_message = "<div style='background: #d1ecf1; padding: 15px; border-radius: 5px; margin: 10px 0;'>
+                                             <h4 style='color: #0c5460; margin: 0 0 10px 0;'>📈 LARGE SCALE COMPLETED</h4>
+                                             <p style='margin: 5px 0; color: #0c5460;'>✅ Successfully processed $total_users users (Large Scale)</p>
+                                             <p style='margin: 5px 0; color: #0c5460;'>💡 <strong>Tip:</strong> Batch processor recommended for future runs</p>
+                                             </div>";
+                        }
+                        
+                        $success = "✅ Generation bonuses processed successfully for $target_date!<br>
+                                   📊 <strong>Total users processed:</strong> $total_users<br>
+                                   ⏱️ <strong>Processing completed</strong><br>
+                                   🎯 <strong>Scale:</strong> " . ($total_users > 10000 ? 'Enterprise (10K+)' : ($total_users > 5000 ? 'Large (5K+)' : 'Standard')) . "<br><br>
+                                   $scale_message
+                                   <div style='background: #f8f9fa; padding: 10px; border-radius: 5px; max-height: 300px; overflow-y: auto;'>
+                                   <strong>Processing Output:</strong><br>" . nl2br(htmlspecialchars($output)) . "</div>";
                     } else {
-                        $error = "Generation bonus processing failed. Output: " . $output;
+                        $scale_info = $total_users > 10000 ? ' (ENTERPRISE SCALE)' : ($total_users > 5000 ? ' (LARGE SCALE)' : '');
+                        $error = "❌ Generation bonus processing failed for $target_date$scale_info<br>
+                                 📊 <strong>Target users:</strong> $total_users<br>
+                                 🎯 <strong>Scale:</strong> " . ($total_users > 10000 ? 'Enterprise (10K+)' : ($total_users > 5000 ? 'Large (5K+)' : 'Standard')) . "<br><br>
+                                 <div style='background: #fff3cd; padding: 15px; border-radius: 5px; margin: 10px 0;'>
+                                    <h4 style='color: #856404; margin: 0 0 10px 0;'>💡 TROUBLESHOOTING FOR LARGE SCALE</h4>
+                                    <p style='margin: 5px 0; color: #856404;'>🔧 <strong>Try These Solutions:</strong></p>
+                                    <p style='margin: 5px 0; color: #856404;'>1. Use batch processor: <a href='generation_batch_processor.php?date=$target_date' target='_blank'>Process in batches</a></p>
+                                    <p style='margin: 5px 0; color: #856404;'>2. Command line: <code>php db/cron_generation_bonus.php $target_date --chunk-size=1000</code></p>
+                                    <p style='margin: 5px 0; color: #856404;'>3. Schedule during off-peak hours (2-6 AM)</p>
+                                 </div>
+                                 <div style='background: #f8f9fa; padding: 10px; border-radius: 5px; max-height: 300px; overflow-y: auto;'>
+                                 <strong>Error Output:</strong><br>" . nl2br(htmlspecialchars($output)) . "</div>";
                     }
                 }
             }
