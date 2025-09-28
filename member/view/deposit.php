@@ -1,140 +1,460 @@
+	<style>
+	/* Custom modal and form styling for better visibility */
+	.modal-header {
+		background: #fff !important;
+		color: #333 !important;
+		border-bottom: 1px solid #dee2e6;
+	}
+
+	.modal-title {
+		color: #333 !important;
+		font-weight: bold !important;
+	}
+
+	.modal-body {
+		background: #fff !important;
+		color: #333 !important;
+	}
+
+	.modal-footer {
+		background: #fff !important;
+		border-top: 1px solid #dee2e6;
+	}
+
+	.form-label, label {
+		color: #333 !important;
+		font-weight: bold !important;
+		margin-bottom: 8px;
+		display: block;
+	}
+
+	.form-control {
+		border: 1px solid #ddd !important;
+		background: #fff !important;
+		color: #333 !important;
+		padding: 8px 12px !important;
+	}
+
+	.form-control:focus {
+		border-color: #007bff !important;
+		box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25) !important;
+		background: #fff !important;
+		color: #333 !important;
+	}
+
+	.btn {
+		padding: 8px 16px;
+		border-radius: 4px;
+		font-weight: bold;
+	}
+
+	.btn-primary {
+		background: #007bff !important;
+		border-color: #007bff !important;
+		color: #fff !important;
+	}
+
+	.btn-success {
+		background: #28a745 !important;
+		border-color: #28a745 !important;
+		color: #fff !important;
+	}
+
+	.close {
+		color: #333 !important;
+		opacity: 0.7;
+	}
+
+	.close:hover {
+		opacity: 1;
+	}
+
+	/* Main page elements styling */
+	.wrapper h2, .wrapper h3, .wrapper h4, .wrapper h5, .wrapper h6 {
+		color: #333 !important;
+		font-weight: bold !important;
+	}
+
+	.wallet-option h4 {
+		color: #333 !important;
+		font-weight: bold !important;
+	}
+
+	.input-group-addon {
+		background: #f8f9fa !important;
+		border: 1px solid #ddd !important;
+		color: #333 !important;
+	}
+
+	.alert-warning {
+		background: #fff3cd !important;
+		border: 1px solid #ffeeba !important;
+		color: #856404 !important;
+		border-radius: 5px;
+		padding: 10px;
+	}
+
+	.nav-tabs .nav-link {
+		color: #007bff !important;
+		border: 1px solid transparent !important;
+		background: #f8f9fa !important;
+	}
+
+	.nav-tabs .nav-link.active {
+		color: #fff !important;
+		background: #007bff !important;
+		border-color: #007bff !important;
+	}
+
+	/* General text visibility improvements */
+	.wrapper p, .wrapper span {
+		color: #333 !important;
+	}
+
+	.text-muted {
+		color: #6c757d !important;
+	}
+
+	/* File input styling */
+	input[type="file"] {
+		border: 1px solid #ddd !important;
+		background: #fff !important;
+		color: #333 !important;
+		padding: 6px !important;
+		border-radius: 4px;
+	}
+
+	.form-group {
+		margin-bottom: 15px;
+	}
+	</style>
 	<div class="wrapper main-wrapper row" style='min-height:100vh'>
 		<div class="col-lg-12">
 			<section class="box " style="background:#211c8896">
 				<header class="panel_header">
-					<h2 class="title pull-left">Deposit Wallet addresses</h2>
-					
+					<h2 class="title pull-left">Manual Deposit System</h2>
+					<div class="pull-right">
+						<span class="label label-success">Manual Verification Required</span>
+					</div>
 				</header>
-				<div class="content-body" style="padding:0;">
+				<div class="content-body" style="padding:20px;">
 					<div class="row">
 						<div class="col-md-12">
+							<div class="alert alert-info">
+								<strong>How it works:</strong>
+								<ol>
+									<li>Choose your preferred cryptocurrency</li>
+									<li>Copy the wallet address and send your payment</li>
+									<li>Upload screenshot of your payment</li>
+									<li>Admin will verify and add balance to your account</li>
+								</ol>
+							</div>
 
 							<div class="row tabs-area">
 								<ul class="nav nav-tabs crypto-wallet-address vertical col-xs-4 col-md-3 left-aligned primary">
 									<li class="text-center relative active">
-										<a href="#home-5" data-toggle="tab" aria-expanded="true">
+										<a href="#btc-tab" data-toggle="tab" aria-expanded="true">
 											<img src="../data/crypto-dash/coin1.png" class="crypto-i" alt="">
 											<h4>Bitcoin</h4>
 										</a>
 										<div class="check-span"><i class="fa fa-check"></i></div>
 									</li>
-									
+									<li class="text-center relative">
+										<a href="#usdt-trc20-tab" data-toggle="tab" aria-expanded="false">
+											<img src="../data/crypto-dash/usdt.png" class="crypto-i" alt="" style="width: 32px; height: 32px;">
+											<h4>USDT TRC20</h4>
+										</a>
+										<div class="check-span"><i class="fa fa-check"></i></div>
+									</li>
+									<li class="text-center relative">
+										<a href="#usdt-bep20-tab" data-toggle="tab" aria-expanded="false">
+											<img src="../data/crypto-dash/usdt-bep20.png" class="crypto-i" alt="" style="width: 32px; height: 32px;">
+											<h4>USDT BEP20</h4>
+										</a>
+										<div class="check-span"><i class="fa fa-check"></i></div>
+									</li>
 								</ul>
 								<?php 
-									$hdfd=$mysqli->query("SELECT * FROM `generate_btc` WHERE `user`='".$member."'");
-									$inFoAds=mysqli_fetch_assoc($hdfd);
+									// Get manual wallet addresses
+									$btcWallets = $mysqli->query("SELECT * FROM `manual_wallets` WHERE `wallet_type`='BTC' AND `is_active`=1");
+									$usdtTrc20Wallets = $mysqli->query("SELECT * FROM `manual_wallets` WHERE `wallet_type`='USDT_TRC20' AND `is_active`=1");
+									$usdtBep20Wallets = $mysqli->query("SELECT * FROM `manual_wallets` WHERE `wallet_type`='USDT_BEP20' AND `is_active`=1");
 								?>
 								<div class="tab-content wallet-address-tab vertical col-xs-12 col-lg-9 left-aligned primary" style="padding-right: 0px;">
-									<div class="tab-pane fade active in" id="home-5">
+									<!-- BTC TAB -->
+									<div class="tab-pane fade active in" id="btc-tab">
 										<div class="row">
 											<div class="col-xs-12">
 												<div class="option-identity-wrapper mb-15">
-													<h3 class="boldy mt-0">BTC Wallet Address</h3>
-													<div class="row">
+													<h3 class="boldy mt-0">Bitcoin Deposit</h3>
+													<div class="alert alert-warning" style="background: #fff3cd; border: 1px solid #ffeeba; color: #856404; border-radius: 5px; padding: 10px; margin-bottom: 15px;">
+														<strong>Important:</strong> Only send Bitcoin (BTC) to this address. Sending other cryptocurrencies will result in permanent loss.
+													</div>
 													
-														<h3 id="WalletMess"></h3>
-														<p class="text-success" id="copied" style="display:none;">Copied the text</p>
-														<div class="col-lg-8">
-															<div class="form-group mb-0">
-																<label class="form-label mb-10">Wallet Address</label>
-																<span class="desc ">(You can share it with traders to get Paid)</span>
-																<div class="input-group primary">
-																	<span class="input-group-addon">                
-																	<span class="arrow"></span>
-																	<i class="cc BTC-alt"></i>
-																	</span>
-																	<input type="text" class="form-control" id="WalletAddress" value="<?php echo $inFoAds['btc_address']; ?>">
+													<?php while($btcWallet = mysqli_fetch_assoc($btcWallets)): ?>
+													<div class="wallet-option" style="border: 2px solid #007bff; border-radius: 8px; padding: 15px; margin-bottom: 15px; background: rgba(255,255,255,0.95);">
+														<h4 style="color: #333; font-weight: bold; margin-bottom: 15px;"><?php echo $btcWallet['wallet_name']; ?></h4>
+														<div class="row">
+															<div class="col-lg-8">
+																<div class="form-group mb-0">
+																	<label class="form-label mb-10" style="color: #333; font-weight: bold; margin-bottom: 8px; display: block;">Bitcoin Address</label>
+																	<div class="input-group primary">
+																		<span class="input-group-addon" style="background: #f8f9fa; border: 1px solid #ddd; color: #333;">                
+																		<span class="arrow"></span>
+																		<i class="fa fa-bitcoin" style="color: #f7931a;"></i>
+																		</span>
+																		<input type="text" class="form-control btc-address" value="<?php echo $btcWallet['wallet_address']; ?>" readonly style="background: #f8f9fa; color: #333; border: 1px solid #ddd; font-family: monospace; font-size: 12px;">
+																	</div>
 																</div>
-																
+															</div>
+															<div class="col-lg-4 no-pl mt-30">
+																<a href="#" class="btn btn-primary btn-corner copy-address" data-address="<?php echo $btcWallet['wallet_address']; ?>" style="margin-right: 10px; color: #fff; background: #007bff; border: 1px solid #007bff;"><i class="fa fa-copy"></i> Copy</a>
+																<a href="#" class="btn btn-success btn-corner deposit-btn" data-type="BTC" data-address="<?php echo $btcWallet['wallet_address']; ?>" data-name="<?php echo $btcWallet['wallet_name']; ?>" style="color: #fff; background: #28a745; border: 1px solid #28a745;">Deposit</a>
 															</div>
 														</div>
-														<div class="col-lg-4 no-pl mt-30">
-															<a href="#" class="btn btn-primary btn-corner" id="CopyAs"><i class="fa fa-copy"></i></a>
-															<a href="#" class="btn btn-primary btn-corner right15" id="GenerateAddress">Generate New</a>
-														</div>
 													</div>
+													<?php endwhile; ?>
 												</div>
 											</div>
-											
-											<script src="js/qrcode.min.js"></script>
-											<script>
-												$("#GenerateAddress").on("click", function(e){
-													e.preventDefault();
-													e.stopPropagation();
-													const redfg=$.ajax({
-														method:"GET",
-														url:"viewdata/genarate_qq.php",
-														data:{generate:"BTC"}
-													});
-													redfg.done(function(resd){
-														const Ashh=JSON.parse(resd);
-														$("#WalletMess").text(Ashh['mess']);
-														if(Ashh['sts']==1){
-															$("#WalletAddress").val(Ashh['addr']);
-															$("#WalletMess").css("color", "green");
-															new QRCode(document.getElementById("QRCipde"), Ashh['addr']);
-														}else{
-															$("#WalletMess").css("color", "red");
-														}
-													});
-												});
-												
-												$(document).ready(function(){
-													$("#CopyAs").on("click", function(){
-														var copyText = $("#WalletAddress");
-														copyText.select();
-														document.execCommand("copy");
-														$("#copied").show();
-													});
-													let jkdg=$("#WalletAddress").val();
-													if(jkdg!=''){
-														new QRCode(document.getElementById("QRCipde"), jkdg);
-													}
-													
-												});
-											</script>
+										</div>
+									</div>
+									
+									<!-- USDT TRC20 TAB -->
+									<div class="tab-pane fade" id="usdt-trc20-tab">
+										<div class="row">
 											<div class="col-xs-12">
-												<div class="option-identity-wrapper no-mb">
-													<div class="row">
-														<div class="col-xs-11 col-md-4">
-															<div class="option-icon" id="QRCipde" >
-																
-															</div>
-														</div>
-														<div class="col-md-8">
-															<div class="scan-info left15">
-																<h3 class="bold">Just scan the wallet address</h3>
-																<p>1.Scan This Code</p>
-																<p>2.Deposit From Your BTC Wallet</p>
-																<?php
-																	if(isset($_GET['paccg'])){
-																		$packFF=explode("/" , base64_decode($_GET['paccg']));
-																		//var_dump($packFF);
-																		$cHECKpAK=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `package` WHERE `serial`='".$packFF[2]."'"));
-																		$cHECKpAKSS=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) as Hggd FROM `upgrade` WHERE `user`='".$member."'"));
-																		$dfgKKj=remainAmn($member);
-																?>
-																	<p class="text-warning">3.Your Selected Bot (<?php echo $cHECKpAK['pack']?>)</p>
-																	<p class="text-warning">4.Please Deposit Remaining ($<?php echo number_format(($cHECKpAK['pack_amn'] -($dfgKKj+$cHECKpAKSS['Hggd'])), 2, '.',''); ?>)</p>
-																<?php } ?>
-																<div class="col-lg-12 no-pl mt-10" style="display:none;">
-																	<a href="#" class="btn btn-primary btn-corner right15"><i class="fa fa-long-arrow-down complete color-white"></i> Recieve</a>
-																	<a href="#" class="btn btn-primary btn-corner right15"><i class="fa fa-long-arrow-up complete color-white"></i> Send</a>
-																	<a href="#" class="btn btn-primary btn-corner"><i class="fa fa-gear"></i></a>
+												<div class="option-identity-wrapper mb-15">
+													<h3 class="boldy mt-0">USDT TRC20 Deposit</h3>
+													<div class="alert alert-info">
+														<strong>TRC20 Network:</strong> This is a TRON (TRC20) USDT address. Lower fees, faster transactions.
+													</div>
+													
+													<?php while($trc20Wallet = mysqli_fetch_assoc($usdtTrc20Wallets)): ?>
+													<div class="wallet-option" style="border: 2px solid #26a17b; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+														<h4><?php echo $trc20Wallet['wallet_name']; ?></h4>
+														<div class="row">
+															<div class="col-lg-8">
+																<div class="form-group mb-0">
+																	<label class="form-label mb-10">USDT TRC20 Address</label>
+																	<div class="input-group primary">
+																		<span class="input-group-addon">                
+																		<span class="arrow"></span>
+																		<i class="fa fa-coins" style="color: #26a17b;"></i>
+																		</span>
+																		<input type="text" class="form-control trc20-address" value="<?php echo $trc20Wallet['wallet_address']; ?>" readonly>
+																	</div>
 																</div>
+															</div>
+															<div class="col-lg-4 no-pl mt-30">
+																<a href="#" class="btn btn-success btn-corner copy-address" data-address="<?php echo $trc20Wallet['wallet_address']; ?>"><i class="fa fa-copy"></i> Copy</a>
+																<a href="#" class="btn btn-info btn-corner deposit-btn" data-type="USDT_TRC20" data-address="<?php echo $trc20Wallet['wallet_address']; ?>" data-name="<?php echo $trc20Wallet['wallet_name']; ?>">Deposit</a>
 															</div>
 														</div>
 													</div>
+													<?php endwhile; ?>
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<!-- USDT BEP20 TAB -->
+									<div class="tab-pane fade" id="usdt-bep20-tab">
+										<div class="row">
+											<div class="col-xs-12">
+												<div class="option-identity-wrapper mb-15">
+													<h3 class="boldy mt-0">USDT BEP20 Deposit</h3>
+													<div class="alert alert-warning">
+														<strong>BEP20 Network:</strong> This is a Binance Smart Chain (BEP20) USDT address. Fast and cheap transactions.
+													</div>
 													
+													<?php while($bep20Wallet = mysqli_fetch_assoc($usdtBep20Wallets)): ?>
+													<div class="wallet-option" style="border: 2px solid #f3ba2f; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+														<h4><?php echo $bep20Wallet['wallet_name']; ?></h4>
+														<div class="row">
+															<div class="col-lg-8">
+																<div class="form-group mb-0">
+																	<label class="form-label mb-10">USDT BEP20 Address</label>
+																	<div class="input-group primary">
+																		<span class="input-group-addon">                
+																		<span class="arrow"></span>
+																		<i class="fa fa-coins" style="color: #f3ba2f;"></i>
+																		</span>
+																		<input type="text" class="form-control bep20-address" value="<?php echo $bep20Wallet['wallet_address']; ?>" readonly>
+																	</div>
+																</div>
+															</div>
+															<div class="col-lg-4 no-pl mt-30">
+																<a href="#" class="btn btn-warning btn-corner copy-address" data-address="<?php echo $bep20Wallet['wallet_address']; ?>"><i class="fa fa-copy"></i> Copy</a>
+																<a href="#" class="btn btn-primary btn-corner deposit-btn" data-type="USDT_BEP20" data-address="<?php echo $bep20Wallet['wallet_address']; ?>" data-name="<?php echo $bep20Wallet['wallet_name']; ?>">Deposit</a>
+															</div>
+														</div>
+													</div>
+													<?php endwhile; ?>
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-							<!-- </div>  -->
 						</div>
 					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+
+	<!-- Deposit Modal -->
+	<div class="modal fade" id="depositModal" tabindex="-1" role="dialog" aria-labelledby="depositModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content" style="color: #333; background: #fff;">
+				<div class="modal-header" style="background: #f8f9fa; border-bottom: 1px solid #dee2e6; padding: 15px 20px;">
+					<h4 class="modal-title" id="depositModalLabel" style="color: #333; font-weight: bold; margin: 0;">Submit Deposit Confirmation</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #333; opacity: 0.8;">
+						<span aria-hidden="true" style="font-size: 24px;">&times;</span>
+					</button>
+				</div>
+				<form id="depositForm" enctype="multipart/form-data">
+					<div class="modal-body" style="padding: 20px; color: #333;">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label style="color: #333; font-weight: bold; margin-bottom: 8px; display: block;">Cryptocurrency Type</label>
+									<input type="text" id="deposit-type" name="deposit_type" class="form-control" readonly style="background: #f8f9fa; color: #333; border: 1px solid #ddd;">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label style="color: #333; font-weight: bold; margin-bottom: 8px; display: block;">Wallet Name</label>
+									<input type="text" id="wallet-name" class="form-control" readonly style="background: #f8f9fa; color: #333; border: 1px solid #ddd;">
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label style="color: #333; font-weight: bold; margin-bottom: 8px; display: block;">Wallet Address</label>
+							<input type="text" id="wallet-address" name="wallet_address" class="form-control" readonly style="background: #f8f9fa; color: #333; border: 1px solid #ddd; font-family: monospace; font-size: 12px;">
+						</div>
+						
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label style="color: #333; font-weight: bold; margin-bottom: 8px; display: block;">Amount <span class="text-danger">*</span></label>
+									<input type="number" name="amount" id="deposit-amount" class="form-control" step="0.01" min="0.01" required style="color: #333; border: 1px solid #ddd; padding: 10px;">
+									<small class="form-text text-muted" style="color: #666 !important; font-size: 12px;">Enter the exact amount you sent</small>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label style="color: #333; font-weight: bold; margin-bottom: 8px; display: block;">Transaction Hash/ID <span class="text-danger">*</span></label>
+									<input type="text" name="txn_hash" id="txn-hash" class="form-control" required style="color: #333; border: 1px solid #ddd; padding: 10px; font-family: monospace; font-size: 12px;">
+									<small class="form-text text-muted" style="color: #666 !important; font-size: 12px;">Transaction ID from your wallet</small>
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label style="color: #333; font-weight: bold; margin-bottom: 8px; display: block;">Upload Payment Screenshot <span class="text-danger">*</span></label>
+							<input type="file" name="screenshot" id="deposit-screenshot" class="form-control" accept="image/*" required style="color: #333; border: 1px solid #ddd; padding: 10px;">
+							<small class="form-text text-muted" style="color: #666 !important; font-size: 12px;">Upload clear screenshot of your payment confirmation</small>
+						</div>
+						
+						<div class="form-group">
+							<label style="color: #333; font-weight: bold; margin-bottom: 8px; display: block;">Additional Notes (Optional)</label>
+							<textarea name="notes" class="form-control" rows="3" placeholder="Any additional information..." style="color: #333; border: 1px solid #ddd; padding: 10px; resize: vertical;"></textarea>
+						</div>
+						
+						<div class="alert alert-info" style="background: #13a6c0ff; border: 1px solid #bee5eb; color: #0c5460; border-radius: 4px; padding: 15px; margin-bottom: 0;">
+							<strong style="color: #0c5460;">Important Instructions:</strong>
+							<ul class="mb-0" style="margin-top: 10px; padding-left: 20px; color: #0c5460;">
+								<li style="margin-bottom: 5px;">Make sure the transaction hash is correct and valid</li>
+								<li style="margin-bottom: 5px;">Upload a clear screenshot of your payment confirmation</li>
+								<li style="margin-bottom: 5px;">Admin will verify and add balance within 24 hours</li>
+								<li style="margin-bottom: 5px;">Do not submit duplicate deposits for the same transaction</li>
+							</ul>
+						</div>
+					</div>
+					<div class="modal-footer" style="background: #f8f9fa; border-top: 1px solid #dee2e6; padding: 15px 20px;">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" style="color: #333; background: #6c757d; border: 1px solid #6c757d; padding: 8px 16px;">Cancel</button>
+						<button type="submit" class="btn btn-success" id="submit-deposit" style="color: #fff; background: #28a745; border: 1px solid #28a745; padding: 8px 16px; margin-left: 10px;">Submit Deposit</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$(document).ready(function() {
+			// Copy address functionality
+			$(document).on('click', '.copy-address', function(e) {
+				e.preventDefault();
+				var address = $(this).data('address');
+				
+				// Create temporary input element
+				var tempInput = document.createElement('input');
+				tempInput.value = address;
+				document.body.appendChild(tempInput);
+				tempInput.select();
+				document.execCommand('copy');
+				document.body.removeChild(tempInput);
+				
+				// Show success message
+				$(this).html('<i class="fa fa-check"></i> Copied!');
+				var button = $(this);
+				setTimeout(function() {
+					button.html('<i class="fa fa-copy"></i> Copy');
+				}, 2000);
+			});
+			
+			// Deposit button functionality
+			$(document).on('click', '.deposit-btn', function(e) {
+				e.preventDefault();
+				var type = $(this).data('type');
+				var address = $(this).data('address');
+				var name = $(this).data('name');
+				
+				$('#deposit-type').val(type);
+				$('#wallet-address').val(address);
+				$('#wallet-name').val(name);
+				$('#depositModal').modal('show');
+			});
+			
+			// Form submission
+			$('#depositForm').on('submit', function(e) {
+				e.preventDefault();
+				
+				var formData = new FormData(this);
+				$('#submit-deposit').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Submitting...');
+				
+				$.ajax({
+					url: 'viewdata/submit_deposit.php',
+					type: 'POST',
+					data: formData,
+					processData: false,
+					contentType: false,
+					success: function(response) {
+						try {
+							var result = JSON.parse(response);
+							if(result.status === 'success') {
+								alert('Deposit submitted successfully! Admin will verify your payment within 24 hours.');
+								$('#depositModal').modal('hide');
+								$('#depositForm')[0].reset();
+							} else {
+								alert('Error: ' + result.message);
+							}
+						} catch(e) {
+							alert('Error submitting deposit. Please try again.');
+						}
+					},
+					error: function() {
+						alert('Network error. Please try again.');
+					},
+					complete: function() {
+						$('#submit-deposit').prop('disabled', false).html('Submit Deposit');
+					}
+				});
+			});
+		});
+	</script>
 					<div class="row">
 						<div class="col-lg-12">
 							<section class="box">
