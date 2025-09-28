@@ -19,8 +19,8 @@
 	
 	$host="localhost";
 	$database="robo_adminMlm2";
-	$user="root";
-	$password='';
+	$user="robo_adminMlm2";
+	$password='sPdt~j^tw1p5lIV8';
 	//$port="3306";		
 	$mysqli = new mysqli("$host","$user","$password","$database");	//,"$port"
 	
