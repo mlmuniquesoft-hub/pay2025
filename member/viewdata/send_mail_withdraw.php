@@ -56,6 +56,8 @@
 	//$mysqli=$mysqli;
 	$date=date("Y-m-d");
 	$BalanceSts=remainAmn($userID);//ReaminBalance($userID, $mysqli,$mysqli,1);
+	$remark="";
+	$comm="";
 	
 	if($WithdrawType=="withdraw"){
 		$TransType="Withdraw";
@@ -181,7 +183,7 @@
 					
 					<div style='background-color: #FEF3C7; border-left: 4px solid #F59E0B; padding: 20px; margin: 20px 0; border-radius: 5px;'>
 						<p style='margin: 0; color: #92400E; font-size: 16px; font-weight: 500;'>
-							⚠️ <strong>Security Alert:</strong> Someone is requesting to $Transtype funds from your account.
+							⚠️ <strong>Security Alert:</strong> Someone is requesting to $TransType funds from your account.
 						</p>
 					</div>
 					
@@ -198,7 +200,7 @@
 							</tr>
 							<tr>
 								<td style='padding: 8px 0; color: #6B7280; font-weight: 500;'>Transaction Type:</td>
-								<td style='padding: 8px 0; color: #1F2937; text-transform: capitalize;'>$Transtype</td>
+								<td style='padding: 8px 0; color: #1F2937; text-transform: capitalize;'>$TransType</td>
 							</tr>
 						</table>
 					</div>
