@@ -282,9 +282,16 @@ if(!isset($_SESSION['Admin'])){
                 $total_users = ($user_count_check && $user_count_check['total']) ? (int)$user_count_check['total'] : 0;
                 
                 if($total_users > 200) {
-                    $error = "Warning: Large user base ($total_users users) detected. This may cause timeout. Choose an option below:<br>
-                             <strong>Option 1:</strong> Use cron job: <code>php db/cron_generation_bonus.php $target_date</code><br>
-                             <strong>Option 2:</strong> <a href='generation_batch_processor.php?date=$target_date' target='_blank' style='color: #007cba; text-decoration: underline;'>Use Web-Based Batch Processor</a> (processes 100 users at a time)";
+                    $error = "⚠️ Large user base ($total_users users) detected.<br><br>
+                             <div style='background: #fff3cd; padding: 15px; border-radius: 5px; border: 1px solid #ffeaa7; margin: 10px 0;'>
+                                <h4 style='margin: 0 0 10px 0; color: #856404;'>🚀 Processing Options:</h4>
+                                <p style='margin: 5px 0;'><strong>Option 1 (Recommended):</strong> <a href='generation_batch_processor.php?date=$target_date' target='_blank' style='background: #007cba; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; display: inline-block; margin-left: 10px;'>Use Web-Based Batch Processor →</a></p>
+                                <p style='margin: 5px 0; color: #6c757d; font-size: 0.9em;'>Processes 100 users at a time safely (~18 batches for $total_users users)</p>
+                                <p style='margin: 5px 0;'><strong>Option 2:</strong> Use cron job: <code style='background: #f8f9fa; padding: 2px 5px; border-radius: 3px;'>php db/cron_generation_bonus.php $target_date</code></p>
+                             </div>
+                             <div style='background: #f8d7da; padding: 10px; border-radius: 5px; border: 1px solid #f5c6cb; margin: 10px 0;'>
+                                <p style='margin: 0; color: #721c24; font-size: 0.9em;'><strong>Warning:</strong> Processing $total_users users directly through web interface may cause server timeout.</p>
+                             </div>";
                 } else {
                     // Execute generation bonuses for smaller user bases
                     require_once '../db/generation.php';
