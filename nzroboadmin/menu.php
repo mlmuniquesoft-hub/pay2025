@@ -31,8 +31,8 @@
                                 <li>
                                     <div class="profile-info">
                                         <h4 class="username"><?php echo $row["user_id"];?></h4>
-                                        <p><?php echo $row["email"];?></p>
-                                        <p><?php echo $row['last_login']; ?></p>
+                                        <p><?php echo $row["email"] ?? 'No email'; ?></p>
+                                        <p><?php echo $row['last_login'] ?? 'Never'; ?></p>
                                         <div class="btn-group margin-bottom-2x" role="group">
                                             <a href="profile.php" type="button" class="btn btn-default"><i class="fa fa-user"></i> Profile</a>
                                             <a href="logout.php" type="button" class="btn btn-default"><i class="fa fa-sign-out"></i> Logout</a>

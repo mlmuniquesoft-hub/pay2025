@@ -133,6 +133,11 @@
 	$_COOKIE = array_map('strip_tags', json_decode(stripslashes(json_encode($_COOKIE, JSON_HEX_APOS)), true));
 	$_REQUEST = array_map('strip_tags',json_decode(stripslashes(json_encode($_REQUEST, JSON_HEX_APOS)), true));
 	
+	// Initialize pagination variables with defaults
+	$limit = 100;
+	$page = 1;
+	$type = '';
+	
 	if(isset($_GET['limit'])){
 		$limit=$mysqli->real_escape_string($_GET['limit']);
 	}

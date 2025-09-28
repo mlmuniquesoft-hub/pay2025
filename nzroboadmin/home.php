@@ -244,13 +244,14 @@
 															</tr>
 <?php							   
 	$items= mysqli_num_rows($mysqli->query("SELECT * FROM member "));	
+	$limit = isset($limit) ? $limit : 100;
+	$page = isset($page) ? $page : 1;
 	if((!$limit)||(is_numeric($limit) == false)||($limit<99)||($limit>101)){$limit=100;}
-	if((!$page)||(is_numeric($page) == false)||($page<0)||($page>$items)){$page=1;}								
+	if((!$page)||(is_numeric($page) == false)||($page<0)||($page>$items)){$page=1;}														
 	$pages=ceil($items / $limit);
 	$set=$page*$limit - ($limit);
-	$q =  $mysqli->query("SELECT * FROM member ORDER BY serialno ASC LIMIT $set, $limit");
-	
-	
+	// Use 'serial' instead of 'serialno' - check actual column name
+	$q =  $mysqli->query("SELECT * FROM member ORDER BY serial ASC LIMIT $set, $limit");	
 	
 	while($res= mysqli_fetch_object($q))		
 	{
@@ -260,7 +261,7 @@
 														</thead>
 														<tbody>
 															<tr>
-																<td><?php echo $res->serialno;?></td>     
+																<td><?php echo isset($res->serial) ? $res->serial : (isset($res->serialno) ? $res->serialno : $res->id ?? 'N/A'); ?></td>     
 																<td><?php echo $res->user_id;?></td>  
 																<td><?php echo $row2["name"];?></td>
 																<td><?php echo $res->reffereduser;?></td>  
