@@ -136,8 +136,22 @@
 			if($WithdrawType=="withdraw"){
 				$mmfgh=$method.": ".$AssIgnTo;
 				$tax=$NumberOfToken*0.08;
-				$reter=base64_encode("INSERT INTO trans_receive(`user_trans`,`ammount`,`tax`,`c_wallet`,date,user_receive,method,status,remark,type,account)
-				VALUES ('".$userID."','".$NumberOfToken."','".$tax."','".$curencyAmn."','".$date."','Office','".$mmfgh."','Pending','".$remark."','Withdraw','Admin')");
+				
+				// Insert withdrawal transaction directly into trans_receive table with 'Pending' status
+				$transStmt = $mysqli->prepare("INSERT INTO `trans_receive`(`user_trans`, `ammount`,`c_wallet`, `tax`, `date`, `user_receive`, `method`, `status`, `remark`, `type`, `account`) VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending', ?, 'Withdraw', ?)");
+				$agency = 'Office';
+				$account = 'Admin';
+				$transStmt->bind_param("sdsdsssss", $userID, $NumberOfToken, $curencyAmn, $tax, $date, $agency, $mmfgh, $remark, $account);
+				
+				if(!$transStmt->execute()) {
+					array_push($rett, "Database error: Could not create transaction record");
+					echo json_encode($rett);
+					die();
+				}
+				
+				// Get the inserted transaction ID for reference
+				$transactionId = $mysqli->insert_id;
+				$reter = $transactionId; // Store transaction ID instead of base64 query
 				
 			}else{
 				$reter=base64_encode("INSERT INTO trans_receive(`user_trans`,`ammount`,`tax`,`comm`,date,user_receive,method,status,remark,type,account)

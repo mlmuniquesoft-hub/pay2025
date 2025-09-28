@@ -20,13 +20,38 @@
 	
 	$userID=$dfgjkdf['user'];
 
-	// Decode the withdrawal queue to get transaction details
-	$ueyuer=base64_decode($dfgjkdf['withdraw_que']);
-	$uiyeri=explode(",",$ueyuer);
-	
-	$hsgf=strlen($uiyeri[11]);
-	$Amount=substr($uiyeri[11],1,$hsgf-2);
-	$NumberOfToken=$Amount;
+	// For withdrawals, withdraw_que now contains transaction ID instead of base64 query
+	if($dfgjkdf['type']=='Withdraw'){
+		$transactionId = $dfgjkdf['withdraw_que'];
+		
+		// Get transaction details from trans_receive table
+		$transQuery = $mysqli->query("SELECT * FROM `trans_receive` WHERE `serialno`='".$transactionId."' AND `user_trans`='".$userID."' AND `status`='Pending'");
+		
+		if(mysqli_num_rows($transQuery) == 0){
+			echo json_encode([0, "Transaction not found or already processed"]);
+			die();
+		}
+		
+		$transData = mysqli_fetch_assoc($transQuery);
+		$NumberOfToken = $transData['ammount'];
+		$method = $transData['method'];
+		$description = "$NumberOfToken Withdraw via " . $method;
+		$messager = "Withdraw Confirmed - Pending Admin Payment";
+		
+	}else{
+		// For transfers, keep the original base64 approach
+		$ueyuer=base64_decode($dfgjkdf['withdraw_que']);
+		$uiyeri=explode(",",$ueyuer);
+		
+		$hsgf=strlen($uiyeri[11]);
+		$Amount=substr($uiyeri[11],1,$hsgf-2);
+		$NumberOfToken=$Amount;
+		$method=$uiyeri[15];
+		$hfgsd=strlen($method);
+		$AssIgnTo=substr($method,1,$hfgsd-2);
+		$description="$NumberOfToken Transfer To $AssIgnTo";
+		$messager="Transfer Successful";
+	}
 	
 	// Since balance was already checked when withdrawal was requested,
 	// and the withdrawal is marked as Pending (already deducted),
@@ -51,34 +76,30 @@
 		$date=date("Y-m-d");
 		
 		if($dfgjkdf['type']=='Withdraw'){
-			$method=$uiyeri[16];
-			$hfgsd=strlen($method);
-			$method=substr($method,1,$hfgsd-2);
-			$uietyer=explode(":", $method);
-			$method=$uietyer[0];
-			$description="$NumberOfToken Withdraw To $method";
-			$messager="Withdraw Successful";
+			// Update the existing transaction status from 'Pending' to 'Complete'
+			$updateQuery = "UPDATE `trans_receive` SET `status`='Complete' WHERE `serialno`='".$transactionId."' AND `user_trans`='".$userID."'";
+			$updateResult = $mysqli->query($updateQuery);
+			
+			if(!$updateResult){
+				array_push($rett,0);
+				array_push($rett,"Database error: Could not update transaction status - " . $mysqli->error);
+				echo json_encode($rett);
+				die();
+			}
+			
 		}else{
-			$method=$uiyeri[15];
-			$hfgsd=strlen($method);
-			$AssIgnTo=substr($method,1,$hfgsd-2);
-			$description="$NumberOfToken Transfer To $AssIgnTo";
-			$messager="Transfer Successful";
-		}
-		
-		// Execute the base64 encoded withdrawal query but modify it to set status as 'Complete'
-		$decodedQuery = base64_decode($dfgjkdf['withdraw_que']);
-		
-		// Replace 'Pending' with 'Complete' in the query before executing
-		$finalQuery = str_replace("'Pending'", "'Complete'", $decodedQuery);
-		
-		$insertResult = $mysqli->query($finalQuery);
-		
-		if(!$insertResult){
-			array_push($rett,0);
-			array_push($rett,"Database error: Could not create transaction record - " . $mysqli->error);
-			echo json_encode($rett);
-			die();
+			// For transfers, execute the base64 encoded query as before
+			$decodedQuery = base64_decode($dfgjkdf['withdraw_que']);
+			$finalQuery = str_replace("'Pending'", "'Complete'", $decodedQuery);
+			
+			$insertResult = $mysqli->query($finalQuery);
+			
+			if(!$insertResult){
+				array_push($rett,0);
+				array_push($rett,"Database error: Could not create transaction record - " . $mysqli->error);
+				echo json_encode($rett);
+				die();
+			}
 		}
 		
 		// Add transaction to view table for user's transaction history
