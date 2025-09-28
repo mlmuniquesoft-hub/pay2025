@@ -16,9 +16,9 @@
 <head>
     <meta property="og:title" content="Capitol Money Pay Signup">
 	<meta property="og:description" content="Capitol Money Pay Best Place For Your Fixed Earning With Robot">
-	<meta property="og:image" content="https://capitolmoneypay.com/images/logo.png">
+	<meta property="og:image" content="https://capitolmoneypay.com/assets/images/cmp-logo.svg">
 	<meta property="og:url" content="https://capitolmoneypay.com/member/nz-register.php">
-	<meta name="twitter:card" content="https://capitolmoneypay.com/images/logo.png">
+	<meta name="twitter:card" content="https://capitolmoneypay.com/assets/images/cmp-logo.svg">
     <meta property="og:site_name" content="Capitol Money Pay">
 	<meta name="twitter:image:alt" content="Capitol Money Pay">
 	
@@ -29,6 +29,7 @@
     <meta content="Capitol Money Pay" name="author" />
 
     <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon/cmp-icon.svg">
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png">
 	<link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png">
 	<link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png">
