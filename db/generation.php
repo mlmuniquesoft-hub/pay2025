@@ -201,6 +201,15 @@
 			10=> array('percentage' => 1,  'required_referrals' => 10)   // 10th level: 1%, 10 referrals
 		);
 		
+		// Get this user's daily ROI for the date first (early return if no ROI)
+		$roi_query = mysqli_fetch_assoc($mysqli->query("SELECT SUM(curent_bal) as daily_roi FROM `game_return` WHERE `user`='".$memberid."' AND DATE(`date`)='".$date."'"));
+		$daily_roi = ($roi_query && $roi_query['daily_roi']) ? (float)$roi_query['daily_roi'] : 0;
+		
+		// If no ROI, skip processing
+		if($daily_roi <= 0) {
+			return;
+		}
+		
 		// Check if user is eligible (has investment)
 		$check_user = mysqli_fetch_assoc($mysqli->query("SELECT `user` FROM `member` WHERE `user`='".$memberid."' AND `paid`='1'"));
 		if(!$check_user) return;
@@ -209,7 +218,7 @@
 		$upline_chain = array();
 		$current_user = $memberid;
 		
-		// Build upline chain up to 10 levels
+		// Build upline chain up to 10 levels with single query per level
 		for($level = 1; $level <= 10; $level++){
 			$sponsor_query = mysqli_fetch_assoc($mysqli->query("SELECT `sponsor` FROM `member` WHERE `user`='".$current_user."'"));
 			if($sponsor_query && !empty($sponsor_query['sponsor'])){
@@ -226,56 +235,76 @@
 			}
 		}
 		
-		// Get this user's daily ROI for the date
-		$roi_query = mysqli_fetch_assoc($mysqli->query("SELECT SUM(curent_bal) as daily_roi FROM `game_return` WHERE `user`='".$memberid."' AND DATE(`date`)='".$date."'"));
-		$daily_roi = ($roi_query && $roi_query['daily_roi']) ? (float)$roi_query['daily_roi'] : 0;
+		// If no upline, skip processing
+		if(empty($upline_chain)) {
+			return;
+		}
 		
-		// If user has ROI, distribute generation bonuses to upline
-		if($daily_roi > 0){
-			foreach($upline_chain as $level => $sponsor_id){
-				$percentage = $generation_levels[$level]['percentage'];
-				$bonus_amount = ($daily_roi * $percentage) / 100;
+		// Batch insert/update generation bonuses to reduce database calls
+		$bonus_inserts = array();
+		$bonus_updates = array();
+		$view_inserts = array();
+		
+		foreach($upline_chain as $level => $sponsor_id){
+			$percentage = $generation_levels[$level]['percentage'];
+			$bonus_amount = ($daily_roi * $percentage) / 100;
+			
+			if($bonus_amount > 0){
+				// Check if bonus already exists for today (use safer query)
+				$check_query = "SELECT COUNT(*) as count_records FROM `generation_income` 
+							   WHERE `user`='$sponsor_id' AND `date`='$date' 
+							   AND `from_user`='$memberid' AND `level`='$level'";
+				$existing_check = mysqli_fetch_assoc($mysqli->query($check_query));
+				$existing_bonus = ($existing_check && $existing_check['count_records']) ? (int)$existing_check['count_records'] : 0;
 				
-				if($bonus_amount > 0){
-					// Check if bonus already exists for today (use safer query)
-					$check_query = "SELECT COUNT(*) as count_records FROM `generation_income` 
-								   WHERE `user`='$sponsor_id' AND `date`='$date' 
-								   AND `from_user`='$memberid' AND `level`='$level'";
-					$existing_check = mysqli_fetch_assoc($mysqli->query($check_query));
-					$existing_bonus = ($existing_check && $existing_check['count_records']) ? (int)$existing_check['count_records'] : 0;
+				if($existing_bonus == 0){
+					// Prepare for batch insert
+					$bonus_inserts[] = "('$sponsor_id', '$bonus_amount', '$date', '$memberid', '$level', '$percentage', '$daily_roi')";
 					
-					if($existing_bonus == 0){
-						// Insert new generation bonus
-						$insert_query = "INSERT INTO `generation_income`(`user`, `amount`, `date`, `from_user`, `level`, `percentage`, `roi_amount`) 
-										VALUES ('$sponsor_id', '$bonus_amount', '$date', '$memberid', '$level', '$percentage', '$daily_roi')";
-						if(!mysqli_query($mysqli, $insert_query)) {
-							echo "Error inserting generation bonus: " . mysqli_error($mysqli) . "\n";
-							continue;
-						}
-						
-						// Add to transaction history
-						$description = "Level $level Generation Bonus ($percentage%) from $memberid - ROI: $".number_format($daily_roi, 2);
-						$view_query = "INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) 
-									  VALUES ('$sponsor_id', '$date', '$description', '$bonus_amount', 'credit')";
-						mysqli_query($mysqli, $view_query);
-					} else {
-						// Update existing bonus
-						$update_query = "UPDATE `generation_income` SET `amount`='$bonus_amount', `percentage`='$percentage', `roi_amount`='$daily_roi' 
-										WHERE `user`='$sponsor_id' AND `date`='$date' AND `from_user`='$memberid' AND `level`='$level'";
-						if(!mysqli_query($mysqli, $update_query)) {
-							echo "Error updating generation bonus: " . mysqli_error($mysqli) . "\n";
-						}
-					}
+					// Prepare transaction history
+					$description = "Level $level Generation Bonus ($percentage%) from $memberid - ROI: $".number_format($daily_roi, 2);
+					$view_inserts[] = "('$sponsor_id', '$date', '$description', '$bonus_amount', 'credit')";
+				} else {
+					// Prepare for batch update
+					$bonus_updates[] = "UPDATE `generation_income` SET `amount`='$bonus_amount', `percentage`='$percentage', `roi_amount`='$daily_roi' 
+									   WHERE `user`='$sponsor_id' AND `date`='$date' AND `from_user`='$memberid' AND `level`='$level'";
 				}
 			}
 		}
 		
-		// Update total generation balance for each user in upline
+		// Execute batch inserts
+		if(!empty($bonus_inserts)) {
+			$insert_query = "INSERT INTO `generation_income`(`user`, `amount`, `date`, `from_user`, `level`, `percentage`, `roi_amount`) VALUES " . implode(',', $bonus_inserts);
+			if(!mysqli_query($mysqli, $insert_query)) {
+				echo "Error batch inserting generation bonuses for $memberid: " . mysqli_error($mysqli) . "\n";
+			}
+		}
+		
+		// Execute batch updates
+		foreach($bonus_updates as $update_query) {
+			if(!mysqli_query($mysqli, $update_query)) {
+				echo "Error updating generation bonus for $memberid: " . mysqli_error($mysqli) . "\n";
+			}
+		}
+		
+		// Execute batch view inserts
+		if(!empty($view_inserts)) {
+			$view_query = "INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) VALUES " . implode(',', $view_inserts);
+			mysqli_query($mysqli, $view_query);
+		}
+		
+		// Update total generation balance for each user in upline (batch this too)
+		$balance_updates = array();
 		foreach($upline_chain as $level => $sponsor_id){
 			$total_generation = mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS total FROM `generation_income` WHERE `user`='".$sponsor_id."'"));
 			if($total_generation && $total_generation['total'] > 0){
-				$mysqli->query("UPDATE `balance` SET `generation_taka`='".$total_generation['total']."' WHERE `user`='".$sponsor_id."'");
+				$balance_updates[] = "UPDATE `balance` SET `generation_taka`='".$total_generation['total']."' WHERE `user`='".$sponsor_id."'";
 			}
+		}
+		
+		// Execute balance updates
+		foreach($balance_updates as $balance_query) {
+			mysqli_query($mysqli, $balance_query);
 		}
 		
 	} /// end of user_update function
@@ -283,38 +312,55 @@
 	function Generationoncome($DATE){
 		global $mysqli;
 		
+		// Set execution time and memory limits for large processing
+		set_time_limit(300); // 5 minutes
+		ini_set('memory_limit', '512M');
+		
 		// Ensure table structure is correct
 		if(!createGenerationIncomeTable()) {
 			echo "❌ Failed to create/update generation_income table structure\n";
-			return;
+			return false;
 		}
 		
 		$SkipUser=array("habib","kingkhan");
 		
-		// Get all active members with investments
+		// Get all active members with investments - optimized query
 		$mdfg=$mysqli->query("SELECT DISTINCT m.user FROM `member` m 
 							 INNER JOIN `upgrade` u ON m.user = u.user 
 							 WHERE DATE(m.time)<='".$DATE."' AND m.paid='1' 
-							 ORDER BY m.user");
+							 ORDER BY m.user 
+							 LIMIT 1000");
 		
 		if(!$mdfg) {
 			echo "❌ Error getting members for generation bonus: " . mysqli_error($mysqli) . "\n";
-			return;
+			return false;
 		}
 		
 		$userCount = mysqli_num_rows($mdfg);
 		echo "🎯 Processing generation bonuses for $userCount users on $DATE\n";
 		
 		$processedUsers = 0;
+		$batchSize = 50; // Process in batches to avoid timeout
+		
 		while($allmember=mysqli_fetch_assoc($mdfg)){
 			$u_id_tmp = $allmember['user'];
 			if(!in_array(strtolower($allmember['user']),$SkipUser)){
 				user_update11($u_id_tmp,$DATE);
 				$processedUsers++;
+				
+				// Output progress every batch to prevent timeout
+				if($processedUsers % $batchSize == 0) {
+					echo "⏳ Processed $processedUsers/$userCount users...\n";
+					flush(); // Flush output to prevent timeout
+					
+					// Small delay to prevent overwhelming the database
+					usleep(10000); // 10ms delay
+				}
 			}
 		}
 		
 		echo "✅ Generation bonuses processed for $processedUsers users\n";
+		return true;
 	}
 	//Generationoncome();
 	
