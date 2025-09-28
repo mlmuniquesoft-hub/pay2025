@@ -204,9 +204,6 @@
                             <li>
                                 <a class="" href="index.php?route=sponsor_honor&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Sponsor Honor'); ?>">Sponsor Honor</a>
                             </li>
-							<li>
-                                <a class="" href="index.php?route=matching_bonus&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Matching Bonus'); ?>">Matching Bonus</a>
-                            </li>
 							
                             <li>
                                 <a class="" href="index.php?route=bot_income&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('D.Bot Trading'); ?>">D.Bot Trading</a>
@@ -299,6 +296,12 @@
 								<a class="" href="index.php?route=transfer_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Transfer History'); ?>">
 									<i class="fa fa-arrow-right" style="margin-right: 5px; color: #6f42c1;"></i>
 									Transfers
+								</a>
+							</li>
+							<li>
+								<a class="" href="index.php?route=activation_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Activation Report'); ?>">
+									<i class="fa fa-rocket" style="margin-right: 5px; color: #f59e0b;"></i>
+									Activations
 								</a>
 							</li>
 							<li>
