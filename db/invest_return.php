@@ -302,6 +302,12 @@
 		}
 	}
 	
+	// Process Generation Bonuses after daily returns
+	echo "\n🎯 Processing Generation Bonuses...\n";
+	require_once 'generation.php';
+	Generationoncome($date);
+	echo "✅ Generation bonuses processed!\n";
+	
 	echo "\n🎉 Daily Investment Return Process Completed Successfully!\n";
 	echo "📈 Total users processed: $totalProcessed\n";
 ?>

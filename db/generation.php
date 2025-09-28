@@ -14,16 +14,41 @@
 	//$mysqli->query("INSERT INTO `generation_time`( `date`) VALUES ('".$date."')");
 	
 
-	function daily_in11($userlist,$skipList,$amount,$date){
+	// Get daily ROI total for downline users on specific date
+	function getDailyROITotal($userlist, $date){
 		global $mysqli;
-		global $mysqli4;
 		
-		$ggg=array_diff($userlist, $skipList);
-		$iiiin=implode("' OR DATE(`date`)='".$date."' AND `user`='", $ggg);//
-		$rrett="  DATE(`date`)='".$date."' AND `user`='" . $iiiin ."'";//
+		if(empty($userlist)) return 0;
 		
-		$ttyy3=mysqli_fetch_assoc($mysqli->query("SELECT slot_match jj2 FROM `binary_income` WHERE  $rrett"));
-		return (($ttyy3['jj2']*$amount)/100);
+		$usersList = "'" . implode("','", $userlist) . "'";
+		$query = "SELECT SUM(curent_bal) as total_roi FROM `game_return` WHERE DATE(`date`) = '$date' AND `user` IN ($usersList)";
+		$result = mysqli_fetch_assoc($mysqli->query($query));
+		
+		return ($result && $result['total_roi']) ? (float)$result['total_roi'] : 0;
+	}
+	
+	// Count direct referrals for a user based on active investments
+	function countDirectReferrals($user_id){
+		global $mysqli;
+		
+		// Check for active referrals who have made investments (upgrade table)
+		$query = "SELECT COUNT(DISTINCT m.user) as total 
+				  FROM `member` m 
+				  INNER JOIN `upgrade` u ON m.user = u.user 
+				  WHERE m.sponsor = '$user_id' AND m.paid = '1'";
+		$result = mysqli_fetch_assoc($mysqli->query($query));
+		
+		return ($result && $result['total']) ? (int)$result['total'] : 0;
+	}
+	
+	// Check if user meets referral requirement for specific level
+	function meetsReferralRequirement($user_id, $level){
+		$direct_referrals = countDirectReferrals($user_id);
+		
+		// Level requirements: Level 1=0, Level 2=2, Level 3=3, etc.
+		$required_referrals = ($level == 1) ? 0 : $level;
+		
+		return $direct_referrals >= $required_referrals;
 	}
 	
 	
@@ -82,7 +107,7 @@
 		global $mysqli;
 		$errr=array();
 		$lists=array();
-		downusers($user, $lists);
+		downusers11($user, $lists);
 		foreach($lists as $list){
 			$ttyy=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `generation_skip` WHERE `user`='".$list."'"));
 			if($ttyy['skip_user']!=''){
@@ -93,78 +118,175 @@
 		return array_unique($errr);
 	}
 	
+	// Ensure generation_income table has required columns for new system
+	function createGenerationIncomeTable(){
+		global $mysqli;
+		
+		// Create or update generation_income table
+		$create_table = "CREATE TABLE IF NOT EXISTS `generation_income` (
+			`id` int(11) NOT NULL AUTO_INCREMENT,
+			`user` varchar(50) NOT NULL,
+			`amount` decimal(15,2) DEFAULT 0.00,
+			`shop` decimal(15,2) DEFAULT 0.00,
+			`date` date NOT NULL,
+			`from_user` varchar(50) DEFAULT NULL,
+			`level` tinyint(2) DEFAULT NULL,
+			`percentage` decimal(5,2) DEFAULT NULL,
+			`roi_amount` decimal(15,2) DEFAULT NULL,
+			`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY (`id`),
+			KEY `idx_user_date` (`user`, `date`),
+			KEY `idx_from_user` (`from_user`),
+			KEY `idx_level` (`level`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+		
+		mysqli_query($mysqli, $create_table);
+		
+		// Add new columns if they don't exist
+		$columns_to_add = array(
+			'from_user' => 'ALTER TABLE generation_income ADD COLUMN from_user varchar(50) DEFAULT NULL',
+			'level' => 'ALTER TABLE generation_income ADD COLUMN level tinyint(2) DEFAULT NULL', 
+			'percentage' => 'ALTER TABLE generation_income ADD COLUMN percentage decimal(5,2) DEFAULT NULL',
+			'roi_amount' => 'ALTER TABLE generation_income ADD COLUMN roi_amount decimal(15,2) DEFAULT NULL',
+			'created_at' => 'ALTER TABLE generation_income ADD COLUMN created_at timestamp DEFAULT CURRENT_TIMESTAMP'
+		);
+		
+		foreach($columns_to_add as $column => $sql){
+			$check = mysqli_query($mysqli, "SHOW COLUMNS FROM generation_income LIKE '$column'");
+			if(mysqli_num_rows($check) == 0){
+				mysqli_query($mysqli, $sql);
+			}
+		}
+		
+		// Add indexes if they don't exist
+		$indexes = array(
+			'idx_from_user' => 'ALTER TABLE generation_income ADD INDEX idx_from_user (from_user)',
+			'idx_level' => 'ALTER TABLE generation_income ADD INDEX idx_level (level)'
+		);
+		
+		foreach($indexes as $index_name => $sql){
+			$check = mysqli_query($mysqli, "SHOW INDEX FROM generation_income WHERE Key_name = '$index_name'");
+			if(!$check || mysqli_num_rows($check) == 0){
+				mysqli_query($mysqli, $sql);
+			}
+		}
+	}
+
 	function user_update11($U_ID,$date){
 		global $mysqli;
 		$memberid = $U_ID;
-		//$date=date("Y-m-d");
-		//$date="2017-08-24";
 		
-		$trrii=array();
-		$yyy=array();
-		$yyy22=array();
-		$yyyPoint=array();
-		$comms=array(2,2,1.5,1,1,1,1);
-		$comms22=array(40,30,10,10,10);
-		$ttt2=downUser11($memberid,'member');
-		$yyy[0]=daily_in11($ttt2,$trrii,$comms[0],$date);
+		// New Generation Bonus Structure (33% total)
+		// Level percentages and referral conditions
+		$generation_levels = array(
+			1 => array('percentage' => 10, 'required_referrals' => 0),   // 1st level: 10%, no condition
+			2 => array('percentage' => 8,  'required_referrals' => 2),   // 2nd level: 8%, 2 referrals
+			3 => array('percentage' => 5,  'required_referrals' => 3),   // 3rd level: 5%, 3 referrals
+			4 => array('percentage' => 3,  'required_referrals' => 4),   // 4th level: 3%, 4 referrals
+			5 => array('percentage' => 2,  'required_referrals' => 5),   // 5th level: 2%, 5 referrals
+			6 => array('percentage' => 1,  'required_referrals' => 6),   // 6th level: 1%, 6 referrals
+			7 => array('percentage' => 1,  'required_referrals' => 7),   // 7th level: 1%, 7 referrals
+			8 => array('percentage' => 1,  'required_referrals' => 8),   // 8th level: 1%, 8 referrals
+			9 => array('percentage' => 1,  'required_referrals' => 9),   // 9th level: 1%, 9 referrals
+			10=> array('percentage' => 1,  'required_referrals' => 10)   // 10th level: 1%, 10 referrals
+		);
 		
-		for($i=1;$i<=11;$i++){
-			if($i>=6){
-				$comms[$i]=0.50;
+		// Check if user is eligible (has investment)
+		$check_user = mysqli_fetch_assoc($mysqli->query("SELECT `user` FROM `member` WHERE `user`='".$memberid."' AND `paid`='1'"));
+		if(!$check_user) return;
+		
+		// Get upline chain for this user (who will receive bonuses from this user's ROI)
+		$upline_chain = array();
+		$current_user = $memberid;
+		
+		// Build upline chain up to 10 levels
+		for($level = 1; $level <= 10; $level++){
+			$sponsor_query = mysqli_fetch_assoc($mysqli->query("SELECT `sponsor` FROM `member` WHERE `user`='".$current_user."'"));
+			if($sponsor_query && !empty($sponsor_query['sponsor'])){
+				$sponsor = $sponsor_query['sponsor'];
+				
+				// Check if sponsor is active and meets referral requirements for this level
+				$sponsor_check = mysqli_fetch_assoc($mysqli->query("SELECT `user` FROM `member` WHERE `user`='".$sponsor."' AND `paid`='1'"));
+				if($sponsor_check && meetsReferralRequirement($sponsor, $level)){
+					$upline_chain[$level] = $sponsor;
+				}
+				$current_user = $sponsor;
+			} else {
+				break; // No more sponsors in chain
 			}
-			
-			$ttt2=downUser11($ttt2,'member');
-			
-			$yyy[$i]=daily_in11($ttt2,$trrii,$comms[$i],$date);
-			
 		}
-	
-		$total_gen=array_sum($yyy);
-		$gen_main=$total_gen*.60;
-		$gen_shop=$total_gen*.40;
-	
-		$check=mysqli_fetch_assoc($mysqli->query("SELECT `user`,`pack` FROM `member` WHERE `user`='".$memberid."'"));
-		//if($check['pack']!=''){
-			$remainK=RemainingReturn($memberid);
-			if($remainK>0){
-				if($total_gen>=$remainK){
-					$total_gen=$remainK;
-				}
-			}else{
-				$total_gen=0;
-			}
-			if($total_gen>0){
-				
-				$checkToday=mysqli_num_rows($mysqli->query("SELECT `user`,`date` FROM `generation_income` WHERE `user`='".$memberid."' AND `date`='".$date."'"));
-				if($checkToday>0){
-					$mysqli->query("UPDATE `generation_income` SET `amount`='".$gen_main."',`shop`='".$gen_shop."' WHERE `user`='".$memberid."' AND `date`='".$date."'");
-				}else{
-					$mysqli->query("INSERT INTO `generation_income`(`user`, `amount`,`shop`, `date`) VALUES ('".$memberid."','".$gen_main."','".$gen_shop."','".$date."')");
-					$description="$$gen_main Generation $$gen_shop shopping Bonus Added";
-					$mysqli->query("INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) VALUES ('".$memberid."', '".$date."', '".$description."', '".$gen_main."','credit')");
-				}
-				
-			}
-			$ttrr=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS usd,SUM(shop) AS shop FROM `generation_income` WHERE `user`='".$memberid."'"));
-			if($ttrr['usd']>0){
-				$mysqli->query("UPDATE `balance` SET `generation_taka`='".$ttrr['usd']."',`shoping_taka`='".$ttrr['shop']."', WHERE `user`='".$memberid."'");
-			}
-		//}
 		
+		// Get this user's daily ROI for the date
+		$roi_query = mysqli_fetch_assoc($mysqli->query("SELECT SUM(curent_bal) as daily_roi FROM `game_return` WHERE `user`='".$memberid."' AND DATE(`date`)='".$date."'"));
+		$daily_roi = ($roi_query && $roi_query['daily_roi']) ? (float)$roi_query['daily_roi'] : 0;
+		
+		// If user has ROI, distribute generation bonuses to upline
+		if($daily_roi > 0){
+			foreach($upline_chain as $level => $sponsor_id){
+				$percentage = $generation_levels[$level]['percentage'];
+				$bonus_amount = ($daily_roi * $percentage) / 100;
+				
+				if($bonus_amount > 0){
+					// Check if bonus already exists for today
+					$existing_bonus = mysqli_num_rows($mysqli->query("SELECT `id` FROM `generation_income` WHERE `user`='".$sponsor_id."' AND `date`='".$date."' AND `from_user`='".$memberid."' AND `level`='".$level."'"));
+					
+					if($existing_bonus == 0){
+						// Insert new generation bonus
+						$mysqli->query("INSERT INTO `generation_income`(`user`, `amount`, `date`, `from_user`, `level`, `percentage`, `roi_amount`) VALUES ('".$sponsor_id."', '".$bonus_amount."', '".$date."', '".$memberid."', '".$level."', '".$percentage."', '".$daily_roi."')");
+						
+						// Add to transaction history
+						$description = "Level $level Generation Bonus ($percentage%) from $memberid - ROI: $".number_format($daily_roi, 2);
+						$mysqli->query("INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) VALUES ('".$sponsor_id."', '".$date."', '".$description."', '".$bonus_amount."', 'credit')");
+					} else {
+						// Update existing bonus
+						$mysqli->query("UPDATE `generation_income` SET `amount`='".$bonus_amount."', `percentage`='".$percentage."', `roi_amount`='".$daily_roi."' WHERE `user`='".$sponsor_id."' AND `date`='".$date."' AND `from_user`='".$memberid."' AND `level`='".$level."'");
+					}
+				}
+			}
+		}
+		
+		// Update total generation balance for each user in upline
+		foreach($upline_chain as $level => $sponsor_id){
+			$total_generation = mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS total FROM `generation_income` WHERE `user`='".$sponsor_id."'"));
+			if($total_generation && $total_generation['total'] > 0){
+				$mysqli->query("UPDATE `balance` SET `generation_taka`='".$total_generation['total']."' WHERE `user`='".$sponsor_id."'");
+			}
+		}
 		
 	} /// end of user_update function
 	
 	function Generationoncome($DATE){
 		global $mysqli;
+		
+		// Ensure table structure is correct
+		createGenerationIncomeTable();
+		
 		$SkipUser=array("habib","kingkhan");
-		$mdfg=$mysqli->query("SELECT `user`,`pack` FROM `member` WHERE DATE(`time`)<='".$DATE."' AND `paid`='1'");
+		
+		// Get all active members with investments
+		$mdfg=$mysqli->query("SELECT DISTINCT m.user FROM `member` m 
+							 INNER JOIN `upgrade` u ON m.user = u.user 
+							 WHERE DATE(m.time)<='".$DATE."' AND m.paid='1' 
+							 ORDER BY m.user");
+		
+		if(!$mdfg) {
+			echo "❌ Error getting members for generation bonus: " . mysqli_error($mysqli) . "\n";
+			return;
+		}
+		
+		$userCount = mysqli_num_rows($mdfg);
+		echo "🎯 Processing generation bonuses for $userCount users on $DATE\n";
+		
+		$processedUsers = 0;
 		while($allmember=mysqli_fetch_assoc($mdfg)){
 			$u_id_tmp = $allmember['user'];
 			if(!in_array(strtolower($allmember['user']),$SkipUser)){
-				$check=user_update11($u_id_tmp,$DATE);
+				user_update11($u_id_tmp,$DATE);
+				$processedUsers++;
 			}
-			
 		}
+		
+		echo "✅ Generation bonuses processed for $processedUsers users\n";
 	}
 	//Generationoncome();
 	
