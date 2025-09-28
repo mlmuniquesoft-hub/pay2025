@@ -190,6 +190,12 @@
 							</a>
 						</li>
 						
+						<li>
+							<a href="daily_return_settings.php">
+								<span class="icon fa fa-cogs"></span><span class="title">Daily Return Settings</span>
+							</a>
+						</li>
+						
 						<li class="panel panel-default dropdown">
                                 <a data-toggle="collapse" href="#dropdown-deposits" onclick="return false;">
                                     <span class="icon fa fa-coins"></span><span class="title">Manual Deposits</span>
