@@ -67,54 +67,97 @@
 														</div>
 													</div>
 													<div class="form-group">
-														<label for="inputEmail3" class="col-sm-3 control-label">Minimum Investment :</label>
+														<label for="inputEmail3" class="col-sm-3 control-label">Package Amount ($) :</label>
 														<div class="col-sm-9">
-															<input type="number" name="min_amount" class="form-control" placeholder="Minimum Investment Amount ($)" step="0.01" required />
+															<input type="number" name="pack_amn" class="form-control" placeholder="Package Amount ($)" step="0.01" required />
 														</div>
 													</div>
 													<div class="form-group">
-														<label for="inputEmail3" class="col-sm-3 control-label">Maximum Investment :</label>
+														<label for="inputEmail3" class="col-sm-3 control-label">React Amount ($) :</label>
 														<div class="col-sm-9">
-															<input type="number" name="max_amount" class="form-control" placeholder="Maximum Investment Amount ($) - Leave empty for unlimited" step="0.01" />
+															<input type="number" name="react_amn" class="form-control" placeholder="React/Return Amount ($)" step="0.01" required />
 														</div>
 													</div>
 													<div class="form-group">
-														<label for="inputEmail3" class="col-sm-3 control-label">Package Charge :</label>
+														<label for="inputEmail3" class="col-sm-3 control-label">Game Renew Days :</label>
 														<div class="col-sm-9">
-															<input type="number" name="charge" class="form-control" placeholder="Base Package Charge ($)" step="0.01" required />
+															<input type="number" name="game_renew" class="form-control" placeholder="Game Renewal Period (Days)" min="1" required />
 														</div>
 													</div>
 													<div class="form-group">
-														<label for="inputEmail3" class="col-sm-3 control-label">ROI Percentage :</label>
+														<label for="inputEmail3" class="col-sm-3 control-label">Description :</label>
 														<div class="col-sm-9">
-															<input type="number" name="roi_percentage" class="form-control" placeholder="Daily ROI % (e.g., 0.5 for 0.5%)" step="0.01" max="10" required />
+															<textarea name="dessc" class="form-control" rows="3" placeholder="Package description and features" required></textarea>
 														</div>
 													</div>
 													<div class="form-group">
-														<label for="inputEmail3" class="col-sm-3 control-label">Sponsor Commission :</label>
+														<label for="inputEmail3" class="col-sm-3 control-label">CID Description :</label>
 														<div class="col-sm-9">
-															<input type="number" name="sponsor_com" class="form-control" placeholder="Sponsor Commission (%)" step="0.01" required />
+															<textarea name="cid_dessc" class="form-control" rows="2" placeholder="CID specific description"></textarea>
 														</div>
 													</div>
 													<div class="form-group">
-														<label for="inputEmail3" class="col-sm-3 control-label">Package Description :</label>
+														<label for="inputEmail3" class="col-sm-3 control-label">Ads Amount ($) :</label>
 														<div class="col-sm-9">
-															<textarea name="description" class="form-control" rows="3" placeholder="Package benefits and features"></textarea>
+															<input type="number" name="ads_amount" class="form-control" placeholder="Advertisement Amount ($)" step="0.01" />
 														</div>
 													</div>
 													<div class="form-group">
-														<label for="inputEmail3" class="col-sm-3 control-label">Tree Color :</label>
+														<label for="inputEmail3" class="col-sm-3 control-label">Direct Commission (%) :</label>
 														<div class="col-sm-9">
-															<input type="color" name="clor" class="form-control" placeholder="Tree Color" value="#3498db" />
+															<input type="number" name="direct_com" class="form-control" placeholder="Direct Commission (%)" step="0.01" required />
 														</div>
 													</div>
 													<div class="form-group">
 														<label for="inputEmail3" class="col-sm-3 control-label">Game Slots :</label>
 														<div class="col-sm-4">
-															<input type="number" name="min_slot" class="form-control" placeholder="Min Game Slots" required />
+															<input type="number" name="min_slot" class="form-control" placeholder="Min Game Slots" min="1" required />
 														</div>
 														<div class="col-sm-4">
-															<input type="number" name="max_slot" class="form-control" placeholder="Max Game Slots" required />
+															<input type="number" name="max_slot" class="form-control" placeholder="Max Game Slots" min="1" required />
+														</div>
+													</div>
+													<div class="form-group">
+														<label for="inputEmail3" class="col-sm-3 control-label">Rank Commission (%) :</label>
+														<div class="col-sm-9">
+															<input type="number" name="rank_com" class="form-control" placeholder="Rank Commission (%)" step="0.01" />
+														</div>
+													</div>
+													<div class="form-group">
+														<label for="inputEmail3" class="col-sm-3 control-label">Rank Slots :</label>
+														<div class="col-sm-9">
+															<input type="number" name="rank_slot" class="form-control" placeholder="Rank Slots" min="1" />
+														</div>
+													</div>
+													<div class="form-group">
+														<label for="inputEmail3" class="col-sm-3 control-label">Country Settings :</label>
+														<div class="col-sm-4">
+															<input type="text" name="active_country" class="form-control" placeholder="Active Countries (comma separated)" />
+														</div>
+														<div class="col-sm-4">
+															<input type="text" name="inactive_country" class="form-control" placeholder="Inactive Countries (comma separated)" />
+														</div>
+													</div>
+													<div class="form-group">
+														<label for="inputEmail3" class="col-sm-3 control-label">Package Settings :</label>
+														<div class="col-sm-3">
+															<select name="rank_active" class="form-control">
+																<option value="1">Rank Active</option>
+																<option value="0">Rank Inactive</option>
+															</select>
+														</div>
+														<div class="col-sm-3">
+															<select name="active" class="form-control">
+																<option value="1">Package Active</option>
+																<option value="0">Package Inactive</option>
+															</select>
+														</div>
+														<div class="col-sm-3">
+															<input type="color" name="color" class="form-control" value="#3498db" title="Package Color" />
+														</div>
+													</div>
+													<div class="form-group">
+														<div class="col-sm-12">
 															<input type="hidden" name="location" value="<?php echo $_SERVER['PHP_SELF']; ?>"/>
 														</div>
 													</div>
@@ -320,37 +363,49 @@
                     // Auto-populate based on your package structure
                     switch(packageType) {
                         case 'Basic Package':
-                            $('input[name="min_amount"]').val('100');
-                            $('input[name="max_amount"]').val('999');
-                            $('input[name="roi_percentage"]').val('0.5');
-                            $('input[name="sponsor_com"]').val('5');
-                            $('input[name="charge"]').val('100');
+                            $('input[name="pack_amn"]').val('500');
+                            $('input[name="react_amn"]').val('525'); // 5% return
+                            $('input[name="game_renew"]').val('30');
+                            $('input[name="direct_com"]').val('5');
+                            $('input[name="ads_amount"]').val('50');
                             $('input[name="min_slot"]').val('1');
                             $('input[name="max_slot"]').val('3');
-                            $('input[name="clor"]').val('#3498db');
-                            $('textarea[name="description"]').val('Entry-level package for new investors with daily ROI up to 0.5%');
+                            $('input[name="rank_com"]').val('2');
+                            $('input[name="rank_slot"]').val('5');
+                            $('input[name="color"]').val('#3498db');
+                            $('textarea[name="dessc"]').val('Entry-level package for new investors. Investment range: $100-$999. Daily ROI up to 0.5%. Perfect for beginners starting their trading journey.');
+                            $('textarea[name="cid_dessc"]').val('Basic tier with standard features and support');
+                            $('input[name="active_country"]').val('US,CA,UK,AU');
                             break;
                         case 'Premium Package':
-                            $('input[name="min_amount"]').val('1000');
-                            $('input[name="max_amount"]').val('4999');
-                            $('input[name="roi_percentage"]').val('0.7');
-                            $('input[name="sponsor_com"]').val('7');
-                            $('input[name="charge"]').val('1000');
+                            $('input[name="pack_amn"]').val('2500');
+                            $('input[name="react_amn"]').val('2675'); // 7% return
+                            $('input[name="game_renew"]').val('45');
+                            $('input[name="direct_com"]').val('7');
+                            $('input[name="ads_amount"]').val('150');
                             $('input[name="min_slot"]').val('2');
                             $('input[name="max_slot"]').val('5');
-                            $('input[name="clor"]').val('#e67e22');
-                            $('textarea[name="description"]').val('Mid-tier package for experienced investors with daily ROI up to 0.7%');
+                            $('input[name="rank_com"]').val('3');
+                            $('input[name="rank_slot"]').val('10');
+                            $('input[name="color"]').val('#e67e22');
+                            $('textarea[name="dessc"]').val('Mid-tier package for experienced investors. Investment range: $1,000-$4,999. Daily ROI up to 0.7%. Enhanced features and priority support.');
+                            $('textarea[name="cid_dessc"]').val('Premium tier with advanced features and priority support');
+                            $('input[name="active_country"]').val('US,CA,UK,AU,DE,FR,JP');
                             break;
                         case 'VIP Package':
-                            $('input[name="min_amount"]').val('5000');
-                            $('input[name="max_amount"]').val(''); // Unlimited
-                            $('input[name="roi_percentage"]').val('1.0');
-                            $('input[name="sponsor_com"]').val('10');
-                            $('input[name="charge"]').val('5000');
+                            $('input[name="pack_amn"]').val('7500');
+                            $('input[name="react_amn"]').val('8250'); // 10% return
+                            $('input[name="game_renew"]').val('60');
+                            $('input[name="direct_com"]').val('10');
+                            $('input[name="ads_amount"]').val('500');
                             $('input[name="min_slot"]').val('3');
                             $('input[name="max_slot"]').val('10');
-                            $('input[name="clor"]').val('#8e44ad');
-                            $('textarea[name="description"]').val('Premium package for high-value investors with daily ROI up to 1%');
+                            $('input[name="rank_com"]').val('5');
+                            $('input[name="rank_slot"]').val('20');
+                            $('input[name="color"]').val('#8e44ad');
+                            $('textarea[name="dessc"]').val('Premium package for high-value investors. Investment range: $5,000+. Daily ROI up to 1%. VIP features, dedicated support, and exclusive benefits.');
+                            $('textarea[name="cid_dessc"]').val('VIP tier with exclusive features and dedicated account manager');
+                            $('input[name="active_country"]').val('US,CA,UK,AU,DE,FR,JP,SG,HK,CH');
                             break;
                     }
                 });
