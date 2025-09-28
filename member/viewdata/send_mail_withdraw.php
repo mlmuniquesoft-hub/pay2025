@@ -2,6 +2,9 @@
 	session_start();
 	require_once("../../db/db.php");
 	require_once("../../db/functions.php");
+	require_once("../../phpmailer/vendor/autoload.php");
+	use PHPMailer\PHPMailer\PHPMailer;
+	use PHPMailer\PHPMailer\Exception;
 	$rett=array();
 	if(isset($_GET['req'])){
 		$userID=$_GET['req'];
@@ -259,18 +262,44 @@
 		</body>
 		</html>
 		";
-		$subject="🔐 Capitol Money Pay - Transaction Verification Required (CF-$Tittle)";
-		$from = "info@capitolmoneypay.com";
-		$headers = "From:" . $from . "\r\n";
-		$headers .= 'MIME-Version: 1.0' . "\r\n";
-		$headers .= 'Content-type: text/html; charset=UTF-8' . "\r\n";
-		$headers .= "From: Capitol Money Pay Security <info@capitolmoneypay.com>" . "\r\n";
-		$headers .= "Reply-To: support@capitolmoneypay.com" . "\r\n";
-		$headers .= "X-Mailer: Capitol Money Pay System" . "\r\n";
-		mail($to,$subject,$message,$headers);
+		// Use PHPMailer for reliable email delivery
+		$mail = new PHPMailer(true);
+		try {
+			//Server settings
+			$mail->isSMTP();
+			$mail->CharSet = 'UTF-8';
+			$mail->Host = 'localhost';
+			$mail->Port = 25;
+			$mail->SMTPSecure = 'tls'; 
+			$mail->SMTPOptions = array(
+				'ssl' => array(
+					'verify_peer' => false,
+					'verify_peer_name' => false,
+					'allow_self_signed' => true
+				)
+			);
+			$mail->SMTPAuth = true;
+			$mail->Username = 'info@capitolmoneypay.com';
+			$mail->Password = 'Mm123678@#';
+			
+			//Recipients
+			$mail->setFrom('info@capitolmoneypay.com', 'Capitol Money Pay Security');
+			$mail->addAddress($to, $name);
+			$mail->addReplyTo('support@capitolmoneypay.com', 'Capitol Money Pay Support');
+			
+			//Content
+			$mail->isHTML(true);
+			$mail->Subject = "🔐 Capitol Money Pay - Transaction Verification Required (CF-$Tittle)";
+			$mail->Body = $message;
+			
+			$mail->send();
+			$emailStatus = "sent successfully via PHPMailer";
+		} catch (Exception $e) {
+			$emailStatus = "failed: " . $mail->ErrorInfo;
+		}
 		
 		array_push($rett, 1);
-		array_push($rett, "Confirmation Mail Send To $to, Please Confirm To Proceed");
+		array_push($rett, "Confirmation Mail $emailStatus to $to, Please Confirm To Proceed");
 		array_push($rett, $serial);
 		echo json_encode($rett);
 		die();
