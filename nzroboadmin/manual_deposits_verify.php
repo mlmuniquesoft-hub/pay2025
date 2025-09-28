@@ -96,8 +96,8 @@ $stats = $mysqli->query("SELECT
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manual Deposits Verification - Admin Panel</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="lib/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="lib/css/font-awesome.min.css">
     <style>
         .status-badge {
             display: inline-block;
@@ -400,7 +400,9 @@ $stats = $mysqli->query("SELECT
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="lib/js/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="lib/js/bootstrap-switch.min.js"></script>
     <script>
         function showVerificationModal(depositId, action, username, amount) {
             document.getElementById('verifyDepositId').value = depositId;
@@ -436,12 +438,12 @@ $stats = $mysqli->query("SELECT
                 submitBtn.innerHTML = '<i class="fas fa-times"></i> Reject Deposit';
             }
             
-            new bootstrap.Modal(document.getElementById('verificationModal')).show();
+            $('#verificationModal').modal('show');
         }
         
         function showImage(filename) {
             document.getElementById('modalImage').src = '../uploads/deposit_screenshots/' + filename;
-            new bootstrap.Modal(document.getElementById('imageModal')).show();
+            $('#imageModal').modal('show');
         }
         
         function copyText(text) {

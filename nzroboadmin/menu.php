@@ -191,20 +191,25 @@
 						</li>
 						
 						<li class="panel panel-default dropdown">
-                                <a data-toggle="collapse" href="#dropdown-manual-deposits">
+                                <a data-toggle="collapse" href="#dropdown-deposits" onclick="return false;">
                                     <span class="icon fa fa-coins"></span><span class="title">Manual Deposits</span>
                                 </a>
                                 <!-- Dropdown level 1 -->
-                                <div id="dropdown-manual-deposits" class="panel-collapse collapse">
+                                <div id="dropdown-deposits" class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <ul class="nav navbar-nav">
                                             <li><a href="manual_deposits_verify.php">
                                                 <i class="fa fa-eye"></i> Verify Deposits
                                                 <?php 
-                                                    // Show pending count badge
-                                                    $pending_count = $mysqli->query("SELECT COUNT(*) as count FROM manual_deposits WHERE status = 'pending'")->fetch_assoc()['count'] ?? 0;
-                                                    if($pending_count > 0) {
-                                                        echo '<span class="badge" style="background: #ff6b6b; color: white; margin-left: 5px;">'.$pending_count.'</span>';
+                                                    // Show pending count badge with error handling
+                                                    try {
+                                                        $pending_query = $mysqli->query("SELECT COUNT(*) as count FROM manual_deposits WHERE status = 'pending'");
+                                                        $pending_count = $pending_query ? $pending_query->fetch_assoc()['count'] : 0;
+                                                        if($pending_count > 0) {
+                                                            echo '<span class="badge" style="background: #ff6b6b; color: white; margin-left: 5px; padding: 2px 6px; font-size: 10px; border-radius: 10px;">'.$pending_count.'</span>';
+                                                        }
+                                                    } catch(Exception $e) {
+                                                        // Silently ignore database errors for menu display
                                                     }
                                                 ?>
                                             </a></li>
@@ -269,3 +274,28 @@
                     </div>
                 </nav>
             </div>
+            
+            <!-- Custom dropdown fix script -->
+            <script>
+            $(document).ready(function() {
+                // Manual dropdown toggle for Manual Deposits
+                $('a[href="#dropdown-deposits"]').click(function(e) {
+                    e.preventDefault();
+                    $('#dropdown-deposits').collapse('toggle');
+                });
+                
+                // Debug: Log when dropdown is clicked
+                $('a[href="#dropdown-deposits"]').on('click', function() {
+                    console.log('Manual Deposits dropdown clicked');
+                });
+                
+                // Ensure collapse functionality is working
+                $('#dropdown-deposits').on('show.bs.collapse', function() {
+                    console.log('Manual Deposits dropdown opening');
+                });
+                
+                $('#dropdown-deposits').on('hide.bs.collapse', function() {
+                    console.log('Manual Deposits dropdown closing');
+                });
+            });
+            </script>
