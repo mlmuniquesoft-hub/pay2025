@@ -1,4 +1,20 @@
-	<style>
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+include_once('../db/db.php');
+include_once('../db/functions.php');
+
+// Check if user is logged in
+if(!isset($_SESSION['roboMember'])) {
+    header("location:../index.php");
+    exit();
+}
+
+$member = $_SESSION['roboMember'];
+?>
+
+<style>
 	/* Custom modal and form styling for better visibility */
 	.modal-header {
 		background: #fff !important;
@@ -188,7 +204,7 @@
 												<div class="option-identity-wrapper mb-15">
 													<h3 class="boldy mt-0">Bitcoin Deposit</h3>
 													<div class="alert alert-warning" style="background: #fff3cd; border: 1px solid #ffeeba; color: #856404; border-radius: 5px; padding: 10px; margin-bottom: 15px;">
-														<strong>Important:</strong> Only send Bitcoin (BTC) to this address. Sending other cryptocurrencies will result in permanent loss.
+														Important: Only send Bitcoin (BTC) to this address. Sending other cryptocurrencies will result in permanent loss.
 													</div>
 													
 													<?php while($btcWallet = mysqli_fetch_assoc($btcWallets)): ?>
@@ -432,16 +448,22 @@
 					processData: false,
 					contentType: false,
 					success: function(response) {
+						console.log('Server response:', response); // Debug log
 						try {
 							var result = JSON.parse(response);
 							if(result.status === 'success') {
 								alert('Deposit submitted successfully! Admin will verify your payment within 24 hours.');
 								$('#depositModal').modal('hide');
 								$('#depositForm')[0].reset();
+								// Reload page to show updated deposit history
+								setTimeout(function() {
+									location.reload();
+								}, 2000);
 							} else {
 								alert('Error: ' + result.message);
 							}
 						} catch(e) {
+							console.error('JSON parsing error:', e, 'Response:', response);
 							alert('Error submitting deposit. Please try again.');
 						}
 					},

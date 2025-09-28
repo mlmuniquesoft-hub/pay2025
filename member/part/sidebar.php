@@ -226,59 +226,89 @@
                         </ul>
                     </li>
 					<li class="">
-                        <a href="javascript:;">
-                            <i class="fa fa-money">
-                                
-                            </i>
-                            <span class="title">Financial</span>
-                            <span class="arrow "></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a class="" href="index.php?route=wallet_user&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Add Wallet/User'); ?>">Add Wallet</a>
-                            </li>
-							<li>
-                                <a class="" href="index.php?route=deposit&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Deposit Fund'); ?>">Deposit</a>
-                            </li>
-							<li>
-                                <a class="" href="index.php?route=withdraw&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Withdraw Fund '); ?>">Withdraw</a>
-                            </li>
-                            <li>
-                                <a class="" href="index.php?route=transfer&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Transfer Fund '); ?>">Transfer</a>
-                            </li>
-                            
-                        </ul>
-                    </li>
-					
-					<li class="">
-                        <a href="javascript:;">
-                            <i class="fa fa-exchange">
+						<a href="javascript:;">
+							<i class="fa fa-money">
 								
 							</i>
-                            <span class="title">Transaction</span>
-                            <span class="arrow "></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a class="" href="index.php?route=deposit_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Deposit History'); ?>">Deposit History</a>
-                            </li>
-                            <li>
-                                <a class="" href="index.php?route=purchase_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Purchase History'); ?>">Purchase History</a>
-                            </li>
+							<span class="title">Financial</span>
+							<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
 							<li>
-                                <a class="" href="index.php?route=withdraw_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Withdraw History'); ?>">Withdraw History</a>
-                            </li>
+								<a class="" href="index.php?route=wallet_user&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Add Wallet/User'); ?>">Add Wallet</a>
+							</li>
+							<li class="">
+								<ul class="sub-menu">
+									<li>
+										<a class="" href="index.php?route=deposit&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Deposit Fund'); ?>">
+											<i class="fa fa-bitcoin" style="margin-right: 5px; color: #f7931a;"></i>
+											Add Funds
+										</a>
+									</li>
+									<li>
+										<a class="" href="index.php?route=deposit_history&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Deposit Status'); ?>">
+											<i class="fa fa-clock-o" style="margin-right: 5px; color: #ffc107;"></i>
+											Pending Status
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li>
+								<a class="" href="index.php?route=withdraw&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Withdraw Fund '); ?>">
+									<i class="fa fa-minus-circle" style="margin-right: 5px; color: #dc3545;"></i>
+									Withdraw
+								</a>
+							</li>
+							<li>
+								<a class="" href="index.php?route=transfer&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Transfer Fund '); ?>">
+									<i class="fa fa-exchange" style="margin-right: 5px; color: #6f42c1;"></i>
+									Transfer
+								</a>
+							</li>
+							
+						</ul>
+					</li>					<li class="">
+						<a href="javascript:;">
+							<i class="fa fa-exchange">
+								
+							</i>
+							<span class="title">Transaction History</span>
+							<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a class="" href="index.php?route=deposit_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('All Deposit History'); ?>">
+									<i class="fa fa-plus-square" style="margin-right: 5px; color: #28a745;"></i>
+									All Deposits
+								</a>
+							</li>
+							<li>
+								<a class="" href="index.php?route=deposit&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Manual Deposits'); ?>">
+									<i class="fa fa-file-image-o" style="margin-right: 5px; color: #17a2b8;"></i>
+									Manual Deposits
+								</a>
+							</li>
+							<li>
+								<a class="" href="index.php?route=withdraw_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Withdraw History'); ?>">
+									<i class="fa fa-minus-square" style="margin-right: 5px; color: #dc3545;"></i>
+									Withdrawals
+								</a>
+							</li>
 							
 							<li>
-                                <a class="" href="index.php?route=transfer_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Transfer History'); ?>">Transfer History</a>
-                            </li>
+								<a class="" href="index.php?route=transfer_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Transfer History'); ?>">
+									<i class="fa fa-arrow-right" style="margin-right: 5px; color: #6f42c1;"></i>
+									Transfers
+								</a>
+							</li>
 							<li>
-                                <a class="" href="index.php?route=receive_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Receive History'); ?>">Receive History</a>
-                            </li>
-                        </ul>
-                    </li>
-					
-					<li class="">
+								<a class="" href="index.php?route=receive_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Receive History'); ?>">
+									<i class="fa fa-arrow-left" style="margin-right: 5px; color: #20c997;"></i>
+									Received
+								</a>
+							</li>
+						</ul>
+					</li>					<li class="">
                         <a href="index.php?route=common_question&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('FAQ'); ?>">
                             <i class="fa fa-linode">
                               

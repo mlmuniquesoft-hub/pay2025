@@ -1,15 +1,19 @@
 <?php
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
-include('../../db/db.php');
-include('../../db/functions.php');
+include_once('../../db/db.php');
+include_once('../../db/functions.php');
 
 // Check if user is logged in
-if(!isset($_SESSION['user'])) {
-    echo json_encode(['status' => 'error', 'message' => 'Not logged in']);
+if(!isset($_SESSION['roboMember'])) {
+    echo json_encode(['status' => 'error', 'message' => 'Not logged in', 'debug_session' => $_SESSION]);
     exit;
 }
 
-$member = $_SESSION['user'];
+$member = $_SESSION['roboMember'];
 
 // Check if form was submitted with POST method
 if($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -85,7 +89,16 @@ $file_path = $upload_dir . $filename;
 
 // Create upload directory if it doesn't exist
 if(!is_dir($upload_dir)) {
-    mkdir($upload_dir, 0755, true);
+    if(!mkdir($upload_dir, 0755, true)) {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to create upload directory']);
+        exit;
+    }
+}
+
+// Check if directory is writable
+if(!is_writable($upload_dir)) {
+    echo json_encode(['status' => 'error', 'message' => 'Upload directory is not writable']);
+    exit;
 }
 
 // Move uploaded file
@@ -95,6 +108,58 @@ if(!move_uploaded_file($file['tmp_name'], $file_path)) {
 }
 
 try {
+    // Check if manual_deposits table exists and has proper structure
+    $table_check = $mysqli->query("SHOW TABLES LIKE 'manual_deposits'");
+    if(mysqli_num_rows($table_check) == 0) {
+        // Create manual_deposits table
+        $create_table_sql = "CREATE TABLE manual_deposits (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            user VARCHAR(255) NOT NULL,
+            deposit_type VARCHAR(50) NOT NULL,
+            wallet_address VARCHAR(255) NOT NULL,
+            amount DECIMAL(10,2) NOT NULL,
+            txn_hash VARCHAR(255) NOT NULL UNIQUE,
+            screenshot VARCHAR(255) NOT NULL,
+            notes TEXT,
+            status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+            admin_note TEXT,
+            verified_by VARCHAR(255),
+            verified_at TIMESTAMP NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )";
+        
+        if(!$mysqli->query($create_table_sql)) {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to create table: ' . $mysqli->error]);
+            exit;
+        }
+    } else {
+        // Check if table has all required columns and add missing ones
+        $columns_check = $mysqli->query("DESCRIBE manual_deposits");
+        $existing_columns = [];
+        while($col = mysqli_fetch_assoc($columns_check)) {
+            $existing_columns[] = $col['Field'];
+        }
+        
+        $required_columns = [
+            'notes' => 'TEXT',
+            'admin_note' => 'TEXT',
+            'verified_by' => 'VARCHAR(255)',
+            'verified_at' => 'TIMESTAMP NULL',
+            'updated_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
+        ];
+        
+        foreach($required_columns as $column => $definition) {
+            if(!in_array($column, $existing_columns)) {
+                $alter_sql = "ALTER TABLE manual_deposits ADD COLUMN `$column` $definition";
+                if(!$mysqli->query($alter_sql)) {
+                    echo json_encode(['status' => 'error', 'message' => "Failed to add column $column: " . $mysqli->error]);
+                    exit;
+                }
+            }
+        }
+    }
+    
     // Insert deposit record
     $sql = "INSERT INTO manual_deposits (
         user, 
