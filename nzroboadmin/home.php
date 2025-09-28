@@ -131,6 +131,85 @@
                         </div>
 					<?php } ?>
 					
+					<?php
+					// Get manual deposit statistics
+					$manual_deposits_stats = $mysqli->query("SELECT 
+						COUNT(*) as total_deposits,
+						SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending_count,
+						SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) as approved_count,
+						SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) as rejected_count,
+						SUM(CASE WHEN status = 'approved' THEN amount ELSE 0 END) as approved_amount,
+						SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) as pending_amount
+						FROM manual_deposits");
+					
+					$deposit_stats = $manual_deposits_stats ? $manual_deposits_stats->fetch_assoc() : [
+						'total_deposits' => 0, 'pending_count' => 0, 'approved_count' => 0, 
+						'rejected_count' => 0, 'approved_amount' => 0, 'pending_amount' => 0
+					];
+					?>
+					
+					<!-- Manual Deposits Statistics -->
+					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <a href="manual_deposits_verify.php">
+                            <div class="card summary-inline" style="background: linear-gradient(45deg, #007bff, #0056b3);">
+                                <div class="card-body">
+                                    <div class="content">
+                                        <div class="title" style="font-size: 30px; color: #FFF;"><?php echo $deposit_stats['total_deposits']; ?></div>
+                                        <div class="sub-title" style="color: #FFF;">Manual Deposits</div>
+                                    </div>
+                                    <div class="clear-both"></div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+					
+					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <a href="manual_deposits_verify.php?status=pending">
+                            <div class="card summary-inline" style="background: linear-gradient(45deg, #ffc107, #ff8c00);">
+                                <div class="card-body">
+                                    <div class="content">
+                                        <div class="title" style="font-size: 30px; color: #000;">
+											<?php echo $deposit_stats['pending_count']; ?>
+											<?php if($deposit_stats['pending_count'] > 0): ?>
+												<i class="fa fa-exclamation-triangle" style="color: #ff0000; font-size: 20px;"></i>
+											<?php endif; ?>
+										</div>
+                                        <div class="sub-title" style="color: #000;">Pending Verification</div>
+                                    </div>
+                                    <div class="clear-both"></div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+					
+					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <a href="manual_deposits_verify.php?status=approved">
+                            <div class="card summary-inline" style="background: linear-gradient(45deg, #28a745, #20c997);">
+                                <div class="card-body">
+                                    <div class="content">
+                                        <div class="title" style="font-size: 30px; color: #FFF;"><?php echo $deposit_stats['approved_count']; ?></div>
+                                        <div class="sub-title" style="color: #FFF;">Approved Deposits</div>
+                                    </div>
+                                    <div class="clear-both"></div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+					
+					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <a href="manual_deposits_verify.php">
+                            <div class="card summary-inline" style="background: linear-gradient(45deg, #17a2b8, #138496);">
+                                <div class="card-body">
+                                    <div class="content">
+                                        <div class="title" style="font-size: 24px; color: #FFF;">$<?php echo number_format($deposit_stats['approved_amount'], 2); ?></div>
+                                        <div class="sub-title" style="color: #FFF;">Approved Amount</div>
+                                    </div>
+                                    <div class="clear-both"></div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+					
 					
 					
                     <div class="row  no-margin-bottom">

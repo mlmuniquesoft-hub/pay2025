@@ -190,6 +190,32 @@
 							</a>
 						</li>
 						
+						<li class="panel panel-default dropdown">
+                                <a data-toggle="collapse" href="#dropdown-manual-deposits">
+                                    <span class="icon fa fa-coins"></span><span class="title">Manual Deposits</span>
+                                </a>
+                                <!-- Dropdown level 1 -->
+                                <div id="dropdown-manual-deposits" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <ul class="nav navbar-nav">
+                                            <li><a href="manual_deposits_verify.php">
+                                                <i class="fa fa-eye"></i> Verify Deposits
+                                                <?php 
+                                                    // Show pending count badge
+                                                    $pending_count = $mysqli->query("SELECT COUNT(*) as count FROM manual_deposits WHERE status = 'pending'")->fetch_assoc()['count'] ?? 0;
+                                                    if($pending_count > 0) {
+                                                        echo '<span class="badge" style="background: #ff6b6b; color: white; margin-left: 5px;">'.$pending_count.'</span>';
+                                                    }
+                                                ?>
+                                            </a></li>
+                                            <li><a href="manage_wallets.php">
+                                                <i class="fa fa-wallet"></i> Manage Wallets
+                                            </a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+						
 						<li>
 							<a href="send_message.php">
 								<span class="icon fa fa-file-text-o"></span><span class="title">Send Message</span>
