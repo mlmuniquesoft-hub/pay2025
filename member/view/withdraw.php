@@ -42,8 +42,16 @@
 						<span id="errorID1"></span>
 					</div>
 					<div class="form-group" id="WalletId" style="display:none;">
-						<label for="password">External Wallet ID:</label>
-						<input type="text" class="form-control" id="assignTo" placeholder="External Wallet ID">
+						<label for="password">USDT Network:</label>
+						<select class="form-control" id="usdtNetwork" style="margin-bottom:10px;">
+							<option value="">Select USDT Network</option>
+							<option value="TRC20">TRC20 (TRON Network)</option>
+							<option value="ERC20">ERC20 (Ethereum Network)</option>
+							<option value="BEP20">BEP20 (BSC Network)</option>
+						</select>
+						<label for="password">USDT Wallet Address:</label>
+						<input type="text" class="form-control" id="assignTo" placeholder="Enter USDT Wallet Address">
+						<small class="text-muted" id="networkHelp">Please select network first</small>
 						<span id="errorID"></span>
 					</div>
 					<button class="btn btn-warning btn-block btn-clean" id="alert_demo_7">Withdraw</button>
@@ -71,7 +79,163 @@
 	</div>
 	<script >
 	
-	const NootIfy=(e,t)=>{var r={};r.message=e,r.title="Transaction notify",r.icon="fa fa-ball",r.url="#",r.target="_self",$.notify(r,{type:t,placement:{from:"top",align:"right"},time:1e3,delay:0})},redf=e=>{$.ajax({method:"GET",url:"viewdata/withdraw_fund2.php",data:{serial:e}}).done(e=>{let t=JSON.parse(e);1==t[0]?(NootIfy(t[1],"success"),$(".TransMess").html("<h3 class='alert alert-success'>"+t[1]+"</h3>")):(NootIfy(t[1],"danger"),$(".TransMess").html("<h3 class='alert alert-danger'>"+t[1]+"</h3>"))})};var Riier;const Checkdf=e=>{$.ajax({method:"GET",url:"viewdata/check_req.php",data:{serial:e}}).done(t=>{console.log(t),0==t?(redf(e),clearInterval(Riier)):Riier=setInterval(Checkdf(e),1e3)})};$("#Cancel").on("click",function(){let e=$(this).attr("data-sers");$.ajax({method:"POST",url:"viewdata/cancel_trans.php",data:{sers:e}}).done(e=>{location.reload()})}),$("#Procced").on("click",function(){let e=$(this).attr("data-sers");$.ajax({method:"POST",url:"viewdata/proceed_trans.php",data:{sers:e}}).done(e=>{let t=JSON.parse(e);1==t[0]?(Checkdf(ryrOI[2]),$("#MessTrans").html("<p class='alert alert-success'>"+t[1]+"</p>")):$("#MessTrans").html("<p class='alert alert-danger'>"+t[1]+"</p>")})});var method,curencyAmn,AssIgnTo,NumberOfToken,resdf=!0;$("#alert_demo_7").click(function(e){AssIgnTo=$("#assignTo").val(),NumberOfToken=$("#NumberOfToken").val(),$.ajax({method:"GET",url:"https://api.blockcypher.com/v1/"+method.toLowerCase()+"/main/addrs/"+AssIgnTo+"/balance",dataType:"json",statusCode:{404:function(){resdf=!1,$("#errorID").text("Invalid Wallet ID"),$("#errorID").parent().addClass("has-error")},400:function(){resdf=!1,$("#errorID").text("Invalid Wallet ID"),$("#errorID").parent().addClass("has-error")}}}).done(e=>{""!=e.address?resdf?""!=NumberOfToken?""!=method?""!=AssIgnTo?swal({title:"Are you sure?",text:"Your Amount($"+NumberOfToken+") Will Rduce From Your Account",type:"warning",buttons:{confirm:{text:"Yes, Send Request",className:"btn btn-success"},cancel:{visible:!0,className:"btn btn-danger"}}}).then(e=>{if(e){$.ajax({method:"GET",url:"viewdata/send_mail_withdraw.php",data:{curencyAmn:curencyAmn,method:method,AssIgnTo:AssIgnTo,NumberOfToken:NumberOfToken,type:"withdraw"}}).done(e=>{let t,r,a,s,o=JSON.parse(e);1==o[0]?(Checkdf(o[2]),t="Success!",r=o[1],a="success",s="btn btn-success"):(t="Error!",r=o[1],a="error",s="btn btn-danger"),swal({title:t,text:r,type:a,buttons:{confirm:{className:s}}})})}else swal.close()}):($("#messToken").text("Select External Wallet ID"),$("#messToken").css("color","red")):($("#messToken").text("Select External Wallet Type"),$("#messToken").css("color","red")):($("#messToken").text("Select Withdraw Amount"),$("#messToken").css("color","red")):($("#messToken").text("Correct All Field"),$("#messToken").css("color","red")):(resdf=!1,$("#errorID").text("Invalid Wallet ID"),$("#errorID").parent().addClass("has-error"))})});const Bttc=()=>{$(".ConvertAmount").on("click",function(){$("#WalletId").slideDown(1e3),resdf=!0,method=$(this).attr("data-method"),curencyAmn=$(this).attr("data-curen"),console.log("HEllo")})};$("#NumberOfToken").on("keyup",function(){$(".LoderImage").remove(),$(".ConvertAmount").remove();let e=Number($(this).val()),t=Number($("#avaislToken").val());if(e>=5)if(e>t)resdf=!1,$("#errorID1").text("You Select More Then Available"),$("#errorID1").parent().addClass("has-error");else{resdf=!1,$("#errorID1").text(""),$("#errorID1").parent().removeClass("has-error"),$("#errorID1").parent().after("<img class='LoderImage' src='/images/loader_small.gif' style='width:100px;height:100px;'>"),$.ajax({method:"GET",url:"viewdata/exchange_curency.php",data:{amount:e}}).done(e=>{$(".ConvertAmount").remove();var t=JSON.parse(e);let r2=["<span class='badge badge-success'> Active</span>","<span class='badge badge-danger'> In Process</span>","<span class='badge badge-danger'> In Process</span>"];let r=["info","warning","warning"],a=["https://s2.coinmarketcap.com/static/img/coins/32x32/1.png","https://s2.coinmarketcap.com/static/img/coins/32x32/1027.png","https://s2.coinmarketcap.com/static/img/coins/32x32/2.png"],s=0;for(result in t) $("#errorID1").parent().after("<button class='ConvertAmount btn btn-"+r[s]+"' data-method='"+result+"' data-curen='"+t[result]+"' style='margin:10px;'>"+" "+r2[s]+" <img style='width:32px;height:32px;' src='"+a[s]+"'> "+result+"&nbsp; : &nbsp;"+t[result]+"</button>"),s++;Bttc(),$(".LoderImage").hide()})}else resdf=!1,$("#errorID1").text("Minimum Amount $30"),$("#errorID1").parent().addClass("has-error")});
+	const NootIfy=(e,t)=>{var r={};r.message=e,r.title="Transaction notify",r.icon="fa fa-ball",r.url="#",r.target="_self",$.notify(r,{type:t,placement:{from:"top",align:"right"},time:1e3,delay:0})},redf=e=>{$.ajax({method:"GET",url:"viewdata/withdraw_fund2.php",data:{serial:e}}).done(e=>{let t=JSON.parse(e);1==t[0]?(NootIfy(t[1],"success"),$(".TransMess").html("<h3 class='alert alert-success'>"+t[1]+"</h3>")):(NootIfy(t[1],"danger"),$(".TransMess").html("<h3 class='alert alert-danger'>"+t[1]+"</h3>"))})};var Riier;const Checkdf=e=>{$.ajax({method:"GET",url:"viewdata/check_req.php",data:{serial:e}}).done(t=>{console.log(t),0==t?(redf(e),clearInterval(Riier)):Riier=setInterval(Checkdf(e),1e3)})};$("#Cancel").on("click",function(){let e=$(this).attr("data-sers");$.ajax({method:"POST",url:"viewdata/cancel_trans.php",data:{sers:e}}).done(e=>{location.reload()})}),$("#Procced").on("click",function(){let e=$(this).attr("data-sers");$.ajax({method:"POST",url:"viewdata/proceed_trans.php",data:{sers:e}}).done(e=>{let t=JSON.parse(e);1==t[0]?(Checkdf(ryrOI[2]),$("#MessTrans").html("<p class='alert alert-success'>"+t[1]+"</p>")):$("#MessTrans").html("<p class='alert alert-danger'>"+t[1]+"</p>")})});var method,curencyAmn,AssIgnTo,NumberOfToken,resdf=!0;
+$("#alert_demo_7").click(function(e){
+    AssIgnTo=$("#assignTo").val();
+    NumberOfToken=$("#NumberOfToken").val();
+    let selectedNetwork=$("#usdtNetwork").val();
+    
+    // Clear previous errors
+    $("#errorID").text("");
+    $("#errorID").parent().removeClass("has-error");
+    
+    // Validate inputs
+    if(NumberOfToken == "" || AssIgnTo == "" || selectedNetwork == ""){
+        $("#errorID").text("Please fill all required fields including network selection");
+        $("#errorID").parent().addClass("has-error");
+        return;
+    }
+    
+    // Network-specific address validation
+    let isValidAddress = false;
+    let errorMessage = "";
+    
+    switch(selectedNetwork) {
+        case "TRC20":
+            // TRON addresses start with T and are 34 characters
+            if(AssIgnTo.match(/^T[A-Za-z1-9]{33}$/)) {
+                isValidAddress = true;
+            } else {
+                errorMessage = "Invalid TRC20 address. Must start with 'T' and be 34 characters long";
+            }
+            break;
+            
+        case "ERC20":
+            // Ethereum addresses start with 0x and are 42 characters
+            if(AssIgnTo.match(/^0x[a-fA-F0-9]{40}$/)) {
+                isValidAddress = true;
+            } else {
+                errorMessage = "Invalid ERC20 address. Must start with '0x' and be 42 characters long";
+            }
+            break;
+            
+        case "BEP20":
+            // BSC addresses are same format as Ethereum (0x + 40 hex chars)
+            if(AssIgnTo.match(/^0x[a-fA-F0-9]{40}$/)) {
+                isValidAddress = true;
+            } else {
+                errorMessage = "Invalid BEP20 address. Must start with '0x' and be 42 characters long";
+            }
+            break;
+            
+        default:
+            errorMessage = "Please select a valid network";
+    }
+    
+    if(!isValidAddress) {
+        $("#errorID").text(errorMessage);
+        $("#errorID").parent().addClass("has-error");
+        return;
+    }
+    
+    // Show confirmation dialog
+    swal({
+        title:"Are you sure?",
+        text:"Your Amount($"+NumberOfToken+") Will be sent to "+selectedNetwork+" network",
+        type:"warning",
+        buttons:{
+            confirm:{
+                text:"Yes, Send Request",
+                className:"btn btn-success"
+            },
+            cancel:{
+                visible:true,
+                className:"btn btn-danger"
+            }
+        }
+    }).then(function(confirmed){
+        if(confirmed){
+            $.ajax({
+                method:"GET",
+                url:"viewdata/send_mail_withdraw.php",
+                data:{
+                    curencyAmn:NumberOfToken,
+                    method:"USDT",
+                    network:selectedNetwork,
+                    AssIgnTo:AssIgnTo,
+                    NumberOfToken:NumberOfToken,
+                    type:"withdraw"
+                }
+            }).done(function(response){
+                let result = JSON.parse(response);
+                if(result[0] == 1){
+                    Checkdf(result[2]);
+                    swal({
+                        title:"Success!",
+                        text:result[1],
+                        type:"success",
+                        buttons:{
+                            confirm:{
+                                className:"btn btn-success"
+                            }
+                        }
+                    });
+                }else{
+                    swal({
+                        title:"Error!",
+                        text:result[1],
+                        type:"error",
+                        buttons:{
+                            confirm:{
+                                className:"btn btn-danger"
+                            }
+                        }
+                    });
+                }
+            });
+        }else{
+            swal.close();
+        }
+    });
+});
+
+// Network selection handler
+$("#usdtNetwork").on("change", function(){
+    let selectedNetwork = $(this).val();
+    let placeholder = "";
+    let helpText = "";
+    
+    switch(selectedNetwork) {
+        case "TRC20":
+            placeholder = "Enter TRC20 address (starts with T...)";
+            helpText = "TRON network - Lower fees, faster transactions";
+            break;
+        case "ERC20":
+            placeholder = "Enter ERC20 address (starts with 0x...)";
+            helpText = "Ethereum network - Higher fees, more secure";
+            break;
+        case "BEP20":
+            placeholder = "Enter BEP20 address (starts with 0x...)";
+            helpText = "Binance Smart Chain - Low fees, fast transactions";
+            break;
+        default:
+            placeholder = "Select network first";
+            helpText = "Please select network first";
+    }
+    
+    $("#assignTo").attr("placeholder", placeholder);
+    $("#networkHelp").text(helpText);
+    
+    // Clear any previous errors
+    $("#errorID").text("");
+    $("#errorID").parent().removeClass("has-error");
+});
+
+const Bttc=()=>{$(".ConvertAmount").on("click",function(){$("#WalletId").slideDown(1e3),resdf=!0,method=$(this).attr("data-method"),curencyAmn=$(this).attr("data-curen"),console.log("HEllo")})};$("#NumberOfToken").on("keyup",function(){$(".LoderImage").remove(),$(".ConvertAmount").remove();let e=Number($(this).val()),t=Number($("#avaislToken").val().replace('$',''));if(e>=5)if(e>t)resdf=!1,$("#errorID1").text("You Select More Then Available"),$("#errorID1").parent().addClass("has-error");else{resdf=!1,$("#errorID1").text(""),$("#errorID1").parent().removeClass("has-error"),$("#errorID1").parent().after("<img class='LoderImage' src='/images/loader_small.gif' style='width:100px;height:100px;'>");
+// Only show USDT option - no need for AJAX call
+$(".ConvertAmount").remove();
+$("#errorID1").parent().after("<button class='ConvertAmount btn btn-success' data-method='USDT' data-curen='"+e+"' style='margin:10px;'><span class='badge badge-success'> Active</span> <img style='width:32px;height:32px;' src='https://s2.coinmarketcap.com/static/img/coins/32x32/825.png'> USDT&nbsp; : &nbsp;$"+e+"</button>");
+Bttc();$(".LoderImage").hide()}else resdf=!1,$("#errorID1").text("Minimum Amount $5"),$("#errorID1").parent().addClass("has-error")});
 	</script>
 				</div>
 			</section>
