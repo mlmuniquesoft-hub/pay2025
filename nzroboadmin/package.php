@@ -30,6 +30,84 @@
     <!-- CSS App -->
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/themes/flat-blue.css">
+    
+    <!-- Enhanced Field Update Styles -->
+    <style>
+        .updating-border {
+            border: 2px solid #f39c12 !important;
+            box-shadow: 0 0 5px rgba(243, 156, 18, 0.5) !important;
+        }
+        
+        .success-border {
+            border: 2px solid #27ae60 !important;
+            box-shadow: 0 0 5px rgba(39, 174, 96, 0.5) !important;
+        }
+        
+        .error-border {
+            border: 2px solid #e74c3c !important;
+            box-shadow: 0 0 5px rgba(231, 76, 60, 0.5) !important;
+        }
+        
+        .active-selection {
+            background-color: #3498db !important;
+            color: white !important;
+        }
+        
+        .update-alert {
+            margin-bottom: 15px;
+            z-index: 1000;
+        }
+        
+        .custab input.form-control {
+            font-size: 12px;
+            padding: 4px 8px;
+            height: 32px;
+        }
+        
+        .custab .col-xs-6 {
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            min-height: 400px;
+        }
+        
+        .custab th {
+            background-color: #34495e;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 12px;
+            padding: 8px 4px;
+        }
+        
+        .custab td {
+            vertical-align: middle;
+            padding: 4px;
+        }
+        
+        .btn-sm {
+            font-size: 11px;
+            padding: 4px 8px;
+        }
+        
+        /* Responsive table improvements */
+        @media (max-width: 1200px) {
+            .custab th, .custab td {
+                font-size: 10px;
+                padding: 2px;
+            }
+            
+            .custab input.form-control {
+                font-size: 10px;
+                padding: 2px 4px;
+                height: 28px;
+            }
+        }
+    </style>
 </head>
 
 <body class="flat-blue">
@@ -194,12 +272,16 @@
 							<tr>
 								<th>Serial</th>
 								<th>Package Name</th>
-								<th>Charge</th>
-								<th>Sponsor Comission</th>
-								
+								<th>Charge ($)</th>
+								<th>React Amount ($)</th>
+								<th>Game Renew (Days)</th>
+								<th>Direct Com (%)</th>
+								<th>Ads Amount ($)</th>
+								<th>Min/Max Slots</th>
+								<th>Rank Com (%)</th>
 								<th>Tree Color</th>
-								<th>On/Off</th>
-								<th>Rank On/Off</th>
+								<th>Package Status</th>
+								<th>Rank Status</th>
 								<th class="text-center">Action</th>
 							</tr>
 						</thead>
@@ -210,12 +292,24 @@
 							?>
 								<tr class="del<?php echo $pascs['serial']; ?>">
 									<td><?php echo $n++; ?></td>
-									<td><input type="text" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="pack" value="<?php echo $pascs['pack']; ?>"></td>
-									<td><input type="text" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="pack_amn" value="<?php echo $pascs['pack_amn']; ?>"></td>
-									<td><input type="text" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="direct_com" value="<?php echo $pascs['direct_com']; ?>"></td>
-									
-									
-									<td style="width:100px;"><input type="color" class="form-control ssdd" data-serial="<?php echo $pascs['serial']; ?>" data-cols="color" value="<?php echo $pascs['color']; ?>"></td>
+									<td><input type="text" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="pack" value="<?php echo htmlspecialchars($pascs['pack']); ?>" placeholder="Package Name"></td>
+									<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="pack_amn" value="<?php echo $pascs['pack_amn']; ?>" step="0.01" placeholder="Package Amount"></td>
+									<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="react_amn" value="<?php echo $pascs['react_amn']; ?>" step="0.01" placeholder="React Amount"></td>
+									<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="game_renew" value="<?php echo $pascs['game_renew']; ?>" min="1" placeholder="Days"></td>
+									<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="direct_com" value="<?php echo $pascs['direct_com']; ?>" step="0.01" placeholder="Commission %"></td>
+									<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="ads_amount" value="<?php echo $pascs['ads_amount']; ?>" step="0.01" placeholder="Ads Amount"></td>
+									<td>
+										<div class="row">
+											<div class="col-xs-6">
+												<input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="min_slot" value="<?php echo $pascs['min_slot']; ?>" min="1" placeholder="Min" title="Min Slots">
+											</div>
+											<div class="col-xs-6">
+												<input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="max_slot" value="<?php echo $pascs['max_slot']; ?>" min="1" placeholder="Max" title="Max Slots">
+											</div>
+										</div>
+									</td>
+									<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="rank_com" value="<?php echo $pascs['rank_com']; ?>" step="0.01" placeholder="Rank Com %"></td>
+									<td style="width:80px;"><input type="color" class="form-control ssdd" data-serial="<?php echo $pascs['serial']; ?>" data-cols="color" value="<?php echo $pascs['color']; ?>" title="Package Color"></td>
 									<td>
 										<form action="#" data-toggle="validator">
 											<div class="form-group has-feedback">
@@ -294,53 +388,171 @@
             <script type="text/javascript" src="lib/js/jquery.min.js"></script>
             <script type="text/javascript" src="lib/js/bootstrap.min.js"></script>
             <script>
-				$(document).ready(function(){
-					$(".uupp").on("keyup", function(){
-						var vals=$(this).val();
-						var srl=$(this).attr("data-serial");
-						var cols=$(this).attr("data-cols");
-						
-						if(vals!=''){
-							var reqq=$.ajax({
-								method:"GET",
-								url: "info_update_action.php",
-								data:{vas: vals, sers: srl, coll:cols, tbs:"package"}
-							});
+			$(document).ready(function(){
+				// Enhanced field-wise update system with debouncing
+				var updateTimeout;
+				
+				// Real-time field updates with debouncing
+				$(".uupp").on("input keyup change", function(){
+					var element = $(this);
+					var vals = element.val().trim();
+					var srl = element.attr("data-serial");
+					var cols = element.attr("data-cols");
+					
+					// Clear previous timeout
+					clearTimeout(updateTimeout);
+					
+					// Visual feedback
+					element.removeClass('success-border error-border').addClass('updating-border');
+					
+					// Debounced update (wait 800ms after user stops typing)
+					updateTimeout = setTimeout(function(){
+						if(vals !== ''){
+							// Validate based on field type
+							if(validateField(cols, vals)){
+								$.ajax({
+									method: "POST",
+									url: "info_update_action.php",
+									data: {
+										vas: vals, 
+										sers: srl, 
+										coll: cols, 
+										tbs: "package"
+									},
+									success: function(response){
+										element.removeClass('updating-border error-border').addClass('success-border');
+										showUpdateMessage('Field updated successfully!', 'success');
+										// Auto-remove success styling after 2 seconds
+										setTimeout(function(){
+											element.removeClass('success-border');
+										}, 2000);
+									},
+									error: function(){
+										element.removeClass('updating-border success-border').addClass('error-border');
+										showUpdateMessage('Update failed. Please try again.', 'error');
+									}
+								});
+							} else {
+								element.removeClass('updating-border success-border').addClass('error-border');
+								showUpdateMessage('Invalid value for ' + cols, 'error');
+							}
+						} else {
+							element.removeClass('updating-border success-border error-border');
 						}
-						
-					});
-					$(".upgg").on("click", function(e){
-						//e.preventDefault();
-						//e.stopPropagation();
-						var vals=$(this).attr("data-vals");
-						var srl=$(this).attr("data-serial");
-						var cols=$(this).attr("data-cols");
-						if(vals=="Delete"){
-							$(".del"+srl).hide();
-						}
-						if(vals!=''){
-							var reqq=$.ajax({
-								method:"GET",
-								url: "info_update_action.php",
-								data:{vas: vals, sers: srl, coll:cols, tbs:"package"}
-							});
-						}
-					});
-					$(".ssdd").on("change", function(){
-						var vals=$(this).val();
-						var srl=$(this).attr("data-serial");
-						var cols=$(this).attr("data-cols");
-						if(vals!=''){
-							var reqq=$.ajax({
-								method:"GET",
-								url: "info_update_action.php",
-								data:{vas: vals, sers: srl, coll:cols, tbs:"package"}
-							});
-						}
-					})
+					}, 800);
 				});
-			
-			</script>
+				
+				// Radio button and action button updates
+				$(".upgg").on("click", function(e){
+					var element = $(this);
+					var vals = element.attr("data-vals");
+					var srl = element.attr("data-serial");
+					var cols = element.attr("data-cols");
+					
+					if(vals === "Delete"){
+						if(confirm('Are you sure you want to delete this package?')){
+							$(".del" + srl).fadeOut('slow');
+							$.ajax({
+								method: "POST",
+								url: "info_update_action.php",
+								data: {vas: vals, sers: srl, coll: cols, tbs: "package"},
+								success: function(){
+									showUpdateMessage('Package deleted successfully!', 'success');
+								},
+								error: function(){
+									$(".del" + srl).fadeIn('slow');
+									showUpdateMessage('Delete failed. Please try again.', 'error');
+								}
+							});
+						}
+					} else if(vals !== ''){
+						$.ajax({
+							method: "POST",
+							url: "info_update_action.php",
+							data: {vas: vals, sers: srl, coll: cols, tbs: "package"},
+							success: function(){
+								showUpdateMessage('Status updated successfully!', 'success');
+								// Update visual feedback for radio buttons
+								element.closest('td').find('.upgg').removeClass('active-selection');
+								element.addClass('active-selection');
+							},
+							error: function(){
+								showUpdateMessage('Status update failed. Please try again.', 'error');
+							}
+						});
+					}
+				});
+				
+				// Color picker updates
+				$(".ssdd").on("change", function(){
+					var element = $(this);
+					var vals = element.val();
+					var srl = element.attr("data-serial");
+					var cols = element.attr("data-cols");
+					
+					if(vals !== ''){
+						$.ajax({
+							method: "POST",
+							url: "info_update_action.php",
+							data: {vas: vals, sers: srl, coll: cols, tbs: "package"},
+							success: function(){
+								showUpdateMessage('Color updated successfully!', 'success');
+								// Visual feedback for color change
+								element.css('border', '2px solid ' + vals);
+								setTimeout(function(){
+									element.css('border', '');
+								}, 2000);
+							},
+							error: function(){
+								showUpdateMessage('Color update failed. Please try again.', 'error');
+							}
+						});
+					}
+				});
+				
+				// Field validation function
+				function validateField(fieldName, value) {
+					switch(fieldName) {
+						case 'pack_amn':
+						case 'react_amn':
+						case 'ads_amount':
+							return !isNaN(value) && parseFloat(value) >= 0;
+						case 'game_renew':
+						case 'min_slot':
+						case 'max_slot':
+						case 'rank_slot':
+							return !isNaN(value) && parseInt(value) > 0;
+						case 'direct_com':
+						case 'rank_com':
+							return !isNaN(value) && parseFloat(value) >= 0 && parseFloat(value) <= 100;
+						case 'pack':
+							return value.length > 0 && value.length <= 255;
+						default:
+							return true;
+					}
+				}
+				
+				// Update message display function
+				function showUpdateMessage(message, type) {
+					var alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+					var alertHtml = '<div class="alert ' + alertClass + ' alert-dismissible fade in update-alert" role="alert">' +
+									'<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>' +
+									message + '</div>';
+					
+					// Remove existing alerts
+					$('.update-alert').remove();
+					
+					// Add new alert
+					$('.panel-body').prepend(alertHtml);
+					
+					// Auto-remove after 3 seconds
+					setTimeout(function(){
+						$('.update-alert').fadeOut('slow', function(){
+							$(this).remove();
+						});
+					}, 3000);
+				}
+			});			</script>
             <script type="text/javascript" src="lib/js/Chart.min.js"></script>
             <script type="text/javascript" src="lib/js/bootstrap-switch.min.js"></script>
             <script type="text/javascript" src="lib/js/jquery.matchHeight-min.js"></script>
