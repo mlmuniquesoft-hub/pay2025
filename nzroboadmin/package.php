@@ -13,7 +13,13 @@
 <html>
 
 <head>
-    <title><?php echo $Adminnb; ?></title>
+    <title>							<tr class="del<?php echo $pascs['serial']; ?>">
+								<td><?php echo $n++; ?></td>
+								<td><input type="text" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="pack" value="<?php echo htmlspecialchars($pascs['pack']); ?>" placeholder="Package Name"></td>
+								<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="min_deposit" value="<?php echo $pascs['min_deposit'] ?? $pascs['pack_amn']; ?>" step="0.01" placeholder="Min Deposit" min="1"></td>
+								<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="max_deposit" value="<?php echo $pascs['max_deposit'] ?? ($pascs['pack_amn'] * 10); ?>" step="0.01" placeholder="Max Deposit" min="1"></td>
+								<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="react_amn" value="<?php echo $pascs['react_amn']; ?>" step="0.01" placeholder="Multiplier" min="1" title="Return = Deposit × This Value"></td>
+								<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="game_renew" value="<?php echo $pascs['game_renew']; ?>" min="1" placeholder="Days"></td>echo $Adminnb; ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Fonts -->
     <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300,400' rel='stylesheet' type='text/css'>
@@ -107,6 +113,26 @@
                 height: 28px;
             }
         }
+        
+        /* Deposit calculation example styling */
+        .deposit-example {
+            background: #ecf0f1;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        
+        .deposit-example strong {
+            color: #27ae60;
+        }
+        
+        .multiplier-hint {
+            color: #7f8c8d;
+            font-style: italic;
+            font-size: 12px;
+        }
     </style>
 </head>
 
@@ -145,15 +171,27 @@
 														</div>
 													</div>
 													<div class="form-group">
-														<label for="inputEmail3" class="col-sm-3 control-label">Package Amount ($) :</label>
-														<div class="col-sm-9">
-															<input type="number" name="pack_amn" class="form-control" placeholder="Package Amount ($)" step="0.01" required />
+														<label for="inputEmail3" class="col-sm-3 control-label">Deposit Range ($) :</label>
+														<div class="col-sm-4">
+															<input type="number" name="min_deposit" class="form-control" placeholder="Min Deposit ($)" step="0.01" min="1" required />
+														</div>
+														<div class="col-sm-4">
+															<input type="number" name="max_deposit" class="form-control" placeholder="Max Deposit ($)" step="0.01" min="1" required />
 														</div>
 													</div>
 													<div class="form-group">
-														<label for="inputEmail3" class="col-sm-3 control-label">React Amount ($) :</label>
+														<label for="inputEmail3" class="col-sm-3 control-label">Return Multiplier :</label>
 														<div class="col-sm-9">
-															<input type="number" name="react_amn" class="form-control" placeholder="React/Return Amount ($)" step="0.01" required />
+															<input type="number" name="react_amn" class="form-control" placeholder="Return Multiplier (e.g., 2 means 2x return)" step="0.01" min="1" required />
+															<small class="help-block">Example: 2 means $100 deposit × 2 = $200 return</small>
+															
+															<div class="deposit-example">
+																<strong>Deposit Slot System Examples:</strong><br>
+																• Basic Package: $100-$999 × 2.0 = $200-$1,998 return<br>
+																• Premium Package: $1,000-$4,999 × 2.5 = $2,500-$12,497 return<br>
+																• VIP Package: $5,000+ × 3.0 = $15,000+ return<br>
+																<div class="multiplier-hint">Users can deposit any amount within the range and get multiplied return after game period.</div>
+															</div>
 														</div>
 													</div>
 													<div class="form-group">
@@ -272,13 +310,13 @@
 							<tr>
 								<th>Serial</th>
 								<th>Package Name</th>
-								<th>Charge ($)</th>
-								<th>React Amount ($)</th>
+								<th>Min Deposit ($)</th>
+								<th>Max Deposit ($)</th>
+								<th>Multiplier (x)</th>
 								<th>Game Renew (Days)</th>
 								<th>Direct Com (%)</th>
 								<th>Ads Amount ($)</th>
 								<th>Min/Max Slots</th>
-								<th>Rank Com (%)</th>
 								<th>Tree Color</th>
 								<th>Package Status</th>
 								<th>Rank Status</th>
@@ -293,8 +331,9 @@
 								<tr class="del<?php echo $pascs['serial']; ?>">
 									<td><?php echo $n++; ?></td>
 									<td><input type="text" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="pack" value="<?php echo htmlspecialchars($pascs['pack']); ?>" placeholder="Package Name"></td>
-									<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="pack_amn" value="<?php echo $pascs['pack_amn']; ?>" step="0.01" placeholder="Package Amount"></td>
-									<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="react_amn" value="<?php echo $pascs['react_amn']; ?>" step="0.01" placeholder="React Amount"></td>
+									<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="min_deposit" value="<?php echo $pascs['min_deposit'] ?? $pascs['pack_amn']; ?>" step="0.01" placeholder="Min Deposit" min="1"></td>
+									<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="max_deposit" value="<?php echo $pascs['max_deposit'] ?? ($pascs['pack_amn'] * 10); ?>" step="0.01" placeholder="Max Deposit" min="1"></td>
+									<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="react_amn" value="<?php echo $pascs['react_amn']; ?>" step="0.01" placeholder="Multiplier" min="1" title="Return = Deposit × This Value"></td>
 									<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="game_renew" value="<?php echo $pascs['game_renew']; ?>" min="1" placeholder="Days"></td>
 									<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="direct_com" value="<?php echo $pascs['direct_com']; ?>" step="0.01" placeholder="Commission %"></td>
 									<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="ads_amount" value="<?php echo $pascs['ads_amount']; ?>" step="0.01" placeholder="Ads Amount"></td>
@@ -514,9 +553,12 @@
 				function validateField(fieldName, value) {
 					switch(fieldName) {
 						case 'pack_amn':
-						case 'react_amn':
+						case 'min_deposit':
+						case 'max_deposit':
 						case 'ads_amount':
 							return !isNaN(value) && parseFloat(value) >= 0;
+						case 'react_amn':
+							return !isNaN(value) && parseFloat(value) >= 1;
 						case 'game_renew':
 						case 'min_slot':
 						case 'max_slot':
@@ -575,8 +617,9 @@
                     // Auto-populate based on your package structure
                     switch(packageType) {
                         case 'Basic Package':
-                            $('input[name="pack_amn"]').val('500');
-                            $('input[name="react_amn"]').val('525'); // 5% return
+                            $('input[name="min_deposit"]').val('100');
+                            $('input[name="max_deposit"]').val('999');
+                            $('input[name="react_amn"]').val('2'); // 2x multiplier
                             $('input[name="game_renew"]').val('30');
                             $('input[name="direct_com"]').val('5');
                             $('input[name="ads_amount"]').val('50');
@@ -585,13 +628,14 @@
                             $('input[name="rank_com"]').val('2');
                             $('input[name="rank_slot"]').val('5');
                             $('input[name="color"]').val('#3498db');
-                            $('textarea[name="dessc"]').val('Entry-level package for new investors. Investment range: $100-$999. Daily ROI up to 0.5%. Perfect for beginners starting their trading journey.');
-                            $('textarea[name="cid_dessc"]').val('Basic tier with standard features and support');
+                            $('textarea[name="dessc"]').val('Entry-level package for new investors. Deposit range: $100-$999. Return: Deposit × 2. Perfect for beginners starting their investment journey.');
+                            $('textarea[name="cid_dessc"]').val('Basic tier: Deposit $100-$999, get 2x return after game period');
                             $('input[name="active_country"]').val('US,CA,UK,AU');
                             break;
                         case 'Premium Package':
-                            $('input[name="pack_amn"]').val('2500');
-                            $('input[name="react_amn"]').val('2675'); // 7% return
+                            $('input[name="min_deposit"]').val('1000');
+                            $('input[name="max_deposit"]').val('4999');
+                            $('input[name="react_amn"]').val('2.5'); // 2.5x multiplier
                             $('input[name="game_renew"]').val('45');
                             $('input[name="direct_com"]').val('7');
                             $('input[name="ads_amount"]').val('150');
@@ -600,13 +644,14 @@
                             $('input[name="rank_com"]').val('3');
                             $('input[name="rank_slot"]').val('10');
                             $('input[name="color"]').val('#e67e22');
-                            $('textarea[name="dessc"]').val('Mid-tier package for experienced investors. Investment range: $1,000-$4,999. Daily ROI up to 0.7%. Enhanced features and priority support.');
-                            $('textarea[name="cid_dessc"]').val('Premium tier with advanced features and priority support');
+                            $('textarea[name="dessc"]').val('Mid-tier package for experienced investors. Deposit range: $1,000-$4,999. Return: Deposit × 2.5. Enhanced features and priority support.');
+                            $('textarea[name="cid_dessc"]').val('Premium tier: Deposit $1,000-$4,999, get 2.5x return after game period');
                             $('input[name="active_country"]').val('US,CA,UK,AU,DE,FR,JP');
                             break;
                         case 'VIP Package':
-                            $('input[name="pack_amn"]').val('7500');
-                            $('input[name="react_amn"]').val('8250'); // 10% return
+                            $('input[name="min_deposit"]').val('5000');
+                            $('input[name="max_deposit"]').val('999999'); // No upper limit
+                            $('input[name="react_amn"]').val('3'); // 3x multiplier
                             $('input[name="game_renew"]').val('60');
                             $('input[name="direct_com"]').val('10');
                             $('input[name="ads_amount"]').val('500');
@@ -615,8 +660,8 @@
                             $('input[name="rank_com"]').val('5');
                             $('input[name="rank_slot"]').val('20');
                             $('input[name="color"]').val('#8e44ad');
-                            $('textarea[name="dessc"]').val('Premium package for high-value investors. Investment range: $5,000+. Daily ROI up to 1%. VIP features, dedicated support, and exclusive benefits.');
-                            $('textarea[name="cid_dessc"]').val('VIP tier with exclusive features and dedicated account manager');
+                            $('textarea[name="dessc"]').val('Premium package for high-value investors. Deposit range: $5,000+. Return: Deposit × 3. VIP features, dedicated support, and exclusive benefits.');
+                            $('textarea[name="cid_dessc"]').val('VIP tier: Deposit $5,000+, get 3x return after game period');
                             $('input[name="active_country"]').val('US,CA,UK,AU,DE,FR,JP,SG,HK,CH');
                             break;
                     }

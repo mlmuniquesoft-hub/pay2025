@@ -43,7 +43,7 @@
 		// Whitelist allowed tables and columns for security
 		$allowed_tables = ['package', 'agent', 'users'];
 		$allowed_columns = [
-			'package' => ['pack', 'pack_amn', 'react_amn', 'game_renew', 'color', 'dessc', 'cid_dessc', 
+			'package' => ['pack', 'pack_amn', 'min_deposit', 'max_deposit', 'react_amn', 'game_renew', 'color', 'dessc', 'cid_dessc', 
 						  'ads_amount', 'direct_com', 'min_slot', 'max_slot', 'rank_com', 'rank_slot', 
 						  'rank_active', 'active_country', 'inactive_country', 'active'],
 			'agent' => ['name', 'email', 'phone', 'status'],
@@ -64,10 +64,16 @@
 		
 		// Additional validation for package table
 		if($table === 'package') {
-			if($clos === 'pack_amn' || $clos === 'react_amn' || $clos === 'ads_amount') {
+			if($clos === 'pack_amn' || $clos === 'min_deposit' || $clos === 'max_deposit' || $clos === 'ads_amount') {
 				if(!is_numeric($value) || floatval($value) < 0) {
 					http_response_code(400);
 					echo json_encode(['error' => 'Invalid amount value']);
+					exit();
+				}
+			} elseif($clos === 'react_amn') {
+				if(!is_numeric($value) || floatval($value) < 1) {
+					http_response_code(400);
+					echo json_encode(['error' => 'Multiplier must be at least 1']);
 					exit();
 				}
 			} elseif($clos === 'direct_com' || $clos === 'rank_com') {
