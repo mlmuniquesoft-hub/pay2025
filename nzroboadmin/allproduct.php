@@ -52,8 +52,8 @@
 									<div class="panel-body" style="background-color: azure;">
 										<div class="row">
 											<div class="col-lg-12">
-												<p style="color: red;font-size:16px;"><?php echo $_SESSION['msg']; ?></p> 	  	
-												<p style="color: green;font-size:16px;"><?php echo $_SESSION['msg1']; ?></p> 	  	
+												<p style="color: red;font-size:16px;"><?php echo isset($_SESSION['msg']) ? $_SESSION['msg'] : ''; ?></p> 	  	
+												<p style="color: green;font-size:16px;"><?php echo isset($_SESSION['msg1']) ? $_SESSION['msg1'] : ''; ?></p> 	  	
 														<div class="box-body table-responsive">
                    <table  id="example1" class="table  table-bordered ">
     <thead>

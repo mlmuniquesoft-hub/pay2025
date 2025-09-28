@@ -59,7 +59,7 @@ $result=mysqli_fetch_array($exe);
 ?>
 <form action="notice_action_1.php" method="POST" > 
 	<div class="form-group">
-		<p style="font-size:18px;"><span id="fade"><?php echo $_SESSION['msg']; ?></span></p>
+		<p style="font-size:18px;"><span id="fade"><?php echo isset($_SESSION['msg']) ? $_SESSION['msg'] : ''; ?></span></p>
 	</div>
 	<div class="form-group">
 		<label>Font-Type:</label>

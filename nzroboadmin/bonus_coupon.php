@@ -51,8 +51,8 @@
 									<div class="panel-body" style="background-color: azure;">
 										<div class="row">
 											<div class="col-lg-12">
-												<p style="color: red;font-size:16px;"><?php echo $_SESSION['msg']; ?></p> 	  	
-												<p style="color: green;font-size:16px;"><?php echo $_SESSION['msg1']; ?></p> 	  	
+												<p style="color: red;font-size:16px;"><?php echo isset($_SESSION['msg']) ? $_SESSION['msg'] : ''; ?></p> 	  	
+												<p style="color: green;font-size:16px;"><?php echo isset($_SESSION['msg1']) ? $_SESSION['msg1'] : ''; ?></p> 	  	
 												<form class="form-horizontal" action="bonusCoupon_create_action.php" method="POST">
 													<div class="form-group">
 														<label for="inputEmail3" class="col-sm-3 control-label">Coupon Quantity:</label>
