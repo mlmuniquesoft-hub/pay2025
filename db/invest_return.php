@@ -302,40 +302,7 @@
 		}
 	}
 	
-	// Process Generation Bonuses after daily returns (with timeout protection)
-	echo "\n🎯 Processing Generation Bonuses...\n";
-	
-	// Check if this is being called from web interface (has timeout risk)
-	$is_web_request = isset($_SERVER['HTTP_HOST']);
-	
-	if($is_web_request) {
-		// For web requests, run generation in background or skip if too many users
-		$user_count_check = mysqli_fetch_assoc($mysqli->query("SELECT COUNT(DISTINCT m.user) as total FROM `member` m INNER JOIN `upgrade` u ON m.user = u.user WHERE DATE(m.time)<='".$date."' AND m.paid='1'"));
-		$total_users = ($user_count_check && $user_count_check['total']) ? (int)$user_count_check['total'] : 0;
-		
-		if($total_users > 500) {
-			echo "⚠️ Large user base ($total_users users) detected. Generation bonus processing should be run via cron job to avoid timeouts.\n";
-			echo "✅ Daily returns completed. Run generation bonuses separately for optimal performance.\n";
-		} else {
-			require_once 'generation.php';
-			$generation_result = Generationoncome($date);
-			if($generation_result) {
-				echo "✅ Generation bonuses processed!\n";
-			} else {
-				echo "⚠️ Generation bonus processing had issues. Check logs.\n";
-			}
-		}
-	} else {
-		// For command line/cron, process normally
-		require_once 'generation.php';
-		$generation_result = Generationoncome($date);
-		if($generation_result) {
-			echo "✅ Generation bonuses processed!\n";
-		} else {
-			echo "⚠️ Generation bonus processing had issues. Check logs.\n";
-		}
-	}
-	
-	echo "\n🎉 Daily Investment Return Process Completed Successfully!\n";
+	echo "\n� Daily Investment Return Process Completed Successfully!\n";
 	echo "📈 Total users processed: $totalProcessed\n";
+	echo "\nℹ️ Note: Generation bonuses should be processed separately using cron_generation_bonus.php to avoid timeouts.\n";
 ?>

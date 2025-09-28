@@ -255,9 +255,47 @@ if(!isset($_SESSION['Admin'])){
             if(mysqli_num_rows($pin_check) == 0){
                 $error = "Invalid Transaction PIN";
             } else {
-                // Execute daily returns
+                // Execute daily returns only (generation bonuses separate)
                 require_once '../db/invest_return.php';
-                $success = "Daily returns executed successfully!";
+                $success = "Daily returns executed successfully! Note: Generation bonuses should be run separately.";
+            }
+        }
+    }
+
+    // Generation bonus execution (separate from daily returns)
+    if(isset($_POST['manual_generation'])){
+        $transaction_pin = trim($_POST['generation_pin']);
+        $target_date = trim($_POST['generation_date']);
+        
+        if(empty($transaction_pin)){
+            $error = "Transaction PIN is required";
+        } elseif(empty($target_date)){
+            $error = "Date is required for generation bonus processing";
+        } else {
+            // Verify transaction PIN
+            $pin_check = mysqli_query($mysqli, "SELECT * FROM admin WHERE user_id='".$_SESSION['Admin']."' AND tr_password='".$transaction_pin."'");
+            if(mysqli_num_rows($pin_check) == 0){
+                $error = "Invalid Transaction PIN";
+            } else {
+                // Check user count to warn about potential timeout
+                $user_count_check = mysqli_fetch_assoc(mysqli_query($mysqli, "SELECT COUNT(DISTINCT m.user) as total FROM `member` m INNER JOIN `upgrade` u ON m.user = u.user WHERE DATE(m.time)<='".$target_date."' AND m.paid='1'"));
+                $total_users = ($user_count_check && $user_count_check['total']) ? (int)$user_count_check['total'] : 0;
+                
+                if($total_users > 200) {
+                    $error = "Warning: Large user base ($total_users users) detected. This may cause timeout. Consider using cron job: 'php db/cron_generation_bonus.php $target_date'";
+                } else {
+                    // Execute generation bonuses for smaller user bases
+                    require_once '../db/generation.php';
+                    ob_start();
+                    $result = Generationoncome($target_date);
+                    $output = ob_get_clean();
+                    
+                    if($result) {
+                        $success = "Generation bonuses processed successfully for $target_date! Processed $total_users users.";
+                    } else {
+                        $error = "Generation bonus processing failed. Output: " . $output;
+                    }
+                }
             }
         }
     }
@@ -835,6 +873,47 @@ if(!isset($_SESSION['Admin'])){
                                                     </div>
                                                     <div class="alert alert-warning">
                                                         <i class="fa fa-warning"></i> <strong>Warning:</strong> This will immediately process daily returns for all eligible users. Use with caution!
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Generation Bonus Execution (Separate) -->
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading">
+                                                <i class="fa fa-sitemap"></i> Generation Bonus Processing
+                                            </div>
+                                            <div class="panel-body">
+                                                <form method="POST" onsubmit="return confirm('Are you sure you want to process generation bonuses? This may take several minutes for large user bases.');">
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>Target Date <span class="text-danger">*</span></label>
+                                                                <input type="date" class="form-control" name="generation_date" value="<?php echo date('Y-m-d'); ?>" required>
+                                                                <small class="text-muted">Date for generation bonus processing</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>Transaction PIN <span class="text-danger">*</span></label>
+                                                                <input type="password" class="form-control" name="generation_pin" placeholder="Enter your transaction PIN" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>&nbsp;</label>
+                                                                <div>
+                                                                    <button type="submit" name="manual_generation" class="btn btn-info btn-lg">
+                                                                        <i class="fa fa-sitemap"></i> Process Generation
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="alert alert-info">
+                                                        <i class="fa fa-info-circle"></i> <strong>Info:</strong> 
+                                                        This processes 33% generation bonuses for all users. For large user bases (>200 users), consider using the cron script:
+                                                        <br><code style="background: #f5f5f5; padding: 2px 5px;">php db/cron_generation_bonus.php YYYY-MM-DD</code>
                                                     </div>
                                                 </form>
                                             </div>
