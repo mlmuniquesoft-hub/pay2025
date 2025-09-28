@@ -122,54 +122,64 @@
 	function createGenerationIncomeTable(){
 		global $mysqli;
 		
-		// Create or update generation_income table
-		$create_table = "CREATE TABLE IF NOT EXISTS `generation_income` (
-			`id` int(11) NOT NULL AUTO_INCREMENT,
-			`user` varchar(50) NOT NULL,
-			`amount` decimal(15,2) DEFAULT 0.00,
-			`shop` decimal(15,2) DEFAULT 0.00,
-			`date` date NOT NULL,
-			`from_user` varchar(50) DEFAULT NULL,
-			`level` tinyint(2) DEFAULT NULL,
-			`percentage` decimal(5,2) DEFAULT NULL,
-			`roi_amount` decimal(15,2) DEFAULT NULL,
-			`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
-			PRIMARY KEY (`id`),
-			KEY `idx_user_date` (`user`, `date`),
-			KEY `idx_from_user` (`from_user`),
-			KEY `idx_level` (`level`)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+		// First, check if table exists
+		$table_exists = mysqli_query($mysqli, "SHOW TABLES LIKE 'generation_income'");
 		
-		mysqli_query($mysqli, $create_table);
-		
-		// Add new columns if they don't exist
-		$columns_to_add = array(
-			'from_user' => 'ALTER TABLE generation_income ADD COLUMN from_user varchar(50) DEFAULT NULL',
-			'level' => 'ALTER TABLE generation_income ADD COLUMN level tinyint(2) DEFAULT NULL', 
-			'percentage' => 'ALTER TABLE generation_income ADD COLUMN percentage decimal(5,2) DEFAULT NULL',
-			'roi_amount' => 'ALTER TABLE generation_income ADD COLUMN roi_amount decimal(15,2) DEFAULT NULL',
-			'created_at' => 'ALTER TABLE generation_income ADD COLUMN created_at timestamp DEFAULT CURRENT_TIMESTAMP'
-		);
-		
-		foreach($columns_to_add as $column => $sql){
-			$check = mysqli_query($mysqli, "SHOW COLUMNS FROM generation_income LIKE '$column'");
-			if(mysqli_num_rows($check) == 0){
-				mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($table_exists) == 0) {
+			// Create new table with all required columns
+			$create_table = "CREATE TABLE `generation_income` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`user` varchar(50) NOT NULL,
+				`amount` decimal(15,2) DEFAULT 0.00,
+				`shop` decimal(15,2) DEFAULT 0.00,
+				`date` date NOT NULL,
+				`from_user` varchar(50) DEFAULT NULL,
+				`level` tinyint(2) DEFAULT NULL,
+				`percentage` decimal(5,2) DEFAULT NULL,
+				`roi_amount` decimal(15,2) DEFAULT NULL,
+				`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+				PRIMARY KEY (`id`),
+				KEY `idx_user_date` (`user`, `date`),
+				KEY `idx_from_user` (`from_user`),
+				KEY `idx_level` (`level`)
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+			
+			if(!mysqli_query($mysqli, $create_table)) {
+				echo "Error creating generation_income table: " . mysqli_error($mysqli) . "\n";
+				return false;
+			}
+		} else {
+			// Table exists, add missing columns
+			$columns_to_add = array(
+				'from_user' => "ALTER TABLE generation_income ADD COLUMN from_user varchar(50) DEFAULT NULL",
+				'level' => "ALTER TABLE generation_income ADD COLUMN level tinyint(2) DEFAULT NULL", 
+				'percentage' => "ALTER TABLE generation_income ADD COLUMN percentage decimal(5,2) DEFAULT NULL",
+				'roi_amount' => "ALTER TABLE generation_income ADD COLUMN roi_amount decimal(15,2) DEFAULT NULL",
+				'created_at' => "ALTER TABLE generation_income ADD COLUMN created_at timestamp DEFAULT CURRENT_TIMESTAMP"
+			);
+			
+			foreach($columns_to_add as $column => $sql){
+				$check = mysqli_query($mysqli, "SHOW COLUMNS FROM generation_income LIKE '$column'");
+				if(!$check || mysqli_num_rows($check) == 0){
+					mysqli_query($mysqli, $sql);
+				}
+			}
+			
+			// Add indexes if they don't exist
+			$indexes = array(
+				'idx_from_user' => 'ALTER TABLE generation_income ADD INDEX idx_from_user (from_user)',
+				'idx_level' => 'ALTER TABLE generation_income ADD INDEX idx_level (level)'
+			);
+			
+			foreach($indexes as $index_name => $sql){
+				$check = mysqli_query($mysqli, "SHOW INDEX FROM generation_income WHERE Key_name = '$index_name'");
+				if(!$check || mysqli_num_rows($check) == 0){
+					mysqli_query($mysqli, $sql);
+				}
 			}
 		}
 		
-		// Add indexes if they don't exist
-		$indexes = array(
-			'idx_from_user' => 'ALTER TABLE generation_income ADD INDEX idx_from_user (from_user)',
-			'idx_level' => 'ALTER TABLE generation_income ADD INDEX idx_level (level)'
-		);
-		
-		foreach($indexes as $index_name => $sql){
-			$check = mysqli_query($mysqli, "SHOW INDEX FROM generation_income WHERE Key_name = '$index_name'");
-			if(!$check || mysqli_num_rows($check) == 0){
-				mysqli_query($mysqli, $sql);
-			}
-		}
+		return true;
 	}
 
 	function user_update11($U_ID,$date){
@@ -227,19 +237,34 @@
 				$bonus_amount = ($daily_roi * $percentage) / 100;
 				
 				if($bonus_amount > 0){
-					// Check if bonus already exists for today
-					$existing_bonus = mysqli_num_rows($mysqli->query("SELECT `id` FROM `generation_income` WHERE `user`='".$sponsor_id."' AND `date`='".$date."' AND `from_user`='".$memberid."' AND `level`='".$level."'"));
+					// Check if bonus already exists for today (use safer query)
+					$check_query = "SELECT COUNT(*) as count_records FROM `generation_income` 
+								   WHERE `user`='$sponsor_id' AND `date`='$date' 
+								   AND `from_user`='$memberid' AND `level`='$level'";
+					$existing_check = mysqli_fetch_assoc($mysqli->query($check_query));
+					$existing_bonus = ($existing_check && $existing_check['count_records']) ? (int)$existing_check['count_records'] : 0;
 					
 					if($existing_bonus == 0){
 						// Insert new generation bonus
-						$mysqli->query("INSERT INTO `generation_income`(`user`, `amount`, `date`, `from_user`, `level`, `percentage`, `roi_amount`) VALUES ('".$sponsor_id."', '".$bonus_amount."', '".$date."', '".$memberid."', '".$level."', '".$percentage."', '".$daily_roi."')");
+						$insert_query = "INSERT INTO `generation_income`(`user`, `amount`, `date`, `from_user`, `level`, `percentage`, `roi_amount`) 
+										VALUES ('$sponsor_id', '$bonus_amount', '$date', '$memberid', '$level', '$percentage', '$daily_roi')";
+						if(!mysqli_query($mysqli, $insert_query)) {
+							echo "Error inserting generation bonus: " . mysqli_error($mysqli) . "\n";
+							continue;
+						}
 						
 						// Add to transaction history
 						$description = "Level $level Generation Bonus ($percentage%) from $memberid - ROI: $".number_format($daily_roi, 2);
-						$mysqli->query("INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) VALUES ('".$sponsor_id."', '".$date."', '".$description."', '".$bonus_amount."', 'credit')");
+						$view_query = "INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) 
+									  VALUES ('$sponsor_id', '$date', '$description', '$bonus_amount', 'credit')";
+						mysqli_query($mysqli, $view_query);
 					} else {
 						// Update existing bonus
-						$mysqli->query("UPDATE `generation_income` SET `amount`='".$bonus_amount."', `percentage`='".$percentage."', `roi_amount`='".$daily_roi."' WHERE `user`='".$sponsor_id."' AND `date`='".$date."' AND `from_user`='".$memberid."' AND `level`='".$level."'");
+						$update_query = "UPDATE `generation_income` SET `amount`='$bonus_amount', `percentage`='$percentage', `roi_amount`='$daily_roi' 
+										WHERE `user`='$sponsor_id' AND `date`='$date' AND `from_user`='$memberid' AND `level`='$level'";
+						if(!mysqli_query($mysqli, $update_query)) {
+							echo "Error updating generation bonus: " . mysqli_error($mysqli) . "\n";
+						}
 					}
 				}
 			}
@@ -259,7 +284,10 @@
 		global $mysqli;
 		
 		// Ensure table structure is correct
-		createGenerationIncomeTable();
+		if(!createGenerationIncomeTable()) {
+			echo "❌ Failed to create/update generation_income table structure\n";
+			return;
+		}
 		
 		$SkipUser=array("habib","kingkhan");
 		
