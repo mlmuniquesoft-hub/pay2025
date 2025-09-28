@@ -40,13 +40,13 @@
 	}
 	
 	
-	$ghfdhs=date("D");
-	if($ghfdhs=='Mon'){
-		array_push($rett,0);
-		array_push($rett,"Withdrawal Request Received From Sunday To Tuesday, Which Will Be Paid On Monday");
-		echo json_encode($rett);
-		die();
-	}
+	// $ghfdhs=date("D");
+	// if($ghfdhs=='Mon'){
+	// 	array_push($rett,0);
+	// 	array_push($rett,"Withdrawal Request Received From Sunday To Tuesday, Which Will Be Paid On Monday");
+	// 	echo json_encode($rett);
+	// 	die();
+	// }
 	
 	$AssIgnTo=$_GET['AssIgnTo'];
 	$curencyAmn=$_GET['curencyAmn'];
@@ -98,9 +98,9 @@
 		die();
 	}
 	//var_dump($NumberOfToken);
-	if($NumberOfToken<50){
+	if($NumberOfToken<10){
 		array_push($rett,0);
-		array_push($rett,"Minimum $50");
+		array_push($rett,"Minimum $10");
 		echo json_encode($rett);
 		die();
 	}
@@ -160,12 +160,12 @@
 		$message="
 			<h3 style='font-size:22px'>Hello $name,</h3><br/>
 			<p style='font-size:16px'>
-			This is a fund $Transtype request  for <a href='https://nzrobotrade.com/'>nzrobotrade.com </a>- amount: $$NumberOfToken someone try to $Transtype your fund. If you have not initiated this request, nothing needs to be done.
+			This is a fund $Transtype request  for <a href='https://capitolmoneypay.com/'>capitolmoneypay.com </a>- amount: $$NumberOfToken someone try to $Transtype your fund. If you have not initiated this request, nothing needs to be done.
 			<br/>
 			<br/>
 			If you have initiated this, please <br/>
 			</p>
-			<a style='margin:12px 0px;display:block;text-decoration:none;background: #ffad46!important;border-color: #ffad46!important;color: #fff!important;padding:10px;font-size:32px;text-align:center;' href='https://nzrobotrade.com/update_withdraw.php$ResetLink'>Click Here</a> 
+			<a style='margin:12px 0px;display:block;text-decoration:none;background: #ffad46!important;border-color: #ffad46!important;color: #fff!important;padding:10px;font-size:32px;text-align:center;' href='https://capitolmoneypay.com/update_withdraw.php$ResetLink'>Click Here</a> 
 			<br/>
 			<p style='font-size:16px'>
 			to proceed your $Transtype. This link will work for ONE hour from the time of receipt.
@@ -173,15 +173,15 @@
 			<br/>
 			<br/>
 			Thanks By, NZ Robo Trade Team<br/>
-			<a href='mailto:support@nzrobotrade.com'>support@nzrobotrade.com</a>
+			<a href='mailto:support@capitolmoneypay.com'>support@capitolmoneypay.com</a>
 			
 		";
 		$subject="Transaction Request (CF-$Tittle)";
-		$from = "info@nzrobotrade.com";
+		$from = "info@capitolmoneypay.com";
 		$headers = "From:" . $from;
 		$headers  = 'MIME-Version: 1.0' . "\r\n";
 		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-		$headers .= "From: NZ Robo Trade CF $Tittle  <info@nzrobotrade.com>" . "\r\n";
+		$headers .= "From: Capitol Money Pay $Tittle  <info@capitolmoneypay.com>" . "\r\n";
 		mail($to,$subject,$message,$headers);
 		
 		array_push($rett, 1);

@@ -24,11 +24,11 @@ We Are Sorry For That.</p>
 			$to=$jhdjfk['email'];
 			$message=" Dear ".$jhdjfk['name']."<br/>".$message;
 			$subject="System Upgrade";
-			$from = "info@nzrobotrade.com";
+			$from = "info@capitolmoneypay.com";
 			$headers = "From:" . $from;
 			$headers  = 'MIME-Version: 1.0' . "\r\n";
 			$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-			$headers .= "From: NZ Robo Trade <info@nzrobotrade.com>" . "\r\n";
+			$headers .= "From: Capitol Money Pay <info@capitolmoneypay.com>" . "\r\n";
 			mail($to,$subject,$message,$headers);
 		}
 		

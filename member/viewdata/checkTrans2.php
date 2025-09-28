@@ -62,16 +62,16 @@
 			<p>
 			<br/>
 			<br/>
-			Thanks By, NZ Robo Trade Team<br/>
-			<a href='mailto:support@nzrobotrade.com'>support@nzrobotrade.com</a>
+			Thanks By, Capitol Money Pay Team<br/>
+			<a href='mailto:support@capitolmoneypay.com'>support@capitolmoneypay.com</a>
 			
 			";
 			$subject="Security Code";
-			$from = "info@nzrobotrade.com";
+			$from = "info@capitolmoneypay.com";
 			$headers = "From:" . $from;
 			$headers  = 'MIME-Version: 1.0' . "\r\n";
 			$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-			$headers .= "From: NZ Robo Trade  <info@nzrobotrade.com>" . "\r\n";
+			$headers .= "From: Capitol Money Pay  <info@capitolmoneypay.com>" . "\r\n";
 			mail($to,$subject,$message,$headers);
 			$_SESSION['LogCode']=$code;
 			$rett['sts']=1;
