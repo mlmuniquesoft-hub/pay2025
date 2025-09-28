@@ -198,7 +198,7 @@
                                 <div id="dropdown-deposits" class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <ul class="nav navbar-nav">
-                                            <li><a href="manual_deposits_verify.php">
+                                            <li><a href="manual_deposits_verify_new.php">
                                                 <i class="fa fa-eye"></i> Verify Deposits
                                                 <?php 
                                                     // Show pending count badge with error handling
