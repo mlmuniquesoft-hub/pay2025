@@ -80,9 +80,9 @@
 						   
 	$a= mysqli_fetch_object($t);
 	$total_items= mysqli_num_rows($t);
-	$limit=$_GET['limit'];
-	$type=$_GET['type'];
-	$page=$_GET['page'];
+	$limit = isset($_GET['limit']) ? $_GET['limit'] : 50;
+	$type = isset($_GET['type']) ? $_GET['type'] : '';
+	$page = isset($_GET['page']) ? $_GET['page'] : 1;
 	if((!$limit)  || (is_numeric($limit) == false) || ($limit < 49) || ($limit > 51))
 	{$limit = 50; }
 	if((!$page) || (is_numeric($page) == false) || ($page < 0) || ($page > $total_items))

@@ -325,7 +325,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 	<script src="/assets2/js/main.js"></script>
 	
-	<!-- Bulletproof Dropdown System -->
+	<!-- Clean Dropdown System -->
 	<style>
 	/* Force override all existing styles */
 	#main-menu-wrapper ul.wraplist li .sub-menu {
@@ -416,31 +416,12 @@
 	#main-menu-wrapper ul.wraplist li.dropdown-active .arrow:after {
 		color: #007bff !important;
 	}
-	
-	/* Debug indicator */
-	.dropdown-debug {
-		position: fixed;
-		top: 10px;
-		right: 10px;
-		background: red;
-		color: white;
-		padding: 5px;
-		z-index: 9999;
-		font-size: 12px;
-	}
 	</style>
 	
 	<script>
-	// Bulletproof dropdown system - runs immediately
+	// Clean dropdown system
 	(function() {
-		console.log("🔧 Loading bulletproof dropdown system...");
-		
-		// Add debug indicator
-		$('body').append('<div class="dropdown-debug">Dropdown System Loading...</div>');
-		
 		function initDropdowns() {
-			console.log("🎯 Initializing dropdowns...");
-			
 			// Clear ALL existing event handlers
 			$('#main-menu-wrapper').off();
 			$('#main-menu-wrapper a').off();
@@ -451,25 +432,15 @@
 				return $(this).find('.sub-menu').length > 0;
 			});
 			
-			console.log("📋 Found dropdown items:", dropdownItems.length);
-			$('.dropdown-debug').text('Found ' + dropdownItems.length + ' dropdowns');
-			
 			// Add click handlers to main links
 			dropdownItems.each(function(index) {
 				var $item = $(this);
 				var $link = $item.children('a').first();
-				var $submenu = $item.find('.sub-menu').first();
-				var title = $link.find('.title').text() || 'Item ' + index;
 				
-				console.log("🔗 Setting up dropdown:", title);
-				
-				$link.on('click.bulletproof', function(event) {
+				$link.on('click.dropdown', function(event) {
 					event.preventDefault();
 					event.stopPropagation();
 					event.stopImmediatePropagation();
-					
-					console.log("🖱️ Clicked dropdown:", title);
-					$('.dropdown-debug').text('Clicked: ' + title);
 					
 					// Close all other dropdowns
 					$('#main-menu-wrapper ul.wraplist li.dropdown-active').not($item).removeClass('dropdown-active');
@@ -477,10 +448,8 @@
 					// Toggle current dropdown
 					if ($item.hasClass('dropdown-active')) {
 						$item.removeClass('dropdown-active');
-						console.log("📤 Closing:", title);
 					} else {
 						$item.addClass('dropdown-active');
-						console.log("📥 Opening:", title);
 					}
 					
 					return false;
@@ -488,15 +457,9 @@
 			});
 			
 			// Prevent submenu clicks from bubbling
-			$('#main-menu-wrapper .sub-menu a').on('click.bulletproof', function(event) {
+			$('#main-menu-wrapper .sub-menu a').on('click.dropdown', function(event) {
 				event.stopPropagation();
-				console.log("🎯 Submenu click:", $(this).text());
 			});
-			
-			console.log("✅ Dropdown system ready!");
-			setTimeout(function() {
-				$('.dropdown-debug').text('System Ready ✓');
-			}, 1000);
 		}
 		
 		// Initialize when DOM is ready

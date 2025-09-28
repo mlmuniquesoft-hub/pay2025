@@ -2,7 +2,7 @@
 	  <div class="modal-dialog" role="document">
 		<div class="modal-content">
 		  <div class="modal-header">
-			<h5 class="modal-title" id="exampleModalLongTitle" style="color:#000;">Robot Image</h5>
+			<h5 class="modal-title" id="exampleModalLongTitle" style="color:#000;">D.Bot Image</h5>
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			  <span aria-hidden="true">&times;</span>
 			</button>
@@ -23,7 +23,7 @@
 
 			<div class="pull-left">
 				<!-- PAGE HEADING TAG - START -->
-				<h1 class="title">Traders Plan</h1>
+				<h1 class="title">D.Bot Plans</h1>
 				<!-- PAGE HEADING TAG - END -->
 			</div>
 
@@ -33,7 +33,7 @@
 						<a href="index.php?route=index&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Robo Trade Dashboard'); ?>"><i class="fa fa-home"></i>Home</a>
 					</li>
 					<li class="active" style="color:white">
-						<strong>Traders Plan</strong>
+						<strong>D.Bot Plans</strong>
 					</li>
 				</ol>
 			</div>
@@ -63,13 +63,13 @@
 								<div class="col-sm-4">
 									<div style="background: #3f54bf;z-index: 1;" class="price-pack recommended<?php if($allPack['pack_amn']>=3000){echo ""; } ?>">
 										<div class="head" style="background: #a99b30;">
-											<h3>NZBOT<?php echo $allPack['pack_amn']; ?></h3>
+											<h3>D.Bot<?php echo $allPack['pack_amn']; ?></h3>
 										</div>
-										<a class="TradePic" href="#" data-src="package/Dbot<?php echo floor($allPack['pack_amn']); ?>-241x300.png" data-toggle="modal" data-target="#exampleModalLong">
-											<img src="package/Dbot<?php echo floor($allPack['pack_amn']); ?>-241x300.png" style="height: 200px;width: 150px;" />
+										<a class="TradePic" href="#" data-src="../images/interface.png" data-toggle="modal" data-target="#exampleModalLong">
+											<img src="../images/interface.png" style="height: 200px;width: 150px;object-fit: contain;background: #f5f5f5;border: 2px solid #ddd;border-radius: 8px;padding: 10px;" />
 										</a>
 										<ul class="item-list list-unstyled">
-											<li style="margin:0px;"><strong><?php echo floor($allPack['pack_amn']/100); ?></strong> NZBOT</li>
+											<li style="margin:0px;"><strong><?php echo floor($allPack['pack_amn']/100); ?></strong> D.Bot</li>
 											<li style="margin:0px;"><strong><?php echo $allPack['pack_amn']/10; ?> </strong> Scores</li>
 											<li style="margin:0px;"><strong>2.65% </strong> Up to </li>
 										</ul>
@@ -77,7 +77,7 @@
 											<h3><span class="symbol">$</span><?php echo floor($allPack['pack_amn']); ?></h3>
 											<h4>+ $10 Membership Fee</h4>
 										</div>
-										<button type="button" class="btn btn-lg  <?php if($allPack['serial']<=$userPack){echo "btn-default disabled"; }else{echo "btn-success Upgrade";} ?>" data-pack="<?php echo base64_encode(time()."/".$allPack['serial']."/NZBOT".$allPack['pack_amn']); ?>"><?php if($allPack['serial']<=$userPack){echo "Disabled"; }else{echo "Upgrade";} ?></button>
+										<button type="button" class="btn btn-lg  <?php if($allPack['serial']<=$userPack){echo "btn-default disabled"; }else{echo "btn-success Upgrade";} ?>" data-pack="<?php echo base64_encode(time()."/".$allPack['serial']."/D.Bot".$allPack['pack_amn']); ?>"><?php if($allPack['serial']<=$userPack){echo "Disabled"; }else{echo "Upgrade";} ?></button>
 									</div>
 								</div>
 								<?php } ?>

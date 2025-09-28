@@ -302,9 +302,9 @@
                             <span class="title">Logout</span>
                         </a>
                     </li>
-					<li class="GooleTrans" style="">
+					<!-- <li class="GooleTrans" style="">
                         <div id="google_translate_element"></div>
-                    </li>
+                    </li> -->
 					
 					
                 </ul>

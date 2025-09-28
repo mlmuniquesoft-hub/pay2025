@@ -72,7 +72,7 @@
 						<div class="col-sm-12">
 							<h3 align="center">Admin Panel Login & Control</h3>
 							<h3 style="font-family:arial; color: red;margin-top:50px; font-size:22px;">
-								<center><?php echo $_GET['ErrorMessage']; ?>
+								<center><?php echo isset($_GET['ErrorMessage']) ? $_GET['ErrorMessage'] : ''; ?>
 							</h3>
 						</div>
 					</div>

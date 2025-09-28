@@ -5,7 +5,7 @@
 
 				<div class="spull-left">
 					<!-- PAGE HEA						<h4 class="value blue-text										$sdfs=$memberInfo['pack']+1;
-										$allPack=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `package` WHERE `serial`='".$sdfs."'"));
+										$allPack=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `package` WHERE `seria				<a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:3000/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."2/".time()); ?>" class="btn btn-success btn-block" style="color:white;font-size:18px;"><i class="fa fa-facebook"></i> <span > </span></a>`='				<a target="_blank" href="fb-messenger://share/?link=http://localhost:3000/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."2/".time()); ?>" class="btn btn-success btn-block" style="color:white;font-size:18px;"><i class="fa fa-comment-o"></i> <span ></span></a>.$s				<a target="_blank" href="https://twitter.com/home?status=http://localhost:3000/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."2/".time()); ?>" class="btn btn-success btn-block" style="color:white;font-size:18px;"><i class="fa fa-twitter"></i> <span > </span></a>fs."'"));
 										echo "<a href='#'class='Upgrade' data-pack='". base64_encode(time()."/".$allPack['serial']."/CAPBOT".$allPack['pack_amn']) ."' style='color: #fd6a6a;font-size: 24px;'>Purchase New Bot</a><br/>";i class="complete fa fa-arrow-up"></i><?php 
 						$jkhgkfd=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `game_return` ORDER BY `serial` DESC"));
 						if($jkhgkfd && isset($jkhgkfd['bonus_bal'])) {
@@ -132,8 +132,11 @@
 				</header>
 				<div class="content-body pb10">
 					<div class="row">
-						<div class="col-xs-8 col-md-offset-2 col-sm-offset-2 col-xs-offset-2 mb-20">
-							<canvas id="donut-chartjs" width="400" height="400"></canvas>
+						<div class="col-md-6 col-xs-12 mb-20">
+							<div id="pie-chart-left" style="height: 300px;"></div>
+						</div>
+						<div class="col-md-6 col-xs-12 mb-20">
+							<div id="pie-chart-right" style="height: 300px;"></div>
 						</div>
 						<div class="col-md-6 col-xs-12">
 							<div class="token-info">

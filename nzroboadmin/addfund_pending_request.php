@@ -119,9 +119,9 @@
 										</tr>
 									</thead>
 									<?php
-										$limit=$mysqli->real_escape_string($_GET['limit']);
-										$type=$mysqli->real_escape_string($_GET['type']);
-										$page=$mysqli->real_escape_string($_GET['page']);
+										$limit = isset($_GET['limit']) ? $mysqli->real_escape_string($_GET['limit']) : 50;
+										$type = isset($_GET['type']) ? $mysqli->real_escape_string($_GET['type']) : '';
+										$page = isset($_GET['page']) ? $mysqli->real_escape_string($_GET['page']) : 1;
 										$t = $mysqli->query("SELECT * FROM `req_fund` where `user`='".$memberid."' AND `active`='0'");
 										$total_items= mysqli_num_rows($t);
 										if((!$limit)  || (is_numeric($limit) == false) || ($limit < 49) || ($limit > 51)){$limit = 50; }
