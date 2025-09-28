@@ -2,6 +2,9 @@
 	session_start();
 	$_SESSION['token']='123asda';
 	require_once("db/db.php");
+	require_once("phpmailer/vendor/autoload.php");
+	use PHPMailer\PHPMailer\PHPMailer;
+	use PHPMailer\PHPMailer\Exception;
 	$InfoKey=explode("/", base64_decode($_GET['key']));
 	$counrty=strlen($InfoKey[0]);
 	$user=substr($InfoKey[0],5,$counrty-10);
@@ -50,8 +53,8 @@
 				<div class="row">
 					<div class="col-md-6 offset-md-3 col-lg-4 offset-lg-4">
 						<?php 
-							if($recentTime<=$LastTime){
-							if($CheckUser>0){
+						if($recentTime <= $LastTime) {
+							if($CheckUser > 0) {
 						?>
 						<section class="banner_btm_sec">
 							<div class="row">			
@@ -71,7 +74,7 @@
 														$ueyuer=base64_decode($hgdfd['withdraw_que']);
 														$uiyeri=explode(",",$ueyuer);
 														
-														$hsgf=count($uiyeri[11]);
+														$hsgf=strlen($uiyeri[11]);
 														$Amount=substr($uiyeri[11],1,$hsgf-2);
 														$BTScdf=$uiyeri[16];
 														$NumberOfToken=$Amount*0.92;
@@ -104,52 +107,132 @@
 															$to2=$InfggMail['email'];
 														}
 														
-														$message="
-															<h3 style='font-size:22px'>Request From: $user,</h3><br/>
-															<p style='font-size:16px'>
-															Date: $datrsd<br/>
-															New Withdraw Request 
-															<br/>
-															<br/>
-															User ID: $user<br/>
-															Amount: $NumberOfToken<br/>
-															Address: $BTScdf<br/>
-															Email: $email<br/>
-															</p>
-															<br/>
-															<br/>
-												Thanks By, Capitol Money Pay Team<br/>
-												<a href='mailto:support@capitolmoneypay.com'>support@capitolmoneypay.com</a>														";
-														$to="yennavajo@gmail.com";
+												$message="
+												<!DOCTYPE html>
+												<html lang='en'>
+												<head>
+													<meta charset='UTF-8'>
+													<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+													<title>Capitol Money Pay - Admin Notification</title>
+												</head>
+												<body style='margin:0; padding:0; font-family: Arial, sans-serif; background-color: #f4f4f4;'>
+													<div style='max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);'>
 														
-														$subject="Withdraw Request";
-														$from = "info@capitolmoneypay.com";
-														$headers = "From:" . $from;
-														$headers  = 'MIME-Version: 1.0' . "\r\n";
-														$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-														$headers .= "From: Capitol Money Pay <info@capitolmoneypay.com>" . "\r\n";
-														mail($to,$subject,$message,$headers);
-														if($to2!=''){
-															mail($to2,$subject,$message,$headers);
-														}
+														<!-- Header -->
+														<div style='background: linear-gradient(135deg, #DC2626, #EF4444); padding: 30px; text-align: center;'>
+															<img src='https://capitolmoneypay.com/assets/images/cmp-logo.svg' alt='Capitol Money Pay' style='height: 50px; width: auto; margin-bottom: 15px;'>
+															<h1 style='color: #ffffff; margin: 0; font-size: 24px; font-weight: bold;'>New Withdrawal Request</h1>
+															<p style='color: #E5E7EB; margin: 10px 0 0 0; font-size: 14px;'>Admin Notification</p>
+														</div>
 														
-														$erter=file_get_contents("https://capitolmoneypay.com/member/viewdata/withdraw_fund2.php?serial=$serial");
-													}
+														<!-- Content -->
+														<div style='padding: 30px;'>
+															<h2 style='color: #1F2937; font-size: 20px; margin: 0 0 20px 0;'>Withdrawal Request Details</h2>
+															
+															<div style='background-color: #F3F4F6; padding: 20px; border-radius: 8px; margin: 20px 0;'>
+																<table style='width: 100%; border-collapse: collapse;'>
+																	<tr>
+																		<td style='padding: 8px 0; color: #6B7280; font-weight: 500;'>Date:</td>
+																		<td style='padding: 8px 0; color: #1F2937;'>$datrsd</td>
+																	</tr>
+																	<tr>
+																		<td style='padding: 8px 0; color: #6B7280; font-weight: 500;'>User ID:</td>
+																		<td style='padding: 8px 0; color: #DC2626; font-weight: bold;'>$user</td>
+																	</tr>
+																	<tr>
+																		<td style='padding: 8px 0; color: #6B7280; font-weight: 500;'>Amount:</td>
+																		<td style='padding: 8px 0; color: #059669; font-weight: bold; font-size: 18px;'>$$NumberOfToken</td>
+																	</tr>
+																	<tr>
+																		<td style='padding: 8px 0; color: #6B7280; font-weight: 500;'>Wallet Address:</td>
+																		<td style='padding: 8px 0; color: #1F2937; font-family: monospace; font-size: 12px; word-break: break-all;'>$BTScdf</td>
+																	</tr>
+																	<tr>
+																		<td style='padding: 8px 0; color: #6B7280; font-weight: 500;'>Email:</td>
+																		<td style='padding: 8px 0; color: #1F2937;'>$email</td>
+																	</tr>
+																</table>
+															</div>
+														</div>
+														
+														<!-- Footer -->
+														<div style='background-color: #F9FAFB; padding: 20px; text-align: center; border-top: 1px solid #E5E7EB;'>
+															<p style='color: #6B7280; margin: 0; font-size: 14px;'>Capitol Money Pay Admin Panel</p>
+															<p style='color: #9CA3AF; margin: 5px 0 0 0; font-size: 12px;'>support@capitolmoneypay.com</p>
+														</div>
+													</div>
+												</body>
+												</html>";
+												
+												// Send admin notification emails using PHPMailer
+												$adminEmails = array("yennavajo@gmail.com");
+												if($to2!=''){
+													$adminEmails[] = $to2;
 												}
+												
+												foreach($adminEmails as $adminEmail){
+													$mail = new PHPMailer(true);
+													try {
+														$mail->isSMTP();
+														$mail->CharSet = 'UTF-8';
+														$mail->Host = 'localhost';
+														$mail->Port = 25;
+														$mail->SMTPSecure = 'tls';
+														$mail->SMTPOptions = array(
+															'ssl' => array(
+																'verify_peer' => false,
+																'verify_peer_name' => false,
+																'allow_self_signed' => true
+															)
+														);
+														$mail->SMTPAuth = true;
+														$mail->Username = 'info@capitolmoneypay.com';
+														$mail->Password = 'Mm123678@#';
+														
+														$mail->setFrom('info@capitolmoneypay.com', 'Capitol Money Pay System');
+														$mail->addAddress($adminEmail);
+														$mail->addReplyTo('support@capitolmoneypay.com', 'Capitol Money Pay Support');
+														
+														$mail->isHTML(true);
+														$mail->Subject = "💰 Capitol Money Pay - New Withdrawal Request ($user)";
+														$mail->Body = $message;
+														
+														$mail->send();
+													} catch (Exception $e) {
+														// Log error but don't stop processing
+													}
+												}																										
+												// Safely get withdraw fund processing result
+												try {
+													$erter=file_get_contents("https://capitolmoneypay.com/member/viewdata/withdraw_fund2.php?serial=$serial");
+												} catch (Exception $e) {
+													// Handle error gracefully
+												}
+											}
+										}
 										?>
 										
-										<?php }else{ ?>
+										<?php 
+											} else { 
+										?>
 										<h3 class="alert alert-danger">There Is No More Transaction Initiated By You</h3>
-										<?php } ?>
+										<?php 
+											}
+										?>
 									</div>
 								</div>
 							</div>
 						</section>
-						<?php }else{
+						<?php 
+						}
+						}
+						if($CheckUser <= 0) {
 							echo "<h3 class='alert alert-warning'>Your ID Not Valid</h3>";
-							} }else{
-								echo "<h3 class='alert alert-warning'>Your Approve Time Expired</h3>";
-							}?>
+						}
+						if($recentTime > $LastTime) {
+							echo "<h3 class='alert alert-warning'>Your Approve Time Expired</h3>";
+						}
+						?>
 					</div>
 				</div>
 			</div>
