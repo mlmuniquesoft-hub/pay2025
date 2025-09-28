@@ -9,6 +9,94 @@ if(!isset($_SESSION['Admin'])){
     require_once '../db/calculation_admin.php';
     require_once '../db/template.php';
 
+    // Ensure table exists and has correct structure
+    $create_table_sql = "CREATE TABLE IF NOT EXISTS `return_settings` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `system_active` tinyint(1) DEFAULT 1,
+        `weekend_mode` tinyint(1) DEFAULT 0,
+        `saturday_enabled` tinyint(1) DEFAULT 1,
+        `sunday_enabled` tinyint(1) DEFAULT 1,
+        `basic_min` decimal(10,2) DEFAULT 100.00,
+        `basic_max` decimal(10,2) DEFAULT 999.00,
+        `premium_min` decimal(10,2) DEFAULT 1000.00,
+        `premium_max` decimal(10,2) DEFAULT 4999.00,
+        `vip_min` decimal(10,2) DEFAULT 5000.00,
+        `basic_rate_min` decimal(5,2) DEFAULT 0.30,
+        `basic_rate_max` decimal(5,2) DEFAULT 0.50,
+        `premium_rate_min` decimal(5,2) DEFAULT 0.50,
+        `premium_rate_max` decimal(5,2) DEFAULT 0.70,
+        `vip_rate_min` decimal(5,2) DEFAULT 0.80,
+        `vip_rate_max` decimal(5,2) DEFAULT 1.00,
+        `min_balance_threshold` decimal(10,2) DEFAULT 10.00,
+        `max_return_per_day` decimal(15,2) DEFAULT 1000000.00,
+        `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+        `last_updated` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        `updated_by` varchar(50) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+    ) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+    
+    mysqli_query($mysqli, $create_table_sql);
+    
+    // Create daily_control table for per-day return control
+    $daily_control_sql = "CREATE TABLE IF NOT EXISTS `daily_control` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `control_date` date NOT NULL,
+        `is_disabled` tinyint(1) DEFAULT 0,
+        `reason` varchar(255) DEFAULT NULL,
+        `disabled_by` varchar(50) DEFAULT NULL,
+        `disabled_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`),
+        KEY `idx_control_date` (`control_date`)
+    ) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+    
+    mysqli_query($mysqli, $daily_control_sql);
+    
+    // Remove unique constraint if it exists (for existing installations)
+    $unique_index_check = mysqli_query($mysqli, "SHOW INDEX FROM daily_control WHERE Key_name = 'control_date'");
+    if($unique_index_check && mysqli_num_rows($unique_index_check) > 0) {
+        mysqli_query($mysqli, "ALTER TABLE daily_control DROP INDEX control_date");
+    }
+    
+    // Add regular index if not exists
+    $index_check = mysqli_query($mysqli, "SHOW INDEX FROM daily_control WHERE Key_name = 'idx_control_date'");
+    if(!$index_check || mysqli_num_rows($index_check) == 0) {
+        mysqli_query($mysqli, "ALTER TABLE daily_control ADD INDEX idx_control_date (control_date)");
+    }
+    
+    // Check if columns exist and add them if missing
+    $columns_to_check = array(
+        'system_active' => 'ALTER TABLE return_settings ADD COLUMN system_active tinyint(1) DEFAULT 1',
+        'weekend_mode' => 'ALTER TABLE return_settings ADD COLUMN weekend_mode tinyint(1) DEFAULT 0',
+        'saturday_enabled' => 'ALTER TABLE return_settings ADD COLUMN saturday_enabled tinyint(1) DEFAULT 1',
+        'sunday_enabled' => 'ALTER TABLE return_settings ADD COLUMN sunday_enabled tinyint(1) DEFAULT 1'
+    );
+    
+    foreach($columns_to_check as $column => $alter_sql) {
+        $column_check = mysqli_query($mysqli, "SHOW COLUMNS FROM return_settings LIKE '$column'");
+        if(mysqli_num_rows($column_check) == 0) {
+            mysqli_query($mysqli, $alter_sql);
+        }
+    }
+    
+    // Check if default settings exist, if not create them
+    $check_default = mysqli_query($mysqli, "SELECT id FROM return_settings WHERE id = 1");
+    if(mysqli_num_rows($check_default) == 0){
+        $default_sql = "INSERT INTO return_settings (
+            system_active, weekend_mode, saturday_enabled, sunday_enabled,
+            basic_min, basic_max, premium_min, premium_max, vip_min,
+            basic_rate_min, basic_rate_max, premium_rate_min, premium_rate_max,
+            vip_rate_min, vip_rate_max, min_balance_threshold, max_return_per_day,
+            updated_by
+        ) VALUES (
+            1, 0, 1, 1,
+            100, 999, 1000, 4999, 5000,
+            0.3, 0.5, 0.5, 0.7,
+            0.8, 1.0, 10, 1000000,
+            'system'
+        )";
+        mysqli_query($mysqli, $default_sql);
+    }
+
     // Handle form submissions
     if(isset($_POST['save_settings'])){
         $transaction_pin = trim($_POST['transaction_pin']);
@@ -98,6 +186,63 @@ if(!isset($_SESSION['Admin'])){
         }
     }
 
+    // Daily Control - Disable/Enable specific dates
+    if(isset($_POST['daily_control_action'])){
+        $transaction_pin = trim($_POST['daily_control_pin']);
+        $control_date = trim($_POST['control_date']);
+        $action = $_POST['daily_control_action'];
+        $reason = trim($_POST['disable_reason']);
+        
+        if(empty($transaction_pin)){
+            $error = "Transaction PIN is required";
+        } elseif(empty($control_date)){
+            $error = "Date is required";
+        } elseif(!preg_match('/^\d{4}-\d{2}-\d{2}$/', $control_date)){
+            $error = "Invalid date format";
+        } else {
+            // Verify transaction PIN
+            $pin_check = mysqli_query($mysqli, "SELECT * FROM admin WHERE user_id='".$_SESSION['Admin']."' AND tr_password='".$transaction_pin."'");
+            if(mysqli_num_rows($pin_check) == 0){
+                $error = "Invalid Transaction PIN";
+            } else {
+                // Check if there's already a record for today to prevent duplicate actions
+                $today_check = mysqli_query($mysqli, "SELECT * FROM daily_control WHERE control_date = '$control_date' ORDER BY disabled_at DESC LIMIT 1");
+                $existing_control = mysqli_fetch_assoc($today_check);
+                
+                if($action == 'disable'){
+                    // Check if already disabled
+                    if($existing_control && $existing_control['is_disabled'] == 1) {
+                        $error = "Date $control_date is already disabled!";
+                    } else {
+                        // Disable the date - Always insert new record for audit trail
+                        $disable_sql = "INSERT INTO daily_control (control_date, is_disabled, reason, disabled_by) 
+                                       VALUES ('$control_date', 1, '$reason', '".$_SESSION['Admin']."')";
+                        if(mysqli_query($mysqli, $disable_sql)){
+                            $success = "Date $control_date has been disabled successfully!";
+                        } else {
+                            $error = "Error disabling date: " . mysqli_error($mysqli);
+                        }
+                    }
+                } elseif($action == 'enable'){
+                    // Check if already enabled or no control exists
+                    if(!$existing_control || $existing_control['is_disabled'] == 0) {
+                        $error = "Date $control_date is already enabled or not controlled!";
+                    } else {
+                        // Enable the date - Always insert new record for audit trail
+                        $enable_reason = !empty($reason) ? $reason : 'Re-enabled by admin';
+                        $enable_sql = "INSERT INTO daily_control (control_date, is_disabled, reason, disabled_by) 
+                                      VALUES ('$control_date', 0, '$enable_reason', '".$_SESSION['Admin']."')";
+                        if(mysqli_query($mysqli, $enable_sql)){
+                            $success = "Date $control_date has been enabled successfully!";
+                        } else {
+                            $error = "Error enabling date: " . mysqli_error($mysqli);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     // Manual execution
     if(isset($_POST['manual_execute'])){
         $transaction_pin = trim($_POST['manual_pin']);
@@ -120,58 +265,6 @@ if(!isset($_SESSION['Admin'])){
     // Load current settings
     $settings_query = mysqli_query($mysqli, "SELECT * FROM return_settings WHERE id = 1");
     $settings = mysqli_fetch_assoc($settings_query);
-
-    // Create table and default values if no settings exist
-    if(!$settings){
-        // Create the table if it doesn't exist
-        $create_table_sql = "CREATE TABLE IF NOT EXISTS `return_settings` (
-            `id` int(11) NOT NULL AUTO_INCREMENT,
-            `system_active` tinyint(1) DEFAULT 1,
-            `weekend_mode` tinyint(1) DEFAULT 0,
-            `saturday_enabled` tinyint(1) DEFAULT 1,
-            `sunday_enabled` tinyint(1) DEFAULT 1,
-            `basic_min` decimal(10,2) DEFAULT 100.00,
-            `basic_max` decimal(10,2) DEFAULT 999.00,
-            `premium_min` decimal(10,2) DEFAULT 1000.00,
-            `premium_max` decimal(10,2) DEFAULT 4999.00,
-            `vip_min` decimal(10,2) DEFAULT 5000.00,
-            `basic_rate_min` decimal(5,2) DEFAULT 0.30,
-            `basic_rate_max` decimal(5,2) DEFAULT 0.50,
-            `premium_rate_min` decimal(5,2) DEFAULT 0.50,
-            `premium_rate_max` decimal(5,2) DEFAULT 0.70,
-            `vip_rate_min` decimal(5,2) DEFAULT 0.80,
-            `vip_rate_max` decimal(5,2) DEFAULT 1.00,
-            `min_balance_threshold` decimal(10,2) DEFAULT 10.00,
-            `max_return_per_day` decimal(15,2) DEFAULT 1000000.00,
-            `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
-            `last_updated` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            `updated_by` varchar(50) DEFAULT NULL,
-            PRIMARY KEY (`id`)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8";
-        
-        mysqli_query($mysqli, $create_table_sql);
-        
-        // Insert default settings
-        $default_sql = "INSERT INTO return_settings (
-            system_active, weekend_mode, saturday_enabled, sunday_enabled,
-            basic_min, basic_max, premium_min, premium_max, vip_min,
-            basic_rate_min, basic_rate_max, premium_rate_min, premium_rate_max,
-            vip_rate_min, vip_rate_max, min_balance_threshold, max_return_per_day,
-            updated_by
-        ) VALUES (
-            1, 0, 1, 1,
-            100, 999, 1000, 4999, 5000,
-            0.3, 0.5, 0.5, 0.7,
-            0.8, 1.0, 10, 1000000,
-            'system'
-        )";
-        
-        mysqli_query($mysqli, $default_sql);
-        
-        // Reload settings after creating defaults
-        $settings_query = mysqli_query($mysqli, "SELECT * FROM return_settings WHERE id = 1");
-        $settings = mysqli_fetch_assoc($settings_query);
-    }
 
     // Fallback default values if database operation fails
     if(!$settings){
@@ -196,18 +289,18 @@ if(!isset($_SESSION['Admin'])){
         );
     }
 
-    // Get statistics
+    // Get statistics with proper null handling
     $total_users_query = mysqli_query($mysqli, "SELECT COUNT(DISTINCT user) as total FROM upgrade");
     $total_users_result = mysqli_fetch_assoc($total_users_query);
-    $total_users = $total_users_result ? $total_users_result['total'] : 0;
+    $total_users = ($total_users_result && isset($total_users_result['total'])) ? (int)$total_users_result['total'] : 0;
 
     $total_investment_query = mysqli_query($mysqli, "SELECT SUM(amount) as total FROM upgrade");
     $total_investment_result = mysqli_fetch_assoc($total_investment_query);
-    $total_investment = $total_investment_result ? $total_investment_result['total'] : 0;
+    $total_investment = ($total_investment_result && isset($total_investment_result['total']) && $total_investment_result['total'] !== null) ? (float)$total_investment_result['total'] : 0.00;
 
     $today_returns_query = mysqli_query($mysqli, "SELECT SUM(curent_bal) as total FROM game_return WHERE DATE(date) = CURDATE()");
     $today_returns_result = mysqli_fetch_assoc($today_returns_query);
-    $today_returns = $today_returns_result ? $today_returns_result['total'] : 0;
+    $today_returns = ($today_returns_result && isset($today_returns_result['total']) && $today_returns_result['total'] !== null) ? (float)$today_returns_result['total'] : 0.00;
 }
 ?>
 <!DOCTYPE html>
@@ -333,7 +426,7 @@ if(!isset($_SESSION['Admin'])){
                                             <div class="col-md-3">
                                                 <div class="panel panel-primary">
                                                     <div class="panel-body stats-card text-center">
-                                                        <h3><?php echo number_format($total_users); ?></h3>
+                                                        <h3><?php echo number_format((int)$total_users); ?></h3>
                                                         <p>Active Investors</p>
                                                     </div>
                                                 </div>
@@ -341,7 +434,7 @@ if(!isset($_SESSION['Admin'])){
                                             <div class="col-md-3">
                                                 <div class="panel panel-info">
                                                     <div class="panel-body text-center" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white;">
-                                                        <h3>$<?php echo number_format($total_investment, 2); ?></h3>
+                                                        <h3>$<?php echo number_format((float)$total_investment, 2); ?></h3>
                                                         <p>Total Investment</p>
                                                     </div>
                                                 </div>
@@ -349,7 +442,7 @@ if(!isset($_SESSION['Admin'])){
                                             <div class="col-md-3">
                                                 <div class="panel panel-success">
                                                     <div class="panel-body text-center" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white;">
-                                                        <h3>$<?php echo number_format($today_returns, 2); ?></h3>
+                                                        <h3>$<?php echo number_format((float)$today_returns, 2); ?></h3>
                                                         <p>Today's Returns</p>
                                                     </div>
                                                 </div>
@@ -563,6 +656,157 @@ if(!isset($_SESSION['Admin'])){
                                                 </div>
                                             </div>
                                         </form>
+                                        
+                                        <!-- Daily Control -->
+                                        <div class="panel panel-warning">
+                                            <div class="panel-heading">
+                                                <i class="fa fa-calendar"></i> Daily Control - Disable/Enable Specific Business Days
+                                            </div>
+                                            <div class="panel-body">
+                                                <form method="POST">
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>Date <span class="text-danger">*</span></label>
+                                                                <input type="date" class="form-control" name="control_date" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>Action <span class="text-danger">*</span></label>
+                                                                <select class="form-control" name="daily_control_action" required>
+                                                                    <option value="">Select Action</option>
+                                                                    <option value="disable">Disable Returns</option>
+                                                                    <option value="enable">Enable Returns</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>Transaction PIN <span class="text-danger">*</span></label>
+                                                                <input type="password" class="form-control" name="daily_control_pin" placeholder="Enter your transaction PIN" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-8">
+                                                            <div class="form-group">
+                                                                <label>Reason (optional)</label>
+                                                                <input type="text" class="form-control" name="disable_reason" placeholder="e.g., Market closed, System maintenance, Holiday, Back to normal operation">
+                                                                <small class="text-muted">Reason for this date control action</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>&nbsp;</label>
+                                                                <div>
+                                                                    <button type="submit" class="btn btn-warning btn-lg">
+                                                                        <i class="fa fa-calendar-o"></i> Apply Date Control
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                
+                                                <!-- Recent Daily Controls -->
+                                                <div class="table-responsive" style="margin-top: 20px;">
+                                                    <h4><i class="fa fa-history"></i> Recent Date Controls</h4>
+                                                    <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Date</th>
+                                                                <th>Status</th>
+                                                                <th>Reason</th>
+                                                                <th>Controlled By</th>
+                                                                <th>Date/Time</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <?php
+                                                            // Get current status per date (latest record for each date)
+                                                            $recent_controls = mysqli_query($mysqli, 
+                                                                "SELECT dc1.* FROM daily_control dc1
+                                                                INNER JOIN (
+                                                                    SELECT control_date, MAX(disabled_at) as latest_time
+                                                                    FROM daily_control 
+                                                                    GROUP BY control_date
+                                                                ) dc2 ON dc1.control_date = dc2.control_date AND dc1.disabled_at = dc2.latest_time
+                                                                ORDER BY dc1.control_date DESC LIMIT 15"
+                                                            );
+                                                            if($recent_controls && mysqli_num_rows($recent_controls) > 0){
+                                                                while($control = mysqli_fetch_assoc($recent_controls)){
+                                                                    $status_class = $control['is_disabled'] ? 'label-danger' : 'label-success';
+                                                                    $status_text = $control['is_disabled'] ? 'DISABLED' : 'ENABLED';
+                                                                    echo "<tr>
+                                                                        <td>".date('Y-m-d (D)', strtotime($control['control_date']))."</td>
+                                                                        <td><span class='label $status_class'>$status_text</span></td>
+                                                                        <td>".(empty($control['reason']) ? '-' : htmlspecialchars($control['reason']))."</td>
+                                                                        <td>".htmlspecialchars($control['disabled_by'])."</td>
+                                                                        <td>".date('Y-m-d H:i:s', strtotime($control['disabled_at']))."</td>
+                                                                    </tr>";
+                                                                }
+                                                            } else {
+                                                                echo "<tr><td colspan='5' class='text-center'>No date controls found</td></tr>";
+                                                            }
+                                                            ?>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                
+                                                <!-- Complete History (Collapsible) -->
+                                                <div class="panel-group" id="history-accordion" style="margin-top: 20px;">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <h4 class="panel-title">
+                                                                <a data-toggle="collapse" data-parent="#history-accordion" href="#complete-history">
+                                                                    <i class="fa fa-clock-o"></i> Complete Audit Trail (All Changes)
+                                                                    <span class="pull-right"><i class="fa fa-chevron-down"></i></span>
+                                                                </a>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="complete-history" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <div class="table-responsive">
+                                                                    <table class="table table-striped table-bordered table-condensed">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Date</th>
+                                                                                <th>Action</th>
+                                                                                <th>Reason</th>
+                                                                                <th>Admin</th>
+                                                                                <th>Timestamp</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <?php
+                                                                            // Show complete history of all changes
+                                                                            $all_history = mysqli_query($mysqli, "SELECT * FROM daily_control ORDER BY disabled_at DESC LIMIT 50");
+                                                                            if($all_history && mysqli_num_rows($all_history) > 0){
+                                                                                while($history = mysqli_fetch_assoc($all_history)){
+                                                                                    $action_class = $history['is_disabled'] ? 'label-danger' : 'label-success';
+                                                                                    $action_text = $history['is_disabled'] ? 'DISABLED' : 'ENABLED';
+                                                                                    echo "<tr>
+                                                                                        <td>".date('Y-m-d (D)', strtotime($history['control_date']))."</td>
+                                                                                        <td><span class='label $action_class'>$action_text</span></td>
+                                                                                        <td>".(empty($history['reason']) ? '-' : htmlspecialchars($history['reason']))."</td>
+                                                                                        <td>".htmlspecialchars($history['disabled_by'])."</td>
+                                                                                        <td>".date('M d, Y H:i:s', strtotime($history['disabled_at']))."</td>
+                                                                                    </tr>";
+                                                                                }
+                                                                            } else {
+                                                                                echo "<tr><td colspan='5' class='text-center'>No history found</td></tr>";
+                                                                            }
+                                                                            ?>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         
                                         <!-- Manual Execution -->
                                         <div class="panel panel-danger">

@@ -17,7 +17,42 @@
 	function getReturnSettings(){
 		global $mysqli;
 		
-		// Create settings table if not exists
+		// Check if new structure exists
+		$check_new = $mysqli->query("SHOW TABLES LIKE 'return_settings'");
+		
+		if(mysqli_num_rows($check_new) > 0) {
+			// Check if it has the new column structure
+			$check_columns = $mysqli->query("SHOW COLUMNS FROM return_settings LIKE 'system_active'");
+			
+			if(mysqli_num_rows($check_columns) > 0) {
+				// Use new structure
+				$result = $mysqli->query("SELECT * FROM return_settings WHERE id = 1");
+				$settings = mysqli_fetch_assoc($result);
+				
+				if($settings) {
+					// Map to expected format
+					return array(
+						'system_enabled' => $settings['system_active'],
+						'weekend_enabled' => $settings['weekend_mode'],
+						'basic_min_rate' => $settings['basic_rate_min'],
+						'basic_max_rate' => $settings['basic_rate_max'],
+						'premium_min_rate' => $settings['premium_rate_min'],
+						'premium_max_rate' => $settings['premium_rate_max'],
+						'vip_min_rate' => $settings['vip_rate_min'],
+						'vip_max_rate' => $settings['vip_rate_max'],
+						'basic_range_min' => $settings['basic_min'],
+						'basic_range_max' => $settings['basic_max'],
+						'premium_range_min' => $settings['premium_min'],
+						'premium_range_max' => $settings['premium_max'],
+						'vip_range_min' => $settings['vip_min'],
+						'profit_percentage' => '70',
+						'shopping_percentage' => '30'
+					);
+				}
+			}
+		}
+		
+		// Fallback: Create old-style settings table if not exists
 		$mysqli->query("CREATE TABLE IF NOT EXISTS `return_settings` (
 			`id` int(11) NOT NULL AUTO_INCREMENT,
 			`setting_name` varchar(100) NOT NULL,
@@ -43,8 +78,8 @@
 			'premium_range_min' => '1000',
 			'premium_range_max' => '4999',
 			'vip_range_min' => '5000',
-			'profit_percentage' => '60',
-			'shopping_percentage' => '40'
+			'profit_percentage' => '70',
+			'shopping_percentage' => '30'
 		);
 		
 		foreach($defaults as $name => $value) {
@@ -105,6 +140,7 @@
 		
 		// Calculate remaining return allowance
 		$remainK = RemainingReturn($memberid);
+		
 		if($remainK <= 0) {
 			return false;
 		}
@@ -126,19 +162,35 @@
 		if($profitAmount > 0) {
 			// Check if return already processed for today
 			$checkPrev = mysqli_num_rows($mysqli->query("SELECT * FROM `game_return` WHERE `user`='".$memberid."' AND DATE(`date`)='".$PresentDate."'"));
+			
 			if($checkPrev < 1) {
 				// Insert daily return record
-				$mysqli->query("INSERT INTO `game_return`(`user`, `play_id`, `curent_bal`, `shop`, `bonus_bal`, `date`) VALUES ('".$memberid."','".$upgradeQuery['serial']."','".$profitAmount."','".$shoppingAmount."','".$returnRate."','".$PresentDate."')");
+				$insertSQL = "INSERT INTO `game_return`(`user`, `play_id`, `curent_bal`, `shop`, `bonus_bal`, `date`) VALUES ('".$memberid."','".$upgradeQuery['serial']."','".$profitAmount."','".$shoppingAmount."','".$returnRate."','".$PresentDate."')";
 				
-				// Add to user's view/wallet
-				$description = "$$profitAmount ({$returnRate}%) Daily Investment Return + $$shoppingAmount Shopping Bonus";
-				$mysqli->query("INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) VALUES ('".$memberid."', '".$PresentDate."', '".$description."', '".$profitAmount."','credit')");
-				
-				echo "✅ $memberid: $returnRate% = $$profitAmount (Investment: $$totalInvestment)\n";
-				return true;
+				$result = $mysqli->query($insertSQL);
+				if($result) {
+					// Add to user's view/wallet
+					$description = "$$profitAmount ({$returnRate}%) Daily Investment Return + $$shoppingAmount Shopping Bonus";
+					$viewSQL = "INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) VALUES ('".$memberid."', '".$PresentDate."', '".$description."', '".$profitAmount."','credit')";
+					$mysqli->query($viewSQL);
+					
+					echo "✅ $memberid: $returnRate% = $$profitAmount (Investment: $$totalInvestment)\n";
+					return true;
+				}
 			}
 		}
 		return false;
+	}
+
+	// Function to check if a specific date is disabled by admin
+	function isDateDisabled($date) {
+		global $mysqli;
+		$result = mysqli_query($mysqli, "SELECT is_disabled FROM daily_control WHERE control_date = '$date' ORDER BY disabled_at DESC LIMIT 1");
+		if($result && mysqli_num_rows($result) > 0) {
+			$control = mysqli_fetch_assoc($result);
+			return $control['is_disabled'] == 1;
+		}
+		return false; // Date not controlled = enabled by default
 	}
 
 	// Main execution
@@ -149,34 +201,78 @@
 	$settings = getReturnSettings();
 	
 	// Check if system is enabled
-	if($settings['system_enabled'] != '1') {
+	if(!isset($settings['system_enabled']) || $settings['system_enabled'] != '1') {
 		echo "❌ Daily return system is disabled by admin.\n";
 		exit();
 	}
 	
 	echo "📊 Current Settings:\n";
-	echo "Basic Range ({$settings['basic_range_min']}-{$settings['basic_range_max']}): {$settings['basic_min_rate']}%-{$settings['basic_max_rate']}%\n";
-	echo "Premium Range ({$settings['premium_range_min']}-{$settings['premium_range_max']}): {$settings['premium_min_rate']}%-{$settings['premium_max_rate']}%\n";
-	echo "VIP Range ({$settings['vip_range_min']}+): {$settings['vip_min_rate']}%-{$settings['vip_max_rate']}%\n";
-	echo "Weekend Trading: " . ($settings['weekend_enabled'] == '1' ? 'Enabled' : 'Disabled') . "\n";
+	echo "Basic Range (" . (isset($settings['basic_range_min']) ? $settings['basic_range_min'] : 'N/A') . "-" . (isset($settings['basic_range_max']) ? $settings['basic_range_max'] : 'N/A') . "): " . (isset($settings['basic_min_rate']) ? $settings['basic_min_rate'] : 'N/A') . "%-" . (isset($settings['basic_max_rate']) ? $settings['basic_max_rate'] : 'N/A') . "%\n";
+	echo "Premium Range (" . (isset($settings['premium_range_min']) ? $settings['premium_range_min'] : 'N/A') . "-" . (isset($settings['premium_range_max']) ? $settings['premium_range_max'] : 'N/A') . "): " . (isset($settings['premium_min_rate']) ? $settings['premium_min_rate'] : 'N/A') . "%-" . (isset($settings['premium_max_rate']) ? $settings['premium_max_rate'] : 'N/A') . "%\n";
+	echo "VIP Range (" . (isset($settings['vip_range_min']) ? $settings['vip_range_min'] : 'N/A') . "+): " . (isset($settings['vip_min_rate']) ? $settings['vip_min_rate'] : 'N/A') . "%-" . (isset($settings['vip_max_rate']) ? $settings['vip_max_rate'] : 'N/A') . "%\n";
+	echo "Weekend Trading: " . (isset($settings['weekend_enabled']) && $settings['weekend_enabled'] == '1' ? 'Enabled' : 'Disabled') . "\n";
 	echo "==================================================\n";
 
 	$query_11 = mysqli_fetch_assoc($mysqli->query("SELECT MAX(`date`) AS date FROM game_return ORDER BY `serial` DESC"));
-	$i = 0;
 	$presentDate = date("Y-m-d");
 	$excludeDays = array("Sun", "Sat");
+	
+	// Check if there are any users with investments
+	$userCheck = mysqli_fetch_assoc($mysqli->query("SELECT COUNT(DISTINCT user) as count FROM upgrade"));
+	
+	if($userCheck['count'] == 0) {
+		echo "❌ No users with investments found. Nothing to process.\n";
+		exit();
+	}
+	
+	// Determine start date
+	if(empty($query_11['date'])) {
+		// If no previous records, start from yesterday (or last business day if yesterday was weekend)
+		$yesterday = date("Y-m-d", strtotime("-1 day"));
+		$yesterdayDow = date("D", strtotime($yesterday));
+		
+		// If weekend trading is disabled and yesterday was a weekend, find last business day
+		if($settings['weekend_enabled'] != '1' && in_array($yesterdayDow, array("Sun", "Sat"))) {
+			if($yesterdayDow == "Sun") {
+				$startDate = date("Y-m-d", strtotime("-2 day")); // Friday
+			} else { // Saturday
+				$startDate = date("Y-m-d", strtotime("-1 day")); // Friday (yesterday was Saturday)
+			}
+			echo "📅 No previous records found. Yesterday was weekend, starting from last business day: $startDate\n";
+		} else {
+			$startDate = $yesterday;
+			echo "📅 No previous records found. Starting from yesterday: $startDate\n";
+		}
+	} else {
+		$startDate = date("Y-m-d", strtotime($query_11['date'] . "+1 day"));
+		echo "📅 Last processed date: {$query_11['date']}. Starting from: $startDate\n";
+	}
 	
 	// If weekend trading is enabled, don't exclude weekends
 	if($settings['weekend_enabled'] == '1') {
 		$excludeDays = array();
 	}
 	
-	while(true){
-		$date = date("Y-m-d", strtotime($query_11['date']."+$i days"));
+	// Calculate how many days we need to process
+	$daysDifference = (strtotime($presentDate) - strtotime($startDate)) / (60 * 60 * 24);
+	$maxDays = max(1, $daysDifference + 1); // At least process today, but could be more if catching up
+	
+	echo "📊 Need to process $maxDays days from $startDate to $presentDate\n";
+	
+	$totalProcessed = 0;
+	
+	// Process all days from start date to present date (inclusive)
+	for($i = 0; $i <= $daysDifference; $i++) {
+		$date = date("Y-m-d", strtotime($startDate . "+$i days"));
 		$dayOfWeek = date("D", strtotime($date));
-		$i++;
 		
 		echo "\n📅 Processing Date: $date ($dayOfWeek)\n";
+		
+		// Check if this date is disabled by admin
+		if(isDateDisabled($date)){
+			echo "🚫 Skipped (Disabled by admin)\n";
+			continue;
+		}
 		
 		// Skip weekends if weekend trading is disabled
 		if(in_array($dayOfWeek, $excludeDays)){
@@ -184,10 +280,12 @@
 			continue;
 		}
 	
-		if($date < $presentDate){
-			// Get all users with investments before this date
-			$query_10 = "SELECT DISTINCT user FROM upgrade WHERE DATE(`date`)<'".$date."' ORDER BY `serial` ASC";
-			$result_10 = $mysqli->query($query_10);
+		// Get all users with investments before this date
+		$result_10 = $mysqli->query("SELECT DISTINCT user FROM upgrade WHERE DATE(`date`)<'".$date."' ORDER BY `serial` ASC");
+		$userCount = mysqli_num_rows($result_10);
+		
+		if($userCount > 0) {
+			echo "� Found $userCount users to process\n";
 			$processedCount = 0;
 			
 			while($row_10 = mysqli_fetch_array($result_10)){
@@ -195,15 +293,15 @@
 				if(invest_update($userId, $date, $settings)) {
 					$processedCount++;
 				}
-				usleep(50); // Small delay to prevent overload
 			}
 			
 			echo "✅ Processed $processedCount users for $date\n";
+			$totalProcessed += $processedCount;
 		} else {
-			echo "🏁 Reached current date. Process complete.\n";
-			break;
+			echo "ℹ️ No users found for processing on $date\n";
 		}
 	}
 	
 	echo "\n🎉 Daily Investment Return Process Completed Successfully!\n";
+	echo "📈 Total users processed: $totalProcessed\n";
 ?>
