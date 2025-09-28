@@ -54,71 +54,71 @@
 	  exit();
 	}
 	
-	// Auto-create required tables for manual deposit system
-	function createRequiredTables($mysqli) {
-		// Create manual_deposits table
-		$manual_deposits_sql = "CREATE TABLE IF NOT EXISTS `manual_deposits` (
-			`id` int(11) NOT NULL AUTO_INCREMENT,
-			`user_id` varchar(50) NOT NULL,
-			`crypto_type` varchar(10) NOT NULL,
-			`amount` decimal(10,2) NOT NULL,
-			`usd_amount` decimal(10,2) NOT NULL,
-			`transaction_hash` varchar(255) DEFAULT NULL,
-			`wallet_address` varchar(255) DEFAULT NULL,
-			`screenshot` varchar(255) DEFAULT NULL,
-			`status` enum('pending','approved','rejected') DEFAULT 'pending',
-			`admin_note` text DEFAULT NULL,
-			`created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-			`updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-			PRIMARY KEY (`id`),
-			KEY `user_id` (`user_id`),
-			KEY `status` (`status`),
-			KEY `created_at` (`created_at`)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
+	// // Auto-create required tables for manual deposit system
+	// function createRequiredTables($mysqli) {
+	// 	// Create manual_deposits table
+	// 	$manual_deposits_sql = "CREATE TABLE IF NOT EXISTS `manual_deposits` (
+	// 		`id` int(11) NOT NULL AUTO_INCREMENT,
+	// 		`user_id` varchar(50) NOT NULL,
+	// 		`crypto_type` varchar(10) NOT NULL,
+	// 		`amount` decimal(10,2) NOT NULL,
+	// 		`usd_amount` decimal(10,2) NOT NULL,
+	// 		`transaction_hash` varchar(255) DEFAULT NULL,
+	// 		`wallet_address` varchar(255) DEFAULT NULL,
+	// 		`screenshot` varchar(255) DEFAULT NULL,
+	// 		`status` enum('pending','approved','rejected') DEFAULT 'pending',
+	// 		`admin_note` text DEFAULT NULL,
+	// 		`created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+	// 		`updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+	// 		PRIMARY KEY (`id`),
+	// 		KEY `user_id` (`user_id`),
+	// 		KEY `status` (`status`),
+	// 		KEY `created_at` (`created_at`)
+	// 	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
 		
-		// Create manual_wallets table  
-		$manual_wallets_sql = "CREATE TABLE IF NOT EXISTS `manual_wallets` (
-			`id` int(11) NOT NULL AUTO_INCREMENT,
-			`crypto_type` varchar(10) NOT NULL,
-			`wallet_address` varchar(255) NOT NULL,
-			`qr_code` varchar(255) DEFAULT NULL,
-			`is_active` tinyint(1) DEFAULT 1,
-			`created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-			`updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-			PRIMARY KEY (`id`),
-			UNIQUE KEY `crypto_type` (`crypto_type`)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
+	// 	// Create manual_wallets table  
+	// 	$manual_wallets_sql = "CREATE TABLE IF NOT EXISTS `manual_wallets` (
+	// 		`id` int(11) NOT NULL AUTO_INCREMENT,
+	// 		`crypto_type` varchar(10) NOT NULL,
+	// 		`wallet_address` varchar(255) NOT NULL,
+	// 		`qr_code` varchar(255) DEFAULT NULL,
+	// 		`is_active` tinyint(1) DEFAULT 1,
+	// 		`created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+	// 		`updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+	// 		PRIMARY KEY (`id`),
+	// 		UNIQUE KEY `crypto_type` (`crypto_type`)
+	// 	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
 		
-		// Execute table creation queries
-		$mysqli->query($manual_deposits_sql);
-		$mysqli->query($manual_wallets_sql);
+	// 	// Execute table creation queries
+	// 	$mysqli->query($manual_deposits_sql);
+	// 	$mysqli->query($manual_wallets_sql);
 		
-		// Insert default wallet addresses if they don't exist
-		$default_wallets = [
-			['BTC', 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'],
-			['ETH', '0x8ba1f109551bD432803012645Hac136c'],
-			['USDT', 'TQn9Y2khEsLJW1ChVWFMSMeGdSBp1eTa4'],
-			['LTC', 'LQ4KvEGP8T5dVbUv3j9j8fTnx8VJZgCzQz']
-		];
+	// 	// Insert default wallet addresses if they don't exist
+	// 	$default_wallets = [
+	// 		['BTC', 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'],
+	// 		['ETH', '0x8ba1f109551bD432803012645Hac136c'],
+	// 		['USDT', 'TQn9Y2khEsLJW1ChVWFMSMeGdSBp1eTa4'],
+	// 		['LTC', 'LQ4KvEGP8T5dVbUv3j9j8fTnx8VJZgCzQz']
+	// 	];
 		
-		foreach($default_wallets as $wallet) {
-			$check_sql = "SELECT id FROM manual_wallets WHERE crypto_type = ?";
-			$check_stmt = $mysqli->prepare($check_sql);
-			$check_stmt->bind_param("s", $wallet[0]);
-			$check_stmt->execute();
-			$result = $check_stmt->get_result();
+	// 	foreach($default_wallets as $wallet) {
+	// 		$check_sql = "SELECT id FROM manual_wallets WHERE crypto_type = ?";
+	// 		$check_stmt = $mysqli->prepare($check_sql);
+	// 		$check_stmt->bind_param("s", $wallet[0]);
+	// 		$check_stmt->execute();
+	// 		$result = $check_stmt->get_result();
 			
-			if($result->num_rows == 0) {
-				$insert_sql = "INSERT INTO manual_wallets (crypto_type, wallet_address) VALUES (?, ?)";
-				$insert_stmt = $mysqli->prepare($insert_sql);
-				$insert_stmt->bind_param("ss", $wallet[0], $wallet[1]);
-				$insert_stmt->execute();
-			}
-		}
-	}
+	// 		if($result->num_rows == 0) {
+	// 			$insert_sql = "INSERT INTO manual_wallets (crypto_type, wallet_address) VALUES (?, ?)";
+	// 			$insert_stmt = $mysqli->prepare($insert_sql);
+	// 			$insert_stmt->bind_param("ss", $wallet[0], $wallet[1]);
+	// 			$insert_stmt->execute();
+	// 		}
+	// 	}
+	// }
 	
-	// Create tables on both local and live server
-	createRequiredTables($mysqli);
+	// // Create tables on both local and live server
+	// createRequiredTables($mysqli);
 		
 	$timezone = "Pacific/Auckland"; // Asia/Dacca
 	if(function_exists('date_default_timezone_set')) date_default_timezone_set($timezone);	

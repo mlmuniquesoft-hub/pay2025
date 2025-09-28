@@ -11,9 +11,12 @@
 	}
 ?>
 <!DOCTYPE html>
-<html>
-
-	<head>
+<html													<td><?php echo isset($row1["bcpp_taka"]) ? $row1["bcpp_taka"] : '0.00'; ?></td>  
+													<td><?php echo isset($row1["donar_gift_taka"]) ? $row1["donar_gift_taka"] : '0.00'; ?></td>                                 
+													<td><?php echo isset($row1["direct_taka"]) ? $row1["direct_taka"] : '0.00'; ?></td>
+													<td><?php echo isset($row1["receive_taka"]) ? $row1["receive_taka"] : '0.00'; ?></td>
+													<td><?php echo isset($row1["generation_taka"]) ? $row1["generation_taka"] : '0.00'; ?></td> 
+													<td><?php echo isset($res->final_taka) ? $res->final_taka : '0.00'; ?></td>ead>
 		<title><?php echo $Adminnb; ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<!-- Fonts -->
@@ -250,33 +253,78 @@
 	if((!$page)||(is_numeric($page) == false)||($page<0)||($page>$items)){$page=1;}														
 	$pages=ceil($items / $limit);
 	$set=$page*$limit - ($limit);
-	// Use 'serial' instead of 'serialno' - check actual column name
-	$q =  $mysqli->query("SELECT * FROM member ORDER BY serial ASC LIMIT $set, $limit");	
+	// Use flexible column names to handle different database schemas
+	$order_column = 'serial'; // Default, will try alternatives if this fails
+	$possible_orders = ['serial', 'serialno', 'id'];
+	$query_success = false;
 	
-	while($res= mysqli_fetch_object($q))		
-	{
-	$row1 = mysqli_fetch_array($mysqli->query("select* from balance where user_id='".$res->user_id."'"));
-	$row2 = mysqli_fetch_array($mysqli->query("select* from member_data where user_id='".$res->user_id."'"));
+	foreach($possible_orders as $col) {
+		$test_query = "SELECT * FROM member ORDER BY `$col` ASC LIMIT $set, $limit";
+		$q = $mysqli->query($test_query);
+		if($q) {
+			$query_success = true;
+			break;
+		}
+	}
+	
+	if(!$query_success) {
+		$q = $mysqli->query("SELECT * FROM member LIMIT $set, $limit"); // Fallback without ORDER BY
+	}
+	
+	if($q && mysqli_num_rows($q) > 0) {
+		while($res= mysqli_fetch_object($q))		
+		{
+			// Get user identifier - try different possible column names
+			$user_identifier = '';
+			if(isset($res->user_id)) {
+				$user_identifier = $res->user_id;
+			} elseif(isset($res->userid)) {
+				$user_identifier = $res->userid;
+			} elseif(isset($res->username)) {
+				$user_identifier = $res->username;
+			} elseif(isset($res->id)) {
+				$user_identifier = $res->id;
+			}
+			
+			$row1 = [];
+			$row2 = [];
+			if($user_identifier) {
+				// Try to get balance data with error handling
+				$balance_query = $mysqli->query("select * from balance where user_id='$user_identifier'");
+				if($balance_query) {
+					$row1 = mysqli_fetch_array($balance_query) ?: [];
+				}
+				
+				// Try to get member_data with error handling
+				$member_data_query = $mysqli->query("select * from member_data where user_id='$user_identifier'");
+				if($member_data_query) {
+					$row2 = mysqli_fetch_array($member_data_query) ?: [];
+				}
+			}
 ?>
 														</thead>
 														<tbody>
 															<tr>
-																<td><?php echo isset($res->serial) ? $res->serial : (isset($res->serialno) ? $res->serialno : $res->id ?? 'N/A'); ?></td>     
-																<td><?php echo $res->user_id;?></td>  
-																<td><?php echo $row2["name"];?></td>
-																<td><?php echo $res->reffereduser;?></td>  
-																<td><?php echo $res->join_date;?></td> 
-																<td><?php if($res->suspend==1){echo "Suspend";}else{echo "Active";}?></td> 
-																<td><?php echo $row2["rank"];?></td>                                        
-																<td><?php echo $row1["bcpp_taka"];?></td>  
-																<td><?php echo $row1["donar_gift_taka"];?></td>                                 
-																<td><?php echo $row1["direct_taka"];?></td>
-																<td><?php echo $row1["receive_taka"];?></td>
-																<td><?php echo $row1["generation_taka"];?></td> 
-																<td><?php echo $res->final_taka;?></td>
+																<td><?php echo isset($res->serial) ? $res->serial : (isset($res->serialno) ? $res->serialno : (isset($res->id) ? $res->id : 'N/A')); ?></td>     
+																<td><?php echo $user_identifier ?: 'N/A'; ?></td>  
+																<td><?php echo isset($row2["name"]) ? $row2["name"] : 'N/A'; ?></td>
+																<td><?php echo isset($res->reffereduser) ? $res->reffereduser : (isset($res->referrer) ? $res->referrer : 'N/A'); ?></td>  
+																<td><?php echo isset($res->join_date) ? $res->join_date : (isset($res->created_at) ? $res->created_at : 'N/A'); ?></td> 
+																<td><?php if(isset($res->suspend) && $res->suspend==1){echo "Suspend";}else{echo "Active";}?></td> 
+																<td><?php echo isset($row2["rank"]) ? $row2["rank"] : 'N/A'; ?></td>                                        
+																<td><?php echo isset($row1["bcpp_taka"]) ? $row1["bcpp_taka"] : '0.00'; ?></td>  
+																<td><?php echo isset($row1["donar_gift_taka"]) ? $row1["donar_gift_taka"] : '0.00'; ?></td>                                 
+																<td><?php echo isset($row1["direct_taka"]) ? $row1["direct_taka"] : '0.00'; ?></td>
+																<td><?php echo isset($row1["receive_taka"]) ? $row1["receive_taka"] : '0.00'; ?></td>
+																<td><?php echo isset($row1["generation_taka"]) ? $row1["generation_taka"] : '0.00'; ?></td> 
+																<td><?php echo isset($res->final_taka) ? $res->final_taka : '0.00'; ?></td>
 															</tr>
-														</tbody>
+<?php 
+		}
+	} else { ?>
+		<tr><td colspan="13">No member data available</td></tr>
 <?php } ?>
+														</tbody>
 													</table>
 <p align="center" style="font-family:MV Boli, Helvetica, sans-serif, Arial;align:center;color:red;font-size:13px;"> 
 <?php 

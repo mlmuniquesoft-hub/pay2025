@@ -213,7 +213,7 @@
                                                     }
                                                 ?>
                                             </a></li>
-                                            <li><a href="manage_wallets.php">
+                                            <li><a href="manage_wallets_new.php">
                                                 <i class="fa fa-wallet"></i> Manage Wallets
                                             </a></li>
                                         </ul>

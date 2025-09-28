@@ -114,8 +114,14 @@ if(!$wallets) {
         }
     </style>
 </head>
-<body class="bg-light">
-    <div class="container-fluid py-4">
+<body class="flat-blue">
+    <div class="app-container expanded">
+        <div class="row content-container">
+            <?php require_once'menu.php'?>
+            <!-- Main Content -->
+            <div class="container-fluid">
+                <div class="side-body padding-top">
+                    <?php require_once'topshow.php'?>
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h3 mb-0">
@@ -304,5 +310,9 @@ if(!$wallets) {
             alert(`Edit functionality coming soon!\n\nWallet: ${walletName}\nAddress: ${walletAddress}`);
         }
     </script>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
