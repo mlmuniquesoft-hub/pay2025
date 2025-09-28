@@ -63,7 +63,7 @@
 
 				<div class="pull-left">
 					<!-- PAGE HEADING TAG - START -->
-					<h1 class="title">Robo Bot Details</h1>
+					<h1 class="title">D.Bot Package Details <small style="color: #fff; font-size: 14px;">+ $10 Membership Fee</small></h1>
 					<!-- PAGE HEADING TAG - END -->
 				</div>
 
@@ -73,7 +73,7 @@
 							<a href="index.php?route=index&tild=<?php echo base64_encode(time()); ?>&title="><i class="fa fa-home"></i>Home</a>
 						</li>
 						<li class="active" style="color:white;">
-							<strong>Robo Bot Details</strong>
+							<strong>D.Bot Package Details</strong>
 						</li>
 					</ol>
 				</div>
@@ -97,23 +97,25 @@
 							</div>
 							<div class="uprofile-name">
 								<h3>
-									<a href="#">NZBOT<?php echo floor($HJkk['pack_amn']); ?></a>
+									<a href="#">D.Bot $<?php echo number_format($HJkk['pack_amn'], 0); ?></a>
 									<!-- Available statuses: online, idle, busy, away and offline -->
 									<span class="uprofile-status online"></span>
 								</h3>
 								<?php
 									$PrevPack=$memberInfo['pack'];
 									settype($PrevPack, "integer");
-									if($PrevPack<1){
-										
+									// Always show $10 membership fee for upgrades
+									$membershipFee = 10;
+									if($PrevPack < $HJkk['serial']) {
 								?>
-								<p class="uprofile-title">Membership Charge: $10 </p>
-								<?php }else{ 
+								<p class="uprofile-title" style="color: #f39c12; font-weight: bold;">Package: $<?php echo number_format($HJkk['pack_amn'], 0); ?> + $10 Membership Fee</p>
+								<p class="uprofile-title" style="color: #28a745;">Total Upgrade Cost: $<?php echo number_format($HJkk['pack_amn'] + $membershipFee, 0); ?></p>
+								<?php } else { 
 									$PrevPackInfo=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `package` WHERE `serial`='".$PrevPack."'"));
-									echo "Activated Bot: ".$PrevPackInfo['pack'];
+									if($PrevPackInfo) {
+										echo "<p class='uprofile-title'>Current Package: D.Bot $".number_format($PrevPackInfo['pack_amn'], 0)."</p>";
+									}
 								?>
-									
-									
 								<?php } ?>
 							</div>
 							
@@ -182,48 +184,75 @@
 							<div class="row">
 								<div class="form-container mt-20 no-padding-right no-padding-left over-h">
 									<div class="table-responsive">
-										<table class="table table-bordered">
+										<table class="table table-bordered" style="background: #fff; color: #333;">
 											<thead>
-												<tr>
-													<th>Invoice Number</th>
-													<td id="InvoiNumber"><?php echo substr(md5($HJkk['pack_amn'].".".time()),0,13); ?></td>
+												<tr style="background: #f8f9fa;">
+													<th style="width: 40%; font-weight: bold; color: #495057;">Invoice Number</th>
+													<td style="color: #007bff; font-weight: bold;" id="InvoiNumber"><?php echo substr(md5($HJkk['pack_amn'].".".time()),0,13); ?></td>
 												</tr>
 												<tr>
-													<th>Robot Name</th>
-													<td>NZBOT<?php echo floor($HJkk['pack_amn']); ?></td>
+													<th style="font-weight: bold; color: #495057;">Package Name</th>
+													<td style="color: #28a745; font-weight: bold;">D.Bot $<?php echo number_format($HJkk['pack_amn'], 0); ?></td>
 												</tr>
 												<tr>
-													<th>Bot Quantity</th>
-													<td><?php echo floor($HJkk['pack_amn'])/100; ?></td>
+													<th style="font-weight: bold; color: #495057;">Bot Units</th>
+													<td><?php echo floor($HJkk['pack_amn'])/100; ?> Units</td>
 												</tr>
 												<tr>
-													<th>Score</th>
-													<td><?php echo floor($HJkk['pack_amn'])/10; ?></td>
+													<th style="font-weight: bold; color: #495057;">Trading Scores</th>
+													<td><?php echo number_format($HJkk['pack_amn']/10, 1); ?> Scores</td>
 												</tr>
 												<tr>
-													<th>Rate Of Return</th>
-													<td>1% To 2.65%</td>
+													<th style="font-weight: bold; color: #495057;">Return Multiplier</th>
+													<td style="color: #17a2b8; font-weight: bold;">2.0x Return Multiplier</td>
+												</tr>
+												<tr style="background: #e8f5e8;">
+													<th style="font-weight: bold; color: #495057;">Potential Daily Return</th>
+													<td style="color: #28a745; font-weight: bold;"><?php 
+														if($HJkk['pack_amn'] >= 100 && $HJkk['pack_amn'] <= 999) echo "Upto 0.5% Daily";
+														elseif($HJkk['pack_amn'] >= 1000 && $HJkk['pack_amn'] <= 4999) echo "Upto 0.7% Daily";
+														else echo "Upto 1% Daily";
+													?></td>
+												</tr>
+												<?php if($HJkk['pack_amn'] >= 1000 && $HJkk['pack_amn'] <= 4999): ?>
+												<tr style="background: #fff3cd; border: 2px solid #ffc107;">
+													<th style="font-weight: bold; color: #856404;">⭐ Featured Return</th>
+													<td style="color: #856404; font-weight: bold; font-size: 16px;">0.7% Potential Daily Return</td>
+												</tr>
+												<?php endif; ?>
+												<tr>
+													<th style="font-weight: bold; color: #495057;">Daily Earning</th>
+													<td style="color: #28a745; font-weight: bold;">$<?php 
+														$dailyRate = 0;
+														if($HJkk['pack_amn'] >= 100 && $HJkk['pack_amn'] <= 999) $dailyRate = 0.5;
+														elseif($HJkk['pack_amn'] >= 1000 && $HJkk['pack_amn'] <= 4999) $dailyRate = 0.7;
+														else $dailyRate = 1.0;
+														echo number_format($HJkk['pack_amn'] * $dailyRate / 100, 2);
+													?> (Mon-Fri)</td>
 												</tr>
 												<tr>
-													<th>Expected Return</th>
-													<td>$<?php echo floor($HJkk['pack_amn'])*4; ?></td>
+													<th style="font-weight: bold; color: #495057;">Weekly Earning</th>
+													<td style="color: #28a745; font-weight: bold;">$<?php 
+														echo number_format($HJkk['pack_amn'] * $dailyRate / 100 * 5, 2);
+													?> (Sat & Sun Off)</td>
 												</tr>
 												<tr>
-													<th>Price</th>
-													<td>$<?php echo floor($HJkk['pack_amn']); ?></td>
+													<th style="font-weight: bold; color: #495057;">Expected Return</th>
+													<td style="color: #28a745; font-weight: bold;">$<?php 
+														echo number_format($HJkk['pack_amn'] * 2.0, 0);
+													?> (Total)</td>
 												</tr>
-												<?php
-													if($PrevPack<1){
-														$charge=10;
-												?>
-												<tr>
-													<th>Membership Charge</th>
-													<td>$10</td>
+												<tr style="background: #e3f2fd;">
+													<th style="font-weight: bold; color: #495057;">Package Price</th>
+													<td style="font-weight: bold;">$<?php echo number_format($HJkk['pack_amn'], 0); ?></td>
 												</tr>
-												<?php } ?>
-												<tr class="alert alert-warning" style="font-size:22px;">
-													<th>Total Amount</th>
-													<td>$<?php echo floor($HJkk['pack_amn'])+$charge; ?></td>
+												<tr style="background: #fff3cd;">
+													<th style="font-weight: bold; color: #495057;">Membership Fee</th>
+													<td style="color: #856404; font-weight: bold;">$10</td>
+												</tr>
+												<tr class="alert alert-success" style="font-size:18px; background: #d4edda; border-color: #c3e6cb;">
+													<th style="font-weight: bold; color: #155724;">Total Upgrade Cost</th>
+													<td style="color: #155724; font-weight: bold; font-size: 20px;">$<?php echo number_format($HJkk['pack_amn'] + 10, 0); ?></td>
 												</tr>
 												
 											</thead>

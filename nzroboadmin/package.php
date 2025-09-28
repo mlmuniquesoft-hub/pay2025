@@ -13,13 +13,7 @@
 <html>
 
 <head>
-    <title>							<tr class="del<?php echo $pascs['serial']; ?>">
-								<td><?php echo $n++; ?></td>
-								<td><input type="text" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="pack" value="<?php echo htmlspecialchars($pascs['pack']); ?>" placeholder="Package Name"></td>
-								<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="min_deposit" value="<?php echo $pascs['min_deposit'] ?? $pascs['pack_amn']; ?>" step="0.01" placeholder="Min Deposit" min="1"></td>
-								<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="max_deposit" value="<?php echo $pascs['max_deposit'] ?? ($pascs['pack_amn'] * 10); ?>" step="0.01" placeholder="Max Deposit" min="1"></td>
-								<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="react_amn" value="<?php echo $pascs['react_amn']; ?>" step="0.01" placeholder="Multiplier" min="1" title="Return = Deposit × This Value"></td>
-								<td><input type="number" class="form-control uupp" data-serial="<?php echo $pascs['serial']; ?>" data-cols="game_renew" value="<?php echo $pascs['game_renew']; ?>" min="1" placeholder="Days"></td>echo $Adminnb; ?></title>
+    <title><?php echo $Adminnb; ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Fonts -->
     <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300,400' rel='stylesheet' type='text/css'>
@@ -64,20 +58,37 @@
             z-index: 1000;
         }
         
-        .custab input.form-control {
-            font-size: 12px;
-            padding: 4px 8px;
-            height: 32px;
-        }
-        
-        .custab .col-xs-6 {
-            padding-left: 2px;
-            padding-right: 2px;
+        /* Enhanced responsive design for fluid layout */
+        .container-fluid {
+            padding: 0 15px;
+            max-width: 100%;
+            overflow-x: hidden;
         }
         
         .table-responsive {
             overflow-x: auto;
             min-height: 400px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .custab {
+            width: 100%;
+            min-width: 1200px; /* Ensures minimum width for all columns */
+            margin-bottom: 0;
+        }
+        
+        .custab input.form-control {
+            font-size: 12px;
+            padding: 4px 6px;
+            height: 30px;
+            min-width: 80px;
+        }
+        
+        .custab .col-xs-6 {
+            padding-left: 1px;
+            padding-right: 1px;
         }
         
         .custab th {
@@ -86,31 +97,101 @@
             font-weight: bold;
             text-align: center;
             vertical-align: middle;
-            font-size: 12px;
+            font-size: 11px;
             padding: 8px 4px;
+            white-space: nowrap;
+            min-width: 80px;
         }
         
         .custab td {
             vertical-align: middle;
-            padding: 4px;
+            padding: 4px 2px;
+            min-width: 80px;
         }
         
         .btn-sm {
-            font-size: 11px;
-            padding: 4px 8px;
+            font-size: 10px;
+            padding: 4px 6px;
         }
         
-        /* Responsive table improvements */
-        @media (max-width: 1200px) {
+        /* Mobile and tablet responsive improvements */
+        @media (max-width: 1400px) {
             .custab th, .custab td {
                 font-size: 10px;
-                padding: 2px;
+                padding: 3px 1px;
+                min-width: 70px;
             }
             
             .custab input.form-control {
                 font-size: 10px;
                 padding: 2px 4px;
-                height: 28px;
+                height: 26px;
+                min-width: 60px;
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .custab {
+                min-width: 1000px;
+            }
+            
+            .custab th, .custab td {
+                font-size: 9px;
+                padding: 2px 1px;
+                min-width: 60px;
+            }
+            
+            .custab input.form-control {
+                font-size: 9px;
+                padding: 1px 3px;
+                height: 24px;
+                min-width: 50px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .custab {
+                min-width: 900px;
+            }
+            
+            .custab th, .custab td {
+                font-size: 8px;
+                padding: 2px 1px;
+                min-width: 50px;
+            }
+            
+            .custab input.form-control {
+                font-size: 8px;
+                padding: 1px 2px;
+                height: 22px;
+                min-width: 45px;
+            }
+        }
+        
+        /* Form responsiveness */
+        @media (max-width: 768px) {
+            .form-horizontal .col-sm-3,
+            .form-horizontal .col-sm-4,
+            .form-horizontal .col-sm-9 {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .form-horizontal .control-label {
+                text-align: left;
+                margin-bottom: 5px;
+            }
+            
+            .deposit-example {
+                font-size: 12px;
+                padding: 8px;
+            }
+        }
+        
+        /* Horizontal scrolling improvements */
+        @media (max-width: 768px) {
+            .table-responsive {
+                border: 0;
             }
         }
         
@@ -301,8 +382,9 @@
                         </div>
                     </div>
 					
-					<div class="container">
-						<div class="row col-md-12 custyle">
+					<div class="container-fluid">
+						<div class="row">
+						<div class="col-md-12">
 						<div class="table-responsive">
 						<table class="table table-striped custab">
 						<thead>
@@ -410,6 +492,7 @@
 								</tr>
 								<?php } ?>
 						</table>
+						</div>
 						</div>
 						</div>
 					</div>

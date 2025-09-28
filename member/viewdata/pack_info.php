@@ -21,16 +21,18 @@
 				$cHECKpAK=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `package` WHERE `serial`='".$packFF[1]."'"));
 				$dfgKKj=remainAmn($user);
 				$jkhfskjd=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) as tyool FROM `upgrade` WHERE `user`='".$user."'"));
-				$Chrge=$cHECKpAK['pack_amn']-$jkhfskjd['tyool'];
+				$membershipFee = 10; // $10 membership fee for every upgrade
+				$totalUpgradeCost = $cHECKpAK['pack_amn'] + $membershipFee;
+				$Chrge=$totalUpgradeCost-$jkhfskjd['tyool'];
 				if($Chrge>$dfgKKj){
 					$rett['sts']=1;
-					$rett['mess']="Success";
-					$rett['url']="index.php?route=deposit&tild=".base64_encode(time())."&title=&amount=".$cHECKpAK['pack_amn']."&paccg=".base64_encode(time()."/NZBOT".$cHECKpAK['pack_amn']."/".$cHECKpAK['serial']);
+					$rett['mess']="Success - Package: $".$cHECKpAK['pack_amn']." + $10 Membership Fee = $".$totalUpgradeCost;
+					$rett['url']="index.php?route=deposit&tild=".base64_encode(time())."&title=&amount=".$totalUpgradeCost."&paccg=".base64_encode(time()."/DBOT".$cHECKpAK['pack_amn']."/".$cHECKpAK['serial']."/MF10");
 					die(json_encode($rett));
 				}else{
 					$rett['sts']=1;
-					$rett['mess']="Success";
-					$rett['url']="index.php?route=activation_details&tild=".base64_encode(time())."&title=&paccg=".base64_encode(time()."/NZBOT".$cHECKpAK['pack_amn']."/".$cHECKpAK['serial']);
+					$rett['mess']="Success - Package: $".$cHECKpAK['pack_amn']." + $10 Membership Fee = $".$totalUpgradeCost;
+					$rett['url']="index.php?route=activation_details&tild=".base64_encode(time())."&title=&paccg=".base64_encode(time()."/DBOT".$cHECKpAK['pack_amn']."/".$cHECKpAK['serial']."/MF10");
 					die(json_encode($rett));
 				}
 			}
