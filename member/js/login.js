@@ -1,1 +1,71 @@
-var capFt;grecaptcha.ready(function(){grecaptcha.execute("6LfTCbIUAAAAACb_PpflJsnEXymUtTIYUZY62HrA",{action:"homepage"}).then(function(e){capFt=e,$("#ctads").val(e)})}),$("#login-form").on("submit",function(e){e.preventDefault(),e.stopPropagation()}),function(e){e("#login-form").validate({rules:{user_id:{required:!0},password:{required:!0}},onfocusout:function(t){e(t).valid()},submitHandler:function(t){let n=e("#login-form").serializeArray();e(".Ertyy").remove();e.ajax({method:"POST",url:"/login/login_action.php",dataType:"json",data:n,beforeSend:function(){e("#submit").html('<div class="ld ld-spinner ld-clock"></div>')},success:function(t){1==t.resd&&setTimeout(function(){location.reload()},1e3),"success"==t.sts?(e("#submit").before('<span class="text-center text-success Ertyy">'+t.mess+"</span>"),setTimeout(function(){location.href=t.url},1e3)):e("#submit").before('<span class="text-center text-danger Ertyy">'+t.mess+"</span>")}})}})}(jQuery);
+// Login form handler - No reCAPTCHA version
+console.log("Login.js loaded successfully - No reCAPTCHA");
+
+// Prevent any reCAPTCHA errors by providing a stub
+if (typeof window.grecaptcha === 'undefined') {
+    window.grecaptcha = {
+        ready: function(callback) {
+            console.warn("reCAPTCHA not loaded - using stub");
+            if (typeof callback === 'function') {
+                callback();
+            }
+        },
+        execute: function() {
+            console.warn("reCAPTCHA not loaded - using stub");
+            return Promise.resolve('stub-token');
+        }
+    };
+}
+
+var capFt = 'no-captcha-needed';
+
+$("#login-form").on("submit", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+});
+
+(function($) {
+    $("#login-form").validate({
+        rules: {
+            user_id: {
+                required: true
+            },
+            password: {
+                required: true
+            }
+        },
+        onfocusout: function(element) {
+            $(element).valid();
+        },
+        submitHandler: function(form) {
+            let formData = $("#login-form").serializeArray();
+            $(".Ertyy").remove();
+            
+            $.ajax({
+                method: "POST",
+                url: "/login/login_action.php",
+                dataType: "json",
+                data: formData,
+                beforeSend: function() {
+                    $("#submit").html('<div class="ld ld-spinner ld-clock"></div>');
+                },
+                success: function(response) {
+                    if (response.resd == 1) {
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
+                    }
+                    
+                    if (response.sts == "success") {
+                        $("#submit").before('<span class="text-center text-success Ertyy">' + response.mess + "</span>");
+                        setTimeout(function() {
+                            location.href = response.url;
+                        }, 1000);
+                    } else {
+                        $("#submit").before('<span class="text-center text-danger Ertyy">' + response.mess + "</span>");
+                    }
+                }
+            });
+        }
+    });
+})(jQuery);

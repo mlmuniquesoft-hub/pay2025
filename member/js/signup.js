@@ -1,3 +1,22 @@
+// Registration form handler - No reCAPTCHA version
+console.log("Signup.js loaded successfully - No reCAPTCHA");
+
+// Prevent any reCAPTCHA errors by providing a stub
+if (typeof window.grecaptcha === 'undefined') {
+    window.grecaptcha = {
+        ready: function(callback) {
+            console.warn("reCAPTCHA not loaded - using stub");
+            if (typeof callback === 'function') {
+                callback();
+            }
+        },
+        execute: function() {
+            console.warn("reCAPTCHA not loaded - using stub");
+            return Promise.resolve('stub-token');
+        }
+    };
+}
+
 // Form submission handler without captcha
 $("#signup-form").on("submit", function(e) {
     e.preventDefault();

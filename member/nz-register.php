@@ -640,7 +640,7 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
    
 	<script src="/login/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="/login/vendor/jquery-validation/dist/additional-methods.min.js"></script>
-	<script src="js/signup.js"></script>
+	<script src="js/signup.js?v=<?php echo time(); ?>"></script>
 	<script >
 		$(".shfsd").on("click", function(){
 			let dfgfd=$(this).val();
