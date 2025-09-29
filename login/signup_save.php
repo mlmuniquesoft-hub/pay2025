@@ -326,11 +326,30 @@ try {
 				
 				$mail = new PHPMailer;
 				$mail->isSMTP();
-				//$mail->SMTPDebug = 3; 
+				$mail->SMTPDebug = 0; // Disable debug in production
 				$mail->CharSet  = 'UTF-8';
-				$mail->Host = 'localhost';
-				$mail->Port = 25;
-				$mail->SMTPSecure = 'tls'; 
+				
+				// Check if running on live server or localhost
+				$isLocalhost = ($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['HTTP_HOST'] == '127.0.0.1');
+				
+				if($isLocalhost) {
+					// Local XAMPP configuration
+					$mail->Host = 'localhost';
+					$mail->Port = 25;
+					$mail->SMTPSecure = false;
+					$mail->SMTPAuth = false;
+					$mail->Username = '';
+					$mail->Password = '';
+				} else {
+					// Live server configuration
+					$mail->Host = 'localhost'; // Your SMTP server
+					$mail->Port = 25; // Use 587 for TLS or 465 for SSL
+					$mail->SMTPSecure = 'tls'; // Use TLS encryption
+					$mail->SMTPAuth = true; // Enable authentication
+					$mail->Username = $from; // SMTP username (your email)
+					$mail->Password = 'Mm123678@#'; // SMTP password
+				}
+				
 				$mail->SMTPOptions = array(
 				   'ssl' => array(
 				   'verify_peer' => false,
@@ -338,9 +357,6 @@ try {
 				   'allow_self_signed' => true
 				  )
 				);
-				$mail->SMTPAuth = true;
-				$mail->Username = $from;
-				$mail->Password = 'Mm123678@#';
 				$mail->setFrom($from, 'Capitol Money Pay');
 				$mail->addAddress($to, $name0);
 				$mail->Subject = $subject;
@@ -354,18 +370,38 @@ try {
 				// Attempt to send email
 				try {
 					$mail->send();
-					$rett['url']='#';
 					$rett['sts']='success';
-					$rett['mess']="Registration successful! Please verify your email address.";
+					$rett['mess']="Registration successful! Please check your email ($email0) and click the verification link to activate your account.";
 					$rett['user_id'] = $user0;
+					$rett['redirect'] = false; // Don't redirect, stay on page
+					$rett['email_sent'] = true;
 					die(json_encode($rett));
 				} catch (Exception $e) {
-					// Even if email fails, registration was successful
-					$rett['url']='#';
-					$rett['sts']='success';
-					$rett['mess']="Registration successful! Email verification may be delayed.";
-					$rett['user_id'] = $user0;
-					die(json_encode($rett));
+					// Try fallback with PHP mail function
+					$headers = "From: Capitol Money Pay <info@capitolmoneypay.com>\r\n";
+					$headers .= "MIME-Version: 1.0\r\n";
+					$headers .= "Content-type: text/html; charset=UTF-8\r\n";
+					$headers .= "Reply-To: info@capitolmoneypay.com\r\n";
+					
+					if(mail($to, $subject, $message, $headers)) {
+						$rett['sts']='success';
+						$rett['mess']="Registration successful! Please check your email ($email0) and click the verification link to activate your account.";
+						$rett['user_id'] = $user0;
+						$rett['redirect'] = false;
+						$rett['email_sent'] = true;
+						$rett['email_method'] = 'PHP mail() fallback';
+						die(json_encode($rett));
+					} else {
+						// Log email error but still complete registration
+						error_log("Both PHPMailer and mail() failed. PHPMailer error: " . $e->getMessage());
+						$rett['sts']='success';
+						$rett['mess']="Registration successful! However, there was an issue sending the verification email. Please contact support with your User ID: $user0";
+						$rett['user_id'] = $user0;
+						$rett['redirect'] = false;
+						$rett['email_sent'] = false;
+						$rett['email_error'] = "Mail server unavailable: " . $e->getMessage();
+						die(json_encode($rett));
+					}
 				}
 				
 			}else{

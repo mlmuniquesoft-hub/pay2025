@@ -50,15 +50,28 @@ $("#submit").on("click", function(e) {
             if(response.sts === 'success') {
                 $("#Mess").html('<i class="fa fa-check-circle"></i> ' + response.mess);
                 $("#Mess").css("color", "#28a745");
+                $("#Mess").css("font-size", "16px");
                 
-                // Redirect or reload after success
-                setTimeout(function() {
-                    if(response.redirect) {
+                // Add email status information
+                if(response.email_sent === false) {
+                    $("#Mess").append('<br><small style="color: #ffc107;"><i class="fa fa-exclamation-triangle"></i> Email notification failed. Please contact support.</small>');
+                }
+                
+                // Show user ID for reference
+                if(response.user_id) {
+                    $("#Mess").append('<br><small>Your User ID: <strong>' + response.user_id + '</strong></small>');
+                }
+                
+                // Only redirect if specifically requested
+                if(response.redirect && response.redirect !== false) {
+                    setTimeout(function() {
                         window.location.href = response.redirect;
-                    } else {
-                        location.reload();
-                    }
-                }, 2000);
+                    }, 5000); // Give more time to read the message
+                }
+                
+                // Disable form to prevent resubmission
+                $("#signup-form input, #signup-form select, #submitTest").prop('disabled', true);
+                $("#submitTest").text('Registration Complete');
             } else {
                 $("#Mess").html('<i class="fa fa-exclamation-triangle"></i> ' + (response.mess || 'Registration failed'));
                 $("#Mess").css("color", "#f54242");

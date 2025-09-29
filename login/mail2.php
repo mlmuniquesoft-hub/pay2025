@@ -12,7 +12,7 @@
 		
 		<br/>
 		<br/>
-		Thanks By, NZ Robo Trade Team<br/>
+		Thanks By, Capitol Money Pay Team<br/>
 		<a href='mailto:support@capitolmoneypay.com'>support@capitolmoneypay.com</a>
 		
 		";
