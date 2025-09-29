@@ -166,8 +166,15 @@
 				console.log('Verification response received:', rer);
 				console.log('Response type:', typeof rer);
 				
-				// Hide loading and show appropriate result
+				// Hide loading
 				$("#ContentLoading").hide();
+				
+				// Check if response contains HTML error (server error)
+				if(typeof rer === 'string' && (rer.includes('<b>Fatal error</b>') || rer.includes('error') || rer.includes('Warning'))) {
+					console.error('Server returned error:', rer);
+					$("#ContentError").show();
+					return;
+				}
 				
 				// Ensure we're working with the right content ID
 				let contentId = "Content" + rer.toString().trim();
@@ -222,7 +229,7 @@
     <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - END -->
 
     <!-- CORE TEMPLATE JS - START -->
-    <script src="../assets/js/scripts.js"></script>
+    <!-- Scripts.js removed to prevent Swiper error on verification page -->
 	<script src="/login/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="/login/vendor/jquery-validation/dist/additional-methods.min.js"></script>
 </body>

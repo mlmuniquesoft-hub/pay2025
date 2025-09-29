@@ -25,7 +25,11 @@
 		if(!in_array($user, $rrr)){
 			array_push($rrr, $user);
 		}
-		$exe2 = $mysqli->query("SELECT user,upline,`position` FROM member WHERE upline='".$user."' AND `position`='".$posiit."'");
+		$stmt = $mysqli->prepare("SELECT user,upline,`position` FROM member WHERE upline=? AND `position`=?");
+		$stmt->bind_param("ss", $user, $posiit);
+		$stmt->execute();
+		$exe2 = $stmt->get_result();
+		$stmt->close();
 		while($result2=mysqli_fetch_array($exe2)){
 			if(!in_array($result2['user'], $rrr)){
 				if($posiit==$result2['position']){
@@ -45,7 +49,11 @@
 		$sdffd=substr($position, 1,1);
 		settype($sdffd, "integer");
 		$position=$sdffd;
-		$cgghh=$mysqli->query("SELECT * FROM `member` WHERE `upline`='".$user."' AND `position`='".$position."'");
+		$stmt = $mysqli->prepare("SELECT * FROM `member` WHERE `upline`=? AND `position`=?");
+		$stmt->bind_param("si", $user, $position);
+		$stmt->execute();
+		$cgghh = $stmt->get_result();
+		$stmt->close();
 		$CheckSponsor=mysqli_num_rows($cgghh);
 		if($CheckSponsor>0){
 			$nextId=mysqli_fetch_assoc($cgghh);
@@ -65,12 +73,23 @@
 		die();
 	}
 	
-	$Dgdfg=mysqli_num_rows($mysqli->query("SELECT * FROM `info_verify` WHERE `user`='".$User."' AND `active`='0'"));
+	// Use prepared statement to prevent SQL injection
+	$stmt = $mysqli->prepare("SELECT * FROM `info_verify` WHERE `user`=? AND `active`='0'");
+	$stmt->bind_param("s", $User);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$Dgdfg = $result->num_rows;
+	$stmt->close();
 	error_log("Found " . $Dgdfg . " pending verification records for user: " . $User);
 	
 	if($Dgdfg>0){
 		error_log("Found pending verification for user: " . $User);
-		$hfss=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `info_verify` WHERE `user`='".$User."' AND `active`='0'"));
+		$stmt = $mysqli->prepare("SELECT * FROM `info_verify` WHERE `user`=? AND `active`='0'");
+		$stmt->bind_param("s", $User);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		$hfss = $result->fetch_assoc();
+		$stmt->close();
 		$member=base64_decode($hfss['member']);
 		$profile=base64_decode($hfss['profile']);
 		$balance=base64_decode($hfss['balance']);
@@ -110,23 +129,27 @@
 				error_log("Invalid member query format: " . substr($member, 0, 100));
 			}
 			
-			$reero=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `member` WHERE `user`='".$User."'"));
-			$kjhgk=$mysqli->query("SELECT * FROM `member` WHERE `upline`='".$reero['upline']."'");
-			$jkdhgkdf=mysqli_num_rows($kjhgk);
-			if($jkdhgkdf>2){
-				$mysqli->query("DELETE FROM `member` WHERE `user`='".$User."'");
-				$InfoPlaceId=SearchPlace($referrence0,$poss);
-				$iii=count($InfoPlaceId);
-				$placement0 =strtolower($InfoPlaceId[$iii-1]);
-				$PartInfo[16]=$placement0;
-				$member=implode(",", $PartInfo);
-				$mysqli->query($member);
-				//echo 0;
-				//die();
-			}else{
-				$jkhfgd=mysqli_num_rows($mysqli->query("SELECT * FROM `member` WHERE `upline`='".$reero['upline']."' AND `position`='".$reero['position']."'"));
-				if($jkhfgd>1){
-					$mysqli->query("DELETE FROM `member` WHERE `user`='".$User."'");
+			// Get member information using prepared statement
+			$stmt_member = $mysqli->prepare("SELECT * FROM `member` WHERE `user`=?");
+			$stmt_member->bind_param("s", $User);
+			$stmt_member->execute();
+			$result_member = $stmt_member->get_result();
+			$reero = $result_member->fetch_assoc();
+			$stmt_member->close();
+			
+			if($reero) {
+				$stmt_upline = $mysqli->prepare("SELECT * FROM `member` WHERE `upline`=?");
+				$stmt_upline->bind_param("s", $reero['upline']);
+				$stmt_upline->execute();
+				$kjhgk = $stmt_upline->get_result();
+				$stmt_upline->close();
+				
+				$jkdhgkdf=mysqli_num_rows($kjhgk);
+				if($jkdhgkdf>2){
+					$stmt_delete = $mysqli->prepare("DELETE FROM `member` WHERE `user`=?");
+					$stmt_delete->bind_param("s", $User);
+					$stmt_delete->execute();
+					$stmt_delete->close();
 					$InfoPlaceId=SearchPlace($referrence0,$poss);
 					$iii=count($InfoPlaceId);
 					$placement0 =strtolower($InfoPlaceId[$iii-1]);
@@ -135,6 +158,27 @@
 					$mysqli->query($member);
 					//echo 0;
 					//die();
+				}else{
+					$stmt_check = $mysqli->prepare("SELECT * FROM `member` WHERE `upline`=? AND `position`=?");
+					$stmt_check->bind_param("ss", $reero['upline'], $reero['position']);
+					$stmt_check->execute();
+					$result_check = $stmt_check->get_result();
+					$jkhfgd = $result_check->num_rows;
+					$stmt_check->close();
+					if($jkhfgd>1){
+						$stmt_delete2 = $mysqli->prepare("DELETE FROM `member` WHERE `user`=?");
+						$stmt_delete2->bind_param("s", $User);
+						$stmt_delete2->execute();
+						$stmt_delete2->close();
+						$InfoPlaceId=SearchPlace($referrence0,$poss);
+						$iii=count($InfoPlaceId);
+						$placement0 =strtolower($InfoPlaceId[$iii-1]);
+						$PartInfo[16]=$placement0;
+						$member=implode(",", $PartInfo);
+						$mysqli->query($member);
+						//echo 0;
+						//die();
+					}
 				}
 			}
 		}
@@ -199,16 +243,33 @@
 			// Continue verification even if score update fails
 		}
 			
-		$mysqli->query("UPDATE `info_verify` SET `active`='1' WHERE `user`='".$User."' AND `active`='0' ");
-		$mysqli->query("UPDATE `member` SET `active`='1' WHERE `user`='".$User."' AND `active`='0' ");
-		$mysqli->query("INSERT INTO `member_total` (`user`) VALUES ('".$User."')");
+		// Update verification status using prepared statements
+		$stmt_update1 = $mysqli->prepare("UPDATE `info_verify` SET `active`='1' WHERE `user`=? AND `active`='0'");
+		$stmt_update1->bind_param("s", $User);
+		$stmt_update1->execute();
+		$stmt_update1->close();
+		
+		$stmt_update2 = $mysqli->prepare("UPDATE `member` SET `active`='1' WHERE `user`=? AND `active`='0'");
+		$stmt_update2->bind_param("s", $User);
+		$stmt_update2->execute();
+		$stmt_update2->close();
+		
+		$stmt_insert = $mysqli->prepare("INSERT INTO `member_total` (`user`) VALUES (?)");
+		$stmt_insert->bind_param("s", $User);
+		$stmt_insert->execute();
+		$stmt_insert->close();
 		
 		error_log("Verification completed successfully for user: " . $User);
 		echo 0;
 		die();
 	}else{
-		// Check if user is already verified
-		$AlreadyVerified=mysqli_num_rows($mysqli->query("SELECT * FROM `info_verify` WHERE `user`='".$User."' AND `active`='1'"));
+		// Check if user is already verified using prepared statement
+		$stmt_verified = $mysqli->prepare("SELECT * FROM `info_verify` WHERE `user`=? AND `active`='1'");
+		$stmt_verified->bind_param("s", $User);
+		$stmt_verified->execute();
+		$result_verified = $stmt_verified->get_result();
+		$AlreadyVerified = $result_verified->num_rows;
+		$stmt_verified->close();
 		if($AlreadyVerified>0){
 			error_log("User already verified: " . $User);
 			echo 1; // Already verified
