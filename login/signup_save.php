@@ -14,7 +14,7 @@
 	$rett=array();
 	
 try {
-	// Direct form processing without captcha
+	// Direct form processing without captcha 
 		if(!isset($_SESSION['token'])){
 			$rett['sts']='error';
 			$rett['mess']='Try Later';

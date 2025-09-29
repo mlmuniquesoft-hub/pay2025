@@ -3,7 +3,15 @@
 	$_SESSION['token']="wwerwe";
 	
 	require_once("../../db/db.php");
+	
+	// Add error reporting for debugging
+	error_reporting(E_ALL);
+	ini_set('display_errors', 1);
+	
 	$User=$_POST['Usfd'];
+	
+	// Debug: Log the verification attempt
+	error_log("Verification attempt for user: " . $User);
 	
 	function count_user($user, &$rrr , $posiit){
 		global $mysqli;
@@ -45,12 +53,19 @@
 	
 	$Dgdfg=mysqli_num_rows($mysqli->query("SELECT * FROM `info_verify` WHERE `user`='".$User."' AND `active`='0'"));
 	if($Dgdfg>0){
+		error_log("Found pending verification for user: " . $User);
 		$hfss=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `info_verify` WHERE `user`='".$User."' AND `active`='0'"));
 		$member=base64_decode($hfss['member']);
 		$profile=base64_decode($hfss['profile']);
 		$balance=base64_decode($hfss['balance']);
 		$final_mess=base64_decode($hfss['final_mess']);
 		$email=$hfss['email'];
+		
+		// Debug: Log the decoded queries
+		error_log("Member query: " . $member);
+		error_log("Profile query: " . $profile);
+		error_log("Balance query: " . $balance);
+		
 		if($member!=''){
 			$PartInfo=explode(",", $member);
 			$referrence0=trim($PartInfo[16]);
@@ -77,6 +92,9 @@
 			}
 			
 			$mysqli->query($member);
+			if($mysqli->error) {
+				error_log("Member insertion error: " . $mysqli->error);
+			}
 			
 			$reero=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `member` WHERE `user`='".$User."'"));
 			$kjhgk=$mysqli->query("SELECT * FROM `member` WHERE `upline`='".$reero['upline']."'");
@@ -108,31 +126,54 @@
 		}
 		if($profile!=''){
 			$mysqli->query($profile);
+			if($mysqli->error) {
+				error_log("Profile insertion error: " . $mysqli->error);
+			}
 		}
 		if($balance!=''){
 			$mysqli->query($balance);
+			if($mysqli->error) {
+				error_log("Balance insertion error: " . $mysqli->error);
+			}
 		}
 		if($final_mess!=''){
 			$subject = "Thanks for Complete Sign up Process";
 			$to=$email;
 			$message=$final_mess;
 			
-			$from = "info@nzrobotrade.com";
+			$from = "info@capitolmoneypay.com";
 			$headers = "From:" . $from;
 			$headers  = 'MIME-Version: 1.0' . "\r\n";
 			$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-			$headers .= 'From: NZ Robo Trade<info@nzrobotrade.com>' . "\r\n";
+			$headers .= 'From: Capitol Money Pay<info@capitolmoneypay.com>' . "\r\n";
 			mail($to,$subject,$message,$headers);
 		}
-		$dfdsfds=file_get_contents("https://nzrobotrade.com/member/viewdata/update_score.php?Usfd=$User");
+		
+		// Try to update score - make it non-blocking
+		try {
+			$dfdsfds=file_get_contents("https://capitolmoneypay.com/member/viewdata/update_score.php?Usfd=$User");
+		} catch(Exception $e) {
+			error_log("Score update failed: " . $e->getMessage());
+			// Continue verification even if score update fails
+		}
 			
 		$mysqli->query("UPDATE `info_verify` SET `active`='1' WHERE `user`='".$User."' AND `active`='0' ");
 		$mysqli->query("UPDATE `member` SET `active`='1' WHERE `user`='".$User."' AND `active`='0' ");
 		$mysqli->query("INSERT INTO `member_total` (`user`) VALUES ('".$User."')");
+		
+		error_log("Verification completed successfully for user: " . $User);
 		echo 0;
 		die();
 	}else{
-		echo 1;
+		// Check if user is already verified
+		$AlreadyVerified=mysqli_num_rows($mysqli->query("SELECT * FROM `info_verify` WHERE `user`='".$User."' AND `active`='1'"));
+		if($AlreadyVerified>0){
+			error_log("User already verified: " . $User);
+			echo 1; // Already verified
+		} else {
+			error_log("User not found in verification table: " . $User);
+			echo 2; // User not found or expired
+		}
 		die();
 	}
 ?>
