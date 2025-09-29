@@ -293,17 +293,31 @@ try {
 									
 
 			if(($check == 1)&&($check1 == 1)&&(($row4 < $row5)||($row4 == $row5))&&($check3<2)&&($check2 != 1)&&($row2 =='')&&($position_0001 !='')){
+				// Escape all data before creating SQL queries
+				$user0_escaped = $mysqli->real_escape_string($user0);
+				$loguser00_escaped = $mysqli->real_escape_string($loguser00);
+				$digest0_escaped = $mysqli->real_escape_string($digest0);
+				$Pin0_escaped = $mysqli->real_escape_string($Pin0);
+				$position_0001_escaped = $mysqli->real_escape_string($position_0001);
+				$uplink0_escaped = $mysqli->real_escape_string($uplink0);
+				$referrence0_escaped = $mysqli->real_escape_string($referrence0);
+				$date0_escaped = $mysqli->real_escape_string($date0);
+				$name0_escaped = $mysqli->real_escape_string($name0);
+				$contact0_escaped = $mysqli->real_escape_string($contact0);
+				$email0_escaped = $mysqli->real_escape_string($email0);
+				$country0_escaped = $mysqli->real_escape_string($country0);
+				
 				$query = base64_encode("INSERT INTO `member`(`user`,`log_user`, `password`, `pin`, `position`, `upline`, `pack`,`point`, `direct`, `sponsor`, `date`,`active`)
-						  VALUES('".$user0."','".$loguser00."','".$digest0."','".$Pin0."','".$position_0001."','".$uplink0."','".$member_status."','".$amount."','".$didect."','".$referrence0."','".$date0."','0')");
+						  VALUES('".$user0_escaped."','".$loguser00_escaped."','".$digest0_escaped."','".$Pin0_escaped."','".$position_0001_escaped."','".$uplink0_escaped."','".$member_status."','".$amount."','".$didect."','".$referrence0_escaped."','".$date0_escaped."','0')");
 				//$mysqli->query($query);
 				if($account==0){
 					// Insert basic profile data with required fields only
 					$query8 = base64_encode("INSERT INTO `profile`(`user`, `name`, `mobile`, `email`, `country`) 
-								VALUES ('".$loguser00."','".$name0."','".$contact0."','".$email0."','".$country0."')");
+								VALUES ('".$loguser00_escaped."','".$name0_escaped."','".$contact0_escaped."','".$email0_escaped."','".$country0_escaped."')");
 					//$mysqli->query($query8);
 				}
 				
-				$query10= base64_encode("INSERT INTO balance (user ) VALUES ('".$user0."')");
+				$query10= base64_encode("INSERT INTO balance (user ) VALUES ('".$user0_escaped."')");
 				//$mysqli->query($query10);	 
 				$iuwery=time();
 				$to = $email0;

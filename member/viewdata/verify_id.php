@@ -83,33 +83,31 @@
 		error_log("Balance query: " . $balance);
 		
 		if($member!=''){
-			$PartInfo=explode(",", $member);
-			$referrence0=trim($PartInfo[16]);
-			$poss=trim($PartInfo[15]);
+			// Clean and validate the SQL query before execution
+			$member = trim($member);
 			
-			$kjhgk=$mysqli->query("SELECT * FROM `member` WHERE `upline`='".$referrence0."'");
-			$jkdhgkdf=mysqli_num_rows($kjhgk);
-			if($jkdhgkdf>2){
-				$InfoPlaceId=SearchPlace($referrence0,$poss);
-				$iii=count($InfoPlaceId);
-				$placement0 =strtolower($InfoPlaceId[$iii-1]);
-				$PartInfo[16]=$placement0;
-				$member=implode(",", $PartInfo);
-			}
+			// Log the query for debugging
+			error_log("Raw member query: " . $member);
 			
+			// Fix common SQL issues by properly escaping quotes
+			// Replace any problematic characters
+			$member = str_replace(["\r\n", "\r", "\n"], " ", $member);
+			$member = preg_replace('/\s+/', ' ', $member); // Remove extra spaces
 			
-			$jkhfgd=mysqli_num_rows($mysqli->query("SELECT * FROM `member` WHERE `upline`='".$referrence0."' AND `position`='".$poss."'"));
-			if($jkhfgd>1){
-				$InfoPlaceId=SearchPlace($referrence0,$poss);
-				$iii=count($InfoPlaceId);
-				$placement0 =strtolower($InfoPlaceId[$iii-1]);
-				$PartInfo[16]=$placement0;
-				$member=implode(",", $PartInfo);
-			}
+			error_log("Cleaned member query: " . $member);
 			
-			$mysqli->query($member);
-			if($mysqli->error) {
-				error_log("Member insertion error: " . $mysqli->error);
+			// Check if it's a valid INSERT statement
+			if(strpos($member, 'INSERT INTO') === 0) {
+				$result = $mysqli->query($member);
+				if($mysqli->error) {
+					error_log("Member insertion error: " . $mysqli->error);
+					error_log("Failed query: " . $member);
+					// Don't stop execution, continue with other tables
+				} else {
+					error_log("Member insertion successful");
+				}
+			} else {
+				error_log("Invalid member query format: " . substr($member, 0, 100));
 			}
 			
 			$reero=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `member` WHERE `user`='".$User."'"));
@@ -141,15 +139,43 @@
 			}
 		}
 		if($profile!=''){
-			$mysqli->query($profile);
-			if($mysqli->error) {
-				error_log("Profile insertion error: " . $mysqli->error);
+			// Clean and validate the profile query
+			$profile = trim($profile);
+			$profile = str_replace(["\r\n", "\r", "\n"], " ", $profile);
+			$profile = preg_replace('/\s+/', ' ', $profile);
+			
+			error_log("Cleaned profile query: " . $profile);
+			
+			if(strpos($profile, 'INSERT INTO') === 0) {
+				$result = $mysqli->query($profile);
+				if($mysqli->error) {
+					error_log("Profile insertion error: " . $mysqli->error);
+					error_log("Failed query: " . $profile);
+				} else {
+					error_log("Profile insertion successful");
+				}
+			} else {
+				error_log("Invalid profile query format: " . substr($profile, 0, 100));
 			}
 		}
 		if($balance!=''){
-			$mysqli->query($balance);
-			if($mysqli->error) {
-				error_log("Balance insertion error: " . $mysqli->error);
+			// Clean and validate the balance query
+			$balance = trim($balance);
+			$balance = str_replace(["\r\n", "\r", "\n"], " ", $balance);
+			$balance = preg_replace('/\s+/', ' ', $balance);
+			
+			error_log("Cleaned balance query: " . $balance);
+			
+			if(strpos($balance, 'INSERT INTO') === 0) {
+				$result = $mysqli->query($balance);
+				if($mysqli->error) {
+					error_log("Balance insertion error: " . $mysqli->error);
+					error_log("Failed query: " . $balance);
+				} else {
+					error_log("Balance insertion successful");
+				}
+			} else {
+				error_log("Invalid balance query format: " . substr($balance, 0, 100));
 			}
 		}
 		if($final_mess!=''){

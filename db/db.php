@@ -19,11 +19,17 @@
 	
 	// Auto-detect environment (local vs live server)
 	$is_local = (
-		$_SERVER['HTTP_HOST'] === 'localhost' || 
-		$_SERVER['HTTP_HOST'] === '127.0.0.1' || 
-		strpos($_SERVER['HTTP_HOST'], 'localhost:') === 0 ||
-		$_SERVER['SERVER_NAME'] === 'localhost' ||
-		isset($_SERVER['XAMPP_ROOT'])
+		(isset($_SERVER['HTTP_HOST']) && (
+			$_SERVER['HTTP_HOST'] === 'localhost' || 
+			$_SERVER['HTTP_HOST'] === '127.0.0.1' || 
+			strpos($_SERVER['HTTP_HOST'], 'localhost:') === 0
+		)) ||
+		(isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] === 'localhost') ||
+		isset($_SERVER['XAMPP_ROOT']) ||
+		// Command line detection
+		(php_sapi_name() === 'cli' && file_exists('C:\\xampp\\')) ||
+		// Windows XAMPP path detection
+		(defined('PHP_WINDOWS_VERSION_BUILD') && file_exists('C:\\xampp\\htdocs'))
 	);
 	
 	if ($is_local) {
