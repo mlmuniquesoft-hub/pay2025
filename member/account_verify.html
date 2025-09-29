@@ -204,26 +204,46 @@
 							method: "POST",
 							url: "viewdata/auto_login.php",
 							data: {userId: dfgd},
+							dataType: 'json',
 							timeout: 10000
 						}).done(function(loginResponse) {
 							console.log('Auto-login response:', loginResponse);
 							
-							if(loginResponse.trim() == 'success') {
+							if(loginResponse && loginResponse.sts == 'success') {
 								console.log('Auto-login successful, redirecting to dashboard...');
 								
 								// Update message
 								$("#autoLoginMessage").text("Login successful! Redirecting...");
-								$("#autoLoginProgress").html('<i class="fa fa-check"></i> Redirecting to your dashboard...');
+								$("#autoLoginProgress").html('<i class="fa fa-check"></i> ' + loginResponse.mess);
 								
 								// Redirect to member dashboard after a brief delay
 								setTimeout(function() {
-									window.location.href = 'https://capitolmoneypay.com/member/index.php';
+									window.location.href = 'https://capitolmoneypay.com' + loginResponse.url;
 								}, 1500);
 							} else {
 								console.log('Auto-login failed, showing manual login button');
 								handleAutoLoginFailure();
 							}
-						}).fail(function() {
+						}).fail(function(xhr, status, error) {
+							console.error('Auto-login request failed:', status, error);
+							
+							// Try to parse response as text for backward compatibility
+							try {
+								let textResponse = xhr.responseText;
+								if(textResponse && textResponse.trim() == 'success') {
+									console.log('Auto-login successful (text response), redirecting...');
+									$("#autoLoginMessage").text("Login successful! Redirecting...");
+									$("#autoLoginProgress").html('<i class="fa fa-check"></i> Redirecting to your dashboard...');
+									
+									setTimeout(function() {
+										window.location.href = 'https://capitolmoneypay.com/member/index.php';
+									}, 1500);
+									return;
+								}
+							} catch(e) {
+								console.error('Error parsing response:', e);
+							}
+							
 							console.error('Auto-login request failed, showing manual login button');
 							handleAutoLoginFailure();
 						});

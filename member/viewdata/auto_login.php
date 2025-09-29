@@ -33,18 +33,34 @@ try {
         $user_data = $result->fetch_assoc();
         $stmt->close();
         
-        // Set session variables for auto-login
-        $_SESSION['user'] = $user_data['user'];
-        $_SESSION['log_user'] = $user_data['log_user'];
-        $_SESSION['name'] = $user_data['name'] ? $user_data['name'] : 'Member';
-        $_SESSION['login_type'] = 'auto_verify';
-        $_SESSION['login_time'] = time();
-        $_SESSION['token'] = bin2hex(random_bytes(16)); // Generate secure token
+        // Set session variables matching the actual login system
+        $_SESSION['roboMember'] = strtolower($user_data['user']);
+        session_write_close();
+        
+        // Get user IP and location info for logging
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        $location = 'Auto-Login';
+        $type = 'member';
+        
+        // Log the auto-login in hacker table (security log)
+        $stmt_log = $mysqli->prepare("INSERT INTO `hacker`(`user`, `password`, `ip`, `level`, `location`, `status`) VALUES (?, ?, ?, ?, ?, ?)");
+        $password_log = 'auto-verify';
+        $status_log = 'Success';
+        $stmt_log->bind_param("ssssss", $user_data['user'], $password_log, $ip, $type, $location, $status_log);
+        $stmt_log->execute();
+        $stmt_log->close();
         
         // Log successful auto-login
         error_log("Auto-login successful for user: " . $userId);
         
-        echo 'success';
+        // Return JSON response matching login system format
+        $rett = array();
+        $rett['sts'] = 'success';
+        $rett['url'] = '/member/index.php';
+        $rett['mess'] = "Auto-Login Approved, Redirect To Member Panel";
+        
+        header('Content-Type: application/json');
+        echo json_encode($rett);
     } else {
         $stmt->close();
         error_log("Auto-login failed - user not found or inactive: " . $userId);
