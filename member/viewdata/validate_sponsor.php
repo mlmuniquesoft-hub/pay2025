@@ -33,7 +33,7 @@ try {
     }
     
     // Check if sponsor exists and is active
-    $sponsor_query = "SELECT m.user, m.paid, p.name FROM member m LEFT JOIN profile p ON m.user = p.user OR m.log_user = p.user WHERE m.user = '$sponsor_id'";
+    $sponsor_query = "SELECT m.user, m.active, p.name FROM member m LEFT JOIN profile p ON m.user = p.user OR m.log_user = p.user WHERE m.user = '$sponsor_id'";
     $result = mysqli_query($mysqli, $sponsor_query);
     
     if($result === false) {
@@ -44,7 +44,7 @@ try {
     if(mysqli_num_rows($result) > 0) {
         $sponsor = mysqli_fetch_assoc($result);
         
-        if($sponsor['paid'] == '1') {
+        if($sponsor['active'] == '1') {
             $sponsor_name = $sponsor['name'] ? $sponsor['name'] : 'Member';
             echo json_encode([
                 'status' => 'success', 
@@ -54,7 +54,7 @@ try {
         } else {
             echo json_encode([
                 'status' => 'warning', 
-                'message' => 'Sponsor account is not activated'
+                'message' => 'Sponsor account is not active'
             ]);
         }
     } else {
