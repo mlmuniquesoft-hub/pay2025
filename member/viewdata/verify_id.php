@@ -8,7 +8,14 @@
 	error_reporting(E_ALL);
 	ini_set('display_errors', 1);
 	
-	$User=$_POST['Usfd'];
+	// Validate input
+	if(!isset($_POST['Usfd']) || empty($_POST['Usfd'])) {
+		error_log("No user ID provided in verification request");
+		echo 2; // Invalid input
+		die();
+	}
+	
+	$User = trim($_POST['Usfd']);
 	
 	// Debug: Log the verification attempt
 	error_log("Verification attempt for user: " . $User);
@@ -51,7 +58,16 @@
 	}
 	
 	
+	// Check database connection
+	if($mysqli->connect_error) {
+		error_log("Database connection failed: " . $mysqli->connect_error);
+		echo 2;
+		die();
+	}
+	
 	$Dgdfg=mysqli_num_rows($mysqli->query("SELECT * FROM `info_verify` WHERE `user`='".$User."' AND `active`='0'"));
+	error_log("Found " . $Dgdfg . " pending verification records for user: " . $User);
+	
 	if($Dgdfg>0){
 		error_log("Found pending verification for user: " . $User);
 		$hfss=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `info_verify` WHERE `user`='".$User."' AND `active`='0'"));

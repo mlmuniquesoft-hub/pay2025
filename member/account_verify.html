@@ -53,26 +53,49 @@
                         <div class="col-lg-10 col-sm-12 col-lg-offset-1">
                             <div id="login" class="login loginpage mt-0 no-pl no-pr pt30 pb30">    
                                 <div class="box login" style="background-color: #16a8b100!important;">
-                                    <div class="content-body" id="Content0" style="padding-top:30px;background-color:#1080881f;display:none;">
-										<h3 class="text-center alert alert-info" style="color:black;background: #95f403;border-radius: 10%;line-height: 2;font-weight: bold;">
-											Thanks, For Completing Verification Process <br/>
-											<p style="font-size:15px;color:black;">You Are Now Verified <br/>
-											Account Details Send To Your Email</p>
+                                    <!-- Loading State -->
+                                    <div class="content-body" id="ContentLoading" style="padding-top:30px;background-color:#1080881f;">
+										<h3 class="text-center alert alert-info" style="color:black;background: #17a2b8;border-radius: 10%;line-height: 2;font-weight: bold;">
+											<i class="fa fa-spinner fa-spin"></i> Verifying Your Account... <br/>
+											<p style="font-size:15px;color:black;">Please wait while we verify your email address</p>
 										</h3>
                                     </div>
+                                    
+                                    <!-- Success State -->
+                                    <div class="content-body" id="Content0" style="padding-top:30px;background-color:#1080881f;display:none;">
+										<h3 class="text-center alert alert-success" style="color:black;background: #95f403;border-radius: 10%;line-height: 2;font-weight: bold;">
+											<i class="fa fa-check-circle"></i> Thanks, For Completing Verification Process <br/>
+											<p style="font-size:15px;color:black;">You Are Now Verified <br/>
+											Account Details Sent To Your Email</p>
+										</h3>
+                                    </div>
+                                    
+                                    <!-- Already Verified State -->
 									<div class="content-body" id="Content1" style="padding-top:30px;background-color:#1080881f;display:none;">
 										<h3 class="text-center alert alert-warning" style="color:black;border-radius: 10%;line-height: 2;font-weight: bold;">
-											Your Account Already Verified <br/>
+											<i class="fa fa-info-circle"></i> Your Account Already Verified <br/>
 											<p style="font-size:15px;color:black;">
 												Please Check Your Email For Account Details
 											</p>
 										</h3>
                                     </div>
+                                    
+                                    <!-- Not Found/Expired State -->
 									<div class="content-body" id="Content2" style="padding-top:30px;background-color:#1080881f;display:none;">
-										<h3 class="text-center alert alert-warning" style="color:black;border-radius: 10%;line-height: 2;font-weight: bold;">
-											Your Account Verify Time Expired <br/>
+										<h3 class="text-center alert alert-danger" style="color:black;border-radius: 10%;line-height: 2;font-weight: bold;">
+											<i class="fa fa-exclamation-triangle"></i> Verification Link Expired <br/>
 											<p style="font-size:15px;color:black;">
-												Please Contact With Your Team
+												Please Contact Support For Assistance
+											</p>
+										</h3>
+                                    </div>
+                                    
+                                    <!-- Error State -->
+									<div class="content-body" id="ContentError" style="padding-top:30px;background-color:#1080881f;display:none;">
+										<h3 class="text-center alert alert-danger" style="color:black;border-radius: 10%;line-height: 2;font-weight: bold;">
+											<i class="fa fa-times-circle"></i> Verification Failed <br/>
+											<p style="font-size:15px;color:black;">
+												An error occurred during verification. Please try again or contact support.
 											</p>
 										</h3>
                                     </div>
@@ -92,23 +115,60 @@
     <!-- CORE JS FRAMEWORK - START -->
     <script src="../assets/js/jquery-1.11.2.min.js"></script>
     <script>
-		let losdf=location.href;
-	   let usfJk=losdf.split(":");
-	   let dfgd=atob(usfJk[2]);
-	   $("#user_id").val(dfgd);
-	   //console.log(dfgd);
-		if(dfgd!=''){
-			const redfg=$.ajax({
-				method:"POST",
-				url:"viewdata/verify_id.php",
-				data:{Usfd:dfgd}
-		   });
-		   redfg.done(function(rer){
-		   $("#Content"+rer).show();
-			console.log(rer);
-		   })
-		}else{
-			history.back();
+		console.log('Starting verification process...');
+		let losdf = location.href;
+		console.log('Full URL:', losdf);
+		
+		// Parse the URL properly for format: #uID:U1VNT04wMQ==
+		let hashPart = location.hash; // Gets #uID:U1VNT04wMQ==
+		console.log('Hash part:', hashPart);
+		
+		let dfgd = '';
+		if(hashPart && hashPart.includes('uID:')) {
+			// Extract the base64 part after uID:
+			let base64Part = hashPart.split('uID:')[1];
+			console.log('Base64 part:', base64Part);
+			
+			try {
+				dfgd = atob(base64Part);
+				console.log('Decoded user ID:', dfgd);
+			} catch(e) {
+				console.error('Error decoding base64:', e);
+				dfgd = '';
+			}
+		}
+		
+		if(dfgd != '' && dfgd != null) {
+			console.log('Sending verification request for user:', dfgd);
+			
+			// Hide loading and show result
+			$("#ContentLoading").hide();
+			
+			$.ajax({
+				method: "POST",
+				url: "viewdata/verify_id.php",
+				data: {Usfd: dfgd},
+				timeout: 30000,
+				beforeSend: function() {
+					console.log('Sending verification request...');
+				}
+			}).done(function(rer) {
+				console.log('Verification response:', rer);
+				$("#Content" + rer).show();
+			}).fail(function(xhr, status, error) {
+				console.error('Verification request failed:');
+				console.error('Status:', status);
+				console.error('Error:', error);
+				console.error('Response:', xhr.responseText);
+				
+				// Hide loading and show error
+				$("#ContentLoading").hide();
+				$("#ContentError").show();
+			});
+		} else {
+			console.error('No valid user ID found in URL');
+			$("#ContentLoading").hide();
+			$("#ContentError").show();
 		}
 	</script>
 	<script src="../assets/js/jquery.easing.min.js"></script>
