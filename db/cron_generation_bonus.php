@@ -71,7 +71,7 @@ $possible_paths = [
 ];
 
 // Include required files with intelligent path detection
-$required_files = ['db.php', 'functions.php', 'generation.php'];
+$required_files = ['cron_db.php', 'functions.php', 'generation.php'];
 $included_files = [];
 
 foreach($required_files as $file) {

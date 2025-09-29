@@ -48,7 +48,7 @@ if(!is_dir($db_path)) {
 }
 
 // Include required files
-$required_files = ['db.php', 'functions.php', 'generation.php'];
+$required_files = ['cron_db.php', 'functions.php', 'generation.php'];
 foreach($required_files as $file) {
     $file_path = $db_path . '/' . $file;
     if(!file_exists($file_path)) {

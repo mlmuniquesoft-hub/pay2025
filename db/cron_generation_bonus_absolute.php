@@ -98,7 +98,7 @@ echo "✅ Using DB path: $DB_PATH\n";
 
 // Include required files with absolute paths
 $required_files = [
-    'db.php' => $DB_PATH . '/db.php',
+    'cron_db.php' => $DB_PATH . '/cron_db.php',
     'functions.php' => $DB_PATH . '/functions.php', 
     'generation.php' => $DB_PATH . '/generation.php'
 ];
