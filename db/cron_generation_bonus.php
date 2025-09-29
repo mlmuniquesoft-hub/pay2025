@@ -52,14 +52,66 @@ if($timeout > 0) set_time_limit($timeout);
 echo "Configuration: Date=$date | Chunks=$chunk_size | Memory={$max_memory}G | Verbose=" . ($verbose ? 'Yes' : 'No') . "\n";
 flush();
 
-// Include required files with error handling
+// Determine the correct script directory
+$script_dir = __DIR__;
+$project_root = dirname($script_dir);
+
+echo "🔍 Script directory: $script_dir\n";
+echo "🔍 Project root: $project_root\n";
+
+// Define possible paths for required files
+$possible_paths = [
+    $script_dir,                    // Same directory (db/)
+    $project_root . '/db',          // Parent/db/ 
+    dirname(__FILE__),              // Directory of current file
+    getcwd(),                       // Current working directory
+    '/home/username/public_html/db', // Common cPanel path
+    '/home/username/httpdocs/db',   // Another common path
+    realpath($script_dir),          // Resolved path
+];
+
+// Include required files with intelligent path detection
 $required_files = ['db.php', 'functions.php', 'generation.php'];
+$included_files = [];
+
 foreach($required_files as $file) {
-    if(!file_exists($file)) {
+    $file_found = false;
+    
+    foreach($possible_paths as $path) {
+        $full_path = rtrim($path, '/') . '/' . $file;
+        
+        if(file_exists($full_path)) {
+            require_once $full_path;
+            $included_files[$file] = $full_path;
+            echo "✅ Found and included: $full_path\n";
+            $file_found = true;
+            break;
+        }
+    }
+    
+    if(!$file_found) {
         echo "❌ Required file missing: $file\n";
+        echo "🔍 Searched in paths:\n";
+        foreach($possible_paths as $path) {
+            echo "   - " . rtrim($path, '/') . '/' . $file . "\n";
+        }
+        
+        // Additional debugging
+        echo "🔍 Current working directory: " . getcwd() . "\n";
+        echo "🔍 Script file path: " . __FILE__ . "\n";
+        echo "🔍 Available files in script directory:\n";
+        
+        $files_in_dir = glob($script_dir . '/*');
+        if($files_in_dir) {
+            foreach($files_in_dir as $available_file) {
+                echo "   - " . basename($available_file) . "\n";
+            }
+        } else {
+            echo "   - No files found or directory not accessible\n";
+        }
+        
         exit(1);
     }
-    require_once $file;
 }
 
 // Test database connection
