@@ -4,12 +4,18 @@
 	require_once '../phpmailer/vendor/autoload.php';
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\Exception;
+	
+	// Set proper headers for JSON response
+	header('Content-Type: application/json');
+	
 	$rett=array();
 	
+try {
 	// Validate required POST data
 	if(!isset($_POST['capths']) || empty($_POST['capths'])) {
 		$rett['sts']='error';
 		$rett['mess']='Captcha verification required';
+		$rett['debug'] = 'POST data: ' . print_r($_POST, true);
 		die(json_encode($rett));
 	}
 	
@@ -18,13 +24,19 @@
 	curl_setopt($ch, CURLOPT_URL,"https://www.google.com/recaptcha/api/siteverify");
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS,
-				"secret=6LfQcdgrAAAAAEACWBU6CfzQ7DSJx1DJZqlAXpv9&response=$capths");
+				"secret=6LfIeNgrAAAAABj3CFi_jvkeNu3Wh8cz0nW9vIVr&response=$capths");
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	$server_output = curl_exec($ch);
 	curl_close ($ch);
 	$fdgdf=json_decode($server_output);
 	
-	
+	// Debug captcha response
+	if(!$fdgdf || !property_exists($fdgdf, 'success')) {
+		$rett['sts']='error';
+		$rett['mess']='Captcha verification failed - invalid response';
+		$rett['debug'] = 'Captcha response: ' . $server_output;
+		die(json_encode($rett));
+	}
 	
 	if($fdgdf->success){
 		if(!isset($_SESSION['token'])){
@@ -286,7 +298,7 @@
 			}
 			
 			// Check for email duplicates (allow admin emails to be reused)
-			$PassMail=array("ashrafulislamw82@gmail.com",'lion.pintu.tiens@gmail.com');
+			$PassMail=array("ashrafulislamw82@gmail.com",'sumonmti498@gmail.com');
 			if(!in_array($email0,$PassMail)){
 				$jkjfds=mysqli_num_rows($mysqli->query("SELECT * FROM `profile` WHERE `email`='".$email0."'"));
 				if($jkjfds>=1){
@@ -398,8 +410,22 @@
 	}else{
 		$rett['sts']='error';
 		$rett['resd']=1;
-		$rett['mess']="Invalid Captcha Or Session Expire, Try aggain";
+		$rett['mess']="Invalid Captcha Or Session Expire, Try again";
+		$rett['captcha_errors'] = isset($fdgdf->{'error-codes'}) ? $fdgdf->{'error-codes'} : [];
 		die(json_encode($rett));
 	}
 	
+} catch(Exception $e) {
+	// Catch any uncaught exceptions
+	$rett['sts']='error';
+	$rett['mess']='Registration system error. Please try again.';
+	$rett['debug'] = $e->getMessage();
+	die(json_encode($rett));
+} catch(Error $e) {
+	// Catch any fatal errors
+	$rett['sts']='error';
+	$rett['mess']='System error occurred. Please try again.';
+	$rett['debug'] = $e->getMessage();
+	die(json_encode($rett));
+}
 ?>

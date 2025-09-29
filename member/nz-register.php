@@ -47,7 +47,7 @@
     <link href="../assets/plugins/pace/pace-theme-flash.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="../assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="../assets/plugins/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
-    <link href="../assets/fonts/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
     <link href="../assets/css/animate.min.css" rel="stylesheet" type="text/css" />
     <link href="../assets/plugins/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" type="text/css" />
     <link href="../assets/plugins/icheck/skins/all.css" rel="stylesheet" type="text/css" />
@@ -634,7 +634,7 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
    
 	<script src="/login/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="/login/vendor/jquery-validation/dist/additional-methods.min.js"></script>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LfTCbIUAAAAACb_PpflJsnEXymUtTIYUZY62HrA"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LfIeNgrAAAAABdG_3Q1imBzm3T8JjqculxBEloG"></script>
 	<script src="js/signup.js"></script>
 	<script >
 		$(".shfsd").on("click", function(){
