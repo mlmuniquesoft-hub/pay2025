@@ -207,12 +207,12 @@
 		
 		// If no ROI, skip processing
 		if($daily_roi <= 0) {
-			return;
+			return false;
 		}
 		
 		// Check if user is eligible (has investment)
 		$check_user = mysqli_fetch_assoc($mysqli->query("SELECT `user` FROM `member` WHERE `user`='".$memberid."' AND `paid`='1'"));
-		if(!$check_user) return;
+		if(!$check_user) return false;
 		
 		// Get upline chain for this user (who will receive bonuses from this user's ROI)
 		$upline_chain = array();
@@ -237,7 +237,7 @@
 		
 		// If no upline, skip processing
 		if(empty($upline_chain)) {
-			return;
+			return false;
 		}
 		
 		// Batch insert/update generation bonuses to reduce database calls
@@ -306,6 +306,8 @@
 		foreach($balance_updates as $balance_query) {
 			mysqli_query($mysqli, $balance_query);
 		}
+		
+		return true; // Success
 		
 	} /// end of user_update function
 	

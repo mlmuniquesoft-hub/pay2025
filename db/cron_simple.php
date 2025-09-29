@@ -93,6 +93,26 @@ if(!$count_result) {
 $total_users = mysqli_fetch_assoc($count_result)['total'];
 echo "👥 Total users: " . number_format($total_users) . "\n";
 
+// Show sample user debug info for first few users
+if($total_users > 0) {
+    echo "🔍 Sample user analysis:\n";
+    $debug_query = "SELECT m.user, DATE(m.time) as join_date, m.paid, COUNT(DISTINCT u.id) as upgrade_count,
+                    (SELECT COUNT(*) FROM game_return WHERE user = m.user AND DATE(date) = '$date') as roi_today
+                    FROM member m 
+                    LEFT JOIN upgrade u ON m.user = u.user 
+                    WHERE DATE(m.time) <= '$date' AND m.paid = '1' 
+                    GROUP BY m.user 
+                    ORDER BY m.time DESC 
+                    LIMIT 3";
+    
+    $debug_result = mysqli_query($mysqli, $debug_query);
+    if($debug_result) {
+        while($debug_user = mysqli_fetch_assoc($debug_result)) {
+            echo "   User: {$debug_user['user']} | Join: {$debug_user['join_date']} | Paid: {$debug_user['paid']} | Upgrades: {$debug_user['upgrade_count']} | ROI Today: {$debug_user['roi_today']}\n";
+        }
+    }
+}
+
 if($total_users == 0) {
     echo "✅ No users to process for $date\n";
     exit(0);
@@ -122,20 +142,24 @@ for($offset = 0; $offset < $total_users; $offset += $chunk_size) {
     }
     
     $batch_processed = 0;
+    $batch_skipped = 0;
     while($user = mysqli_fetch_assoc($batch_result)) {
         try {
-            if(user_update11($user['user'], $date)) {
+            $result = user_update11($user['user'], $date);
+            if($result === true) {
                 $batch_processed++;
+            } else {
+                $batch_skipped++;
             }
         } catch(Exception $e) {
-            // Continue on individual user errors
+            $batch_skipped++;
             continue;
         }
     }
     
     $processed += $batch_processed;
     $progress = ($batch / $total_batches) * 100;
-    echo "✅ $batch_processed users (" . number_format($progress, 1) . "%)\n";
+    echo "✅ $batch_processed users, ⏭️ $batch_skipped skipped (" . number_format($progress, 1) . "%)\n";
     
     $batch++;
     
