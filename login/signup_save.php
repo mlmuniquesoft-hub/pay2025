@@ -5,12 +5,20 @@
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\Exception;
 	$rett=array();
+	
+	// Validate required POST data
+	if(!isset($_POST['capths']) || empty($_POST['capths'])) {
+		$rett['sts']='error';
+		$rett['mess']='Captcha verification required';
+		die(json_encode($rett));
+	}
+	
 	$capths=$_POST['capths'];
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL,"https://www.google.com/recaptcha/api/siteverify");
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS,
-				"secret=6LfTCbIUAAAAAMMOvOCawpOaDpwwMx0dzASk7nNN&response=$capths");
+				"secret=6LfQcdgrAAAAAEACWBU6CfzQ7DSJx1DJZqlAXpv9&response=$capths");
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	$server_output = curl_exec($ch);
 	curl_close ($ch);
@@ -57,8 +65,17 @@
 				return $rett;
 			}
 			
-			$country0 = $_POST['country'];	
-			$referrenceabc = $_POST['sponsor_id'];
+			// Validate and sanitize form inputs
+			if(!isset($_POST['sponsor_id']) || !isset($_POST['poss']) || !isset($_POST['log_id']) || 
+			   !isset($_POST['full_name']) || !isset($_POST['email']) || !isset($_POST['password']) || 
+			   !isset($_POST['re_password']) || !isset($_POST['Password_tr'])) {
+				$rett['sts']='error';
+				$rett['mess']='All required fields must be filled';
+				die(json_encode($rett));
+			}
+			
+			$country0 = isset($_POST['country']) ? $_POST['country'] : '';
+			$referrenceabc = trim($_POST['sponsor_id']);
 			$referrence0 = mb_convert_case($referrenceabc, MB_CASE_LOWER, "UTF-8");
 			$poss = $_POST['poss'];	
 			$InfoPlaceId=SearchPlace($referrence0,$poss);
@@ -217,11 +234,25 @@
 				die(json_encode($rett));
 			}						
 			
-			if($Password0!=$Password_re0){
+			// Comprehensive form validation
+			if(empty($name0)) {
 				$rett['sts']='error';
-				$rett['mess']="Both Password Doesn't Match ";
+				$rett['mess']="Full name is required";
 				die(json_encode($rett));
 			}
+			
+			if(!filter_var($email0, FILTER_VALIDATE_EMAIL)) {
+				$rett['sts']='error';
+				$rett['mess']="Invalid email format";
+				die(json_encode($rett));
+			}
+			
+			if($Password0!=$Password_re0){
+				$rett['sts']='error';
+				$rett['mess']="Both Password Doesn't Match";
+				die(json_encode($rett));
+			}
+			
 			$check_pass=strlen($Password0);
 			$check_pin=strlen($Pin0);
 			$ccvv=strlen($user0);
@@ -254,12 +285,13 @@
 				die(json_encode($rett));
 			}
 			
+			// Check for email duplicates (allow admin emails to be reused)
 			$PassMail=array("ashrafulislamw82@gmail.com",'lion.pintu.tiens@gmail.com');
 			if(!in_array($email0,$PassMail)){
 				$jkjfds=mysqli_num_rows($mysqli->query("SELECT * FROM `profile` WHERE `email`='".$email0."'"));
-				if($jkjfds>=7){
+				if($jkjfds>=1){
 					$rett['sts']='error';
-					$rett['mess']="You can use your mail 7 times only";
+					$rett['mess']="Email address already exists";
 					die(json_encode($rett));
 				}
 			}
@@ -285,8 +317,9 @@
 						  VALUES('".$user0."','".$loguser00."','".$digest0."','".$Pin0."','".$position_0001."','".$uplink0."','".$member_status."','".$amount."','".$didect."','".$referrence0."','".$date0."','0')");
 				//$mysqli->query($query);
 				if($account==0){
-					$query8 = base64_encode("INSERT INTO `profile`(`user`, `name`, `father`, `mother`, `mobile`, `email`, `city`, `state`, `postal`, `country`, `address`, `national`, `mbank`, `perfectmoney`, `pmaccount`, `blood`, `birth`, `bank`, `branch`, `account`, `payee`, `swift`) 
-								VALUES ('".$loguser00."','".$name0."','".$father0."','".$Mother0."','".$contact0."','".$email0."','".$city0."','".$State0."','".$Post_code0."','".$country0."','".$address0."','".$Voter0."','".$mbank0."','".$perfectmoney0."','".$pmaccount0."','".$blood0."','".$d_b0."','".$NameofBank0."','".$NameofBranch0."','".$A_C_no0."','".$A_C_name0."','".$swift."')");
+					// Insert basic profile data with required fields only
+					$query8 = base64_encode("INSERT INTO `profile`(`user`, `name`, `mobile`, `email`, `country`) 
+								VALUES ('".$loguser00."','".$name0."','".$contact0."','".$email0."','".$country0."')");
 					//$mysqli->query($query8);
 				}
 				
@@ -328,27 +361,37 @@
 				$mail->SMTPAuth = true;
 				$mail->Username = $from;
 				$mail->Password = 'Mm123678@#';
-				$mail->setFrom($from, 'NZ Robo Trade ');
+				$mail->setFrom($from, 'Capitol Money Pay');
 				$mail->addAddress($to, $name0);
 				$mail->Subject = $subject;
 				$mail->msgHTML($message);
-				//$mail->send();
-				$mysqli->query("INSERT INTO `sms`(`user`, `mobile`, `text`) VALUES ('$user0','$contact0','$text')"); 
-				//$_SESSION['roboMember']=$user0;
-				if($mail->send()){
+				
+				// Store SMS notification
+				if(isset($text)) {
+					$mysqli->query("INSERT INTO `sms`(`user`, `mobile`, `text`) VALUES ('$user0','$contact0','$text')"); 
+				}
+				
+				// Attempt to send email
+				try {
+					$mail->send();
 					$rett['url']='#';
 					$rett['sts']='success';
-					$rett['mess']="Please Verify Your Mail <span id='countr'></span>";
+					$rett['mess']="Registration successful! Please verify your email address.";
+					$rett['user_id'] = $user0;
 					die(json_encode($rett));
-				}else{
-					$rett['sts']='error';
-					$rett['mess']="Invalid Mail";
+				} catch (Exception $e) {
+					// Even if email fails, registration was successful
+					$rett['url']='#';
+					$rett['sts']='success';
+					$rett['mess']="Registration successful! Email verification may be delayed.";
+					$rett['user_id'] = $user0;
 					die(json_encode($rett));
 				}
 				
 			}else{
 				$rett['sts']='error';
-				$rett['mess']="Network Error";
+				$rett['mess']="Registration failed. Please check your information and try again.";
+				$rett['debug'] = "Validation failed: Check=".$check.", Check1=".$check1.", Check2=".$check2.", Check3=".$check3;
 				die(json_encode($rett));
 			}
 		}
