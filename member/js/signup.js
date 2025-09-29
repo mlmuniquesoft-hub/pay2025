@@ -1,15 +1,4 @@
-// reCAPTCHA token handling
-var capFt;
-
-// Initialize reCAPTCHA
-grecaptcha.ready(function() {
-    grecaptcha.execute('6LfIeNgrAAAAABdG_3Q1imBzm3T8JjqculxBEloG', {action: 'signup'}).then(function(token) {
-        capFt = token;
-        $("#ctads").val(token);
-    });
-});
-
-// Prevent default form submission
+// Form submission handler without captcha
 $("#signup-form").on("submit", function(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -20,58 +9,49 @@ $("#submit").on("click", function(e) {
     e.preventDefault();
     e.stopPropagation();
     
-    // Refresh reCAPTCHA token before submission
-    grecaptcha.execute('6LfIeNgrAAAAABdG_3Q1imBzm3T8JjqculxBEloG', {action: 'signup'}).then(function(token) {
-        $("#ctads").val(token);
-        
-        // Get form data
-        let formData = $("#signup-form").serializeArray();
-        
-        // Remove any previous error messages
-        $(".Ertyy").remove();
-        
-        // Submit form via AJAX
-        $.ajax({
-            method: "POST",
-            url: "/login/signup_save.php",  
-            dataType: "json",
-            data: formData,
-            beforeSend: function() {
-                $("#Mess").html('<div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Processing...</span></div> Processing registration...');
+    // Get form data
+    let formData = $("#signup-form").serializeArray();
+    
+    // Remove any previous error messages
+    $(".Ertyy").remove();
+    
+    // Submit form via AJAX
+    $.ajax({
+        method: "POST",
+        url: "/login/signup_save.php",  
+        dataType: "json",
+        data: formData,
+        beforeSend: function() {
+            $("#Mess").html('<div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Processing...</span></div> Processing registration...');
+            $("#Mess").css("color", "#28a745");
+        },
+        success: function(response) {
+            console.log('Registration response:', response);
+            
+            if(response.sts === 'success') {
+                $("#Mess").html('<i class="fa fa-check-circle"></i> ' + response.mess);
                 $("#Mess").css("color", "#28a745");
-            },
-            success: function(response) {
-                console.log('Registration response:', response);
                 
-                if(response.sts === 'success') {
-                    $("#Mess").html('<i class="fa fa-check-circle"></i> ' + response.mess);
-                    $("#Mess").css("color", "#28a745");
-                    
-                    // Redirect or reload after success
-                    setTimeout(function() {
-                        if(response.redirect) {
-                            window.location.href = response.redirect;
-                        } else {
-                            location.reload();
-                        }
-                    }, 2000);
-                } else {
-                    $("#Mess").html('<i class="fa fa-exclamation-triangle"></i> ' + (response.mess || 'Registration failed'));
-                    $("#Mess").css("color", "#f54242");
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX Error:', error);
-                console.error('Response:', xhr.responseText);
-                
-                $("#Mess").html('<i class="fa fa-exclamation-triangle"></i> Network error. Please try again.');
+                // Redirect or reload after success
+                setTimeout(function() {
+                    if(response.redirect) {
+                        window.location.href = response.redirect;
+                    } else {
+                        location.reload();
+                    }
+                }, 2000);
+            } else {
+                $("#Mess").html('<i class="fa fa-exclamation-triangle"></i> ' + (response.mess || 'Registration failed'));
                 $("#Mess").css("color", "#f54242");
             }
-        });
-    }).catch(function(error) {
-        console.error('reCAPTCHA Error:', error);
-        $("#Mess").html('<i class="fa fa-exclamation-triangle"></i> Captcha verification failed. Please refresh and try again.');
-        $("#Mess").css("color", "#f54242");
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX Error:', error);
+            console.error('Response:', xhr.responseText);
+            
+            $("#Mess").html('<i class="fa fa-exclamation-triangle"></i> Network error. Please try again.');
+            $("#Mess").css("color", "#f54242");
+        }
     });
 });
 

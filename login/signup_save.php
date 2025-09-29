@@ -11,34 +11,7 @@
 	$rett=array();
 	
 try {
-	// Validate required POST data
-	if(!isset($_POST['capths']) || empty($_POST['capths'])) {
-		$rett['sts']='error';
-		$rett['mess']='Captcha verification required';
-		$rett['debug'] = 'POST data: ' . print_r($_POST, true);
-		die(json_encode($rett));
-	}
-	
-	$capths=$_POST['capths'];
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL,"https://www.google.com/recaptcha/api/siteverify");
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS,
-				"secret=6LfIeNgrAAAAABj3CFi_jvkeNu3Wh8cz0nW9vIVr&response=$capths");
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	$server_output = curl_exec($ch);
-	curl_close ($ch);
-	$fdgdf=json_decode($server_output);
-	
-	// Debug captcha response
-	if(!$fdgdf || !property_exists($fdgdf, 'success')) {
-		$rett['sts']='error';
-		$rett['mess']='Captcha verification failed - invalid response';
-		$rett['debug'] = 'Captcha response: ' . $server_output;
-		die(json_encode($rett));
-	}
-	
-	if($fdgdf->success){
+	// Direct form processing without captcha
 		if(!isset($_SESSION['token'])){
 			$rett['sts']='error';
 			$rett['mess']='Try Later';
@@ -407,13 +380,6 @@ try {
 				die(json_encode($rett));
 			}
 		}
-	}else{
-		$rett['sts']='error';
-		$rett['resd']=1;
-		$rett['mess']="Invalid Captcha Or Session Expire, Try again";
-		$rett['captcha_errors'] = isset($fdgdf->{'error-codes'}) ? $fdgdf->{'error-codes'} : [];
-		die(json_encode($rett));
-	}
 	
 } catch(Exception $e) {
 	// Catch any uncaught exceptions

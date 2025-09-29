@@ -396,8 +396,7 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
                                                         <input type="checkbox" style="display:none;" name="terms" id="terms" value='1'  /><span id="ssd" style="color:#FFF"> Accept</span> <a href="#" id="consHG" data-toggle="modal" data-target="#exampleModalLong" style="color:#fff240;font-size:22px;">Terms & Condition</a>
                                                     </div>
 													
-													<input type="hidden" id="ctads" name="capths" />
-                                                    <div class="text-center" id="Mess">
+													<div class="text-center" id="Mess">
 														
 													</div>
                                                     <div class="text-center">
@@ -634,7 +633,6 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
    
 	<script src="/login/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="/login/vendor/jquery-validation/dist/additional-methods.min.js"></script>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LfIeNgrAAAAABdG_3Q1imBzm3T8JjqculxBEloG"></script>
 	<script src="js/signup.js"></script>
 	<script >
 		$(".shfsd").on("click", function(){
