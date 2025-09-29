@@ -2,7 +2,55 @@
     <!-- START TOPBAR -->
     <div class='page-topbar gradient-blue1'>
         <div class='logo-area crypto'>
-
+            <a href="index.php" class="logo-text">
+                <span class="logo-main">Capitol</span><span class="logo-sub">Money</span><span class="logo-accent">Pay</span>
+            </a>
+            <style>
+                .logo-text {
+                    display: inline-block;
+                    text-decoration: none;
+                    font-family: 'Arial', sans-serif;
+                    font-weight: bold;
+                    font-size: 24px;
+                    line-height: 1.2;
+                    margin: 10px 20px;
+                    color: #fff;
+                    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                    transition: all 0.3s ease;
+                }
+                .logo-text:hover {
+                    color: #fff;
+                    text-decoration: none;
+                    transform: scale(1.05);
+                }
+                .logo-main {
+                    color: #FFD700;
+                    font-size: 26px;
+                    letter-spacing: 1px;
+                }
+                .logo-sub {
+                    color: #87CEEB;
+                    font-size: 24px;
+                    margin: 0 2px;
+                }
+                .logo-accent {
+                    color: #98FB98;
+                    font-size: 26px;
+                    letter-spacing: 1px;
+                }
+                @media (max-width: 768px) {
+                    .logo-text {
+                        font-size: 18px;
+                        margin: 8px 15px;
+                    }
+                    .logo-main, .logo-accent {
+                        font-size: 20px;
+                    }
+                    .logo-sub {
+                        font-size: 18px;
+                    }
+                }
+            </style>
         </div>
         <div class='quick-area'>
             <div class='pull-left'>
