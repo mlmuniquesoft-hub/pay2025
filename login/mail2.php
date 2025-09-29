@@ -42,12 +42,12 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			backdrop-filter: blur(10px);
 		}
 		
-		.logo::before {
-			content: "✅";
-			font-size: 30px;
+		.logo img {
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
 		}
 		
 		.header-title {
@@ -229,7 +229,9 @@
     <body>
         <div class="email-container">
         	<div class="header">
-        		<div class="logo"></div>
+        		<div class="logo">
+        			<img src="https://capitolmoneypay.com/favicon/cmp-icon.svg" alt="Capitol Money Pay Logo" />
+        		</div>
         		<h1 class="header-title">Account Verification Required</h1>
         		<p class="header-subtitle">One final step to activate your account</p>
         	</div>

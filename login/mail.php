@@ -42,13 +42,12 @@ $message2='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http:
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			backdrop-filter: blur(10px);
 		}
 		
 		.logo img {
 			width: 50px;
 			height: 50px;
-			filter: brightness(0) invert(1);
+			border-radius: 50%;
 		}
 		
 		.welcome-title {

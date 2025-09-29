@@ -42,12 +42,12 @@ $message2='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http:
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			backdrop-filter: blur(10px);
 		}
 		
-		.logo::before {
-			content: "🛍️";
-			font-size: 36px;
+		.logo img {
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
 		}
 		
 		.header-title {
@@ -285,7 +285,9 @@ $message2='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http:
     <body>
         <div class="email-container">
         	<div class="header">
-        		<div class="logo"></div>
+        		<div class="logo">
+        			<img src="https://capitolmoneypay.com/favicon/cmp-icon.svg" alt="Capitol Money Pay Logo" />
+        		</div>
         		<h1 class="header-title">Product Invoice</h1>
         		<div class="invoice-number">Invoice #'.$Invoice.'</div>
         	</div>
