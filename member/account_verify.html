@@ -68,11 +68,14 @@
 											<p style="font-size:15px;color:black;">
 												Your account has been successfully verified!<br/>
 												Account details have been sent to your email.<br/>
-												You can now login to your account.
+												<span id="autoLoginMessage">Automatically logging you in...</span>
 											</p>
 											<div style="margin-top: 20px;">
-												<a href="nz-login.html" class="btn btn-primary" style="background: #28a745; border: none; padding: 10px 30px; border-radius: 5px; color: white; text-decoration: none; font-size: 16px;">
-													<i class="fa fa-sign-in"></i> Login Now
+												<div id="autoLoginProgress" style="margin-bottom: 15px;">
+													<i class="fa fa-spinner fa-spin"></i> Redirecting to your dashboard...
+												</div>
+												<a href="nz-login.html" class="btn btn-primary" style="background: #28a745; border: none; padding: 10px 30px; border-radius: 5px; color: white; text-decoration: none; font-size: 16px; display: none;">
+													<i class="fa fa-sign-in"></i> Manual Login
 												</a>
 											</div>
 										</h3>
@@ -184,7 +187,55 @@
 				
 				// Log which message should be displayed
 				if(rer == 0) {
-					console.log('First-time verification successful - showing success message');
+					console.log('First-time verification successful - showing success message and auto-login');
+					
+					// Show success message
+					$("#Content0").show();
+					
+					// Auto-login and redirect after 3 seconds
+					setTimeout(function() {
+						console.log('Starting auto-login process...');
+						
+						// Update message
+						$("#autoLoginMessage").text("Processing automatic login...");
+						
+						// Perform auto-login via AJAX
+						$.ajax({
+							method: "POST",
+							url: "viewdata/auto_login.php",
+							data: {userId: dfgd},
+							timeout: 10000
+						}).done(function(loginResponse) {
+							console.log('Auto-login response:', loginResponse);
+							
+							if(loginResponse.trim() == 'success') {
+								console.log('Auto-login successful, redirecting to dashboard...');
+								
+								// Update message
+								$("#autoLoginMessage").text("Login successful! Redirecting...");
+								$("#autoLoginProgress").html('<i class="fa fa-check"></i> Redirecting to your dashboard...');
+								
+								// Redirect to member dashboard after a brief delay
+								setTimeout(function() {
+									window.location.href = 'https://capitolmoneypay.com/member/index.php';
+								}, 1500);
+							} else {
+								console.log('Auto-login failed, showing manual login button');
+								handleAutoLoginFailure();
+							}
+						}).fail(function() {
+							console.error('Auto-login request failed, showing manual login button');
+							handleAutoLoginFailure();
+						});
+					}, 3000); // Wait 3 seconds before auto-login
+					
+					// Function to handle auto-login failure
+					function handleAutoLoginFailure() {
+						$("#autoLoginMessage").text("Please login manually to access your account.");
+						$("#autoLoginProgress").hide();
+						$("#Content0").find('.btn').show();
+					}
+					
 				} else if(rer == 1) {
 					console.log('Account already verified - showing already verified message');
 				} else if(rer == 2) {
