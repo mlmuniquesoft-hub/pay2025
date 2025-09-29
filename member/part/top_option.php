@@ -12,17 +12,17 @@
                             <i class="fa fa-bars"></i>
                         </a>
                     </li>
-                    <li class="topnav-item item1">
+                    <li class="topnav-item item1" style="display: none;">
                         <a href="index.php?route=schedule_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Trading Report'); ?>" class="new-link w-text">Schedule
                           <span class="badge badge-primary ml-5">New</span>
                         </a>
                     </li>
-                    <li class="topnav-item active item2">
+                    <li class="topnav-item active item2" style="display: none;">
                         <a href="index.php?route=index&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Robo Trade Dashboard'); ?>" class="nav-link w-text">
                           <i class="fa fa-area-chart mr-10"></i>Reports
                         </a>
                     </li>
-                    <li class="topnav-item item3">
+                    <li class="topnav-item item3" style="display: none;">
                         <a href="index.php?route=trading_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Trading Report'); ?>" class="nav-link w-text">
                           <img src="/image/dcrypto.jpg" style="width:30px;height:20px" />Crypto Trading
                         </a>
@@ -120,7 +120,7 @@
 							
 						});
 					</script>
-                    <li class="message-toggle-wrapper spec">
+                    <li class="message-toggle-wrapper spec" style="display: none;">
 						<?php
 							$jkdfghd=$mysqli->query("SELECT * FROM `message2` WHERE `user_id`='".$memberInfo['log_user']."' AND `active`='1' ORDER BY `serial` DESC");
 							$dfgfd=mysqli_num_rows($jkdfghd);
@@ -188,7 +188,7 @@
                                     <i class="fa fa-user"></i> Profile
                                 </a>
                             </li>
-                            <li>
+                            <li style="display: none;">
                                 <a href="index.php?route=support&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('User Profile'); ?>">
                                     <i class="fa fa-info"></i> Support
                                 </a>

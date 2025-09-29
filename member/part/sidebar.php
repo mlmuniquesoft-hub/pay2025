@@ -21,7 +21,7 @@
                              <i class="fa fa-user">
                                 
                             </i>
-                            <span class="title">Trader Profile</span>
+                            <span class="title">Profile</span>
                             <span class="arrow "></span>
                         </a>
                         <ul class="sub-menu">
@@ -42,10 +42,10 @@
                             <i class="fa fa-shopping-cart">
                                 
                             </i>
-                            <span class="title">Robotic Shop</span>
+                            <span class="title">Upgrade Package</span>
                         </a>
                     </li>
-					<li class="">
+					<li class="" style="display: none;">
                         <a href="https://capitolmoneypay.com/product/" target="blank">
                             <i class="fa fa-shopping-cart">
                                 
@@ -53,7 +53,7 @@
                             <span class="title">Products</span>
                         </a>
                     </li>
-					<li class="">
+					<li class="" style="display: none;">
                         <a href="javascript:;">
                              <i class="fa fa-shopping-cart">
                                 
@@ -67,7 +67,7 @@
                             </li>
 							</ul>
                     </li>
-					<li class="">
+					<li class="" style="display: none;">
                         <a href="index.php?route=schedule_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Trader Plans'); ?>">
                             <img src="/image/dcrypto.jpg" style="width:30px;height:20px" />
                             <span class="title">Crypto Trading</span>
@@ -138,7 +138,7 @@
 						}
 
 					</style>
-                    <li class="">
+                    <li class="" style="display: none;">
                         <a href="index.php?route=turbo_bots&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Turbo Bots'); ?>">
                             <i class="fa fa-superpowers">
                                 
@@ -163,7 +163,7 @@
                             <li>
                                  <a class="" href="index.php?route=unilevel_view&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Unilevel View'); ?>">Unilevel</a>
                             </li>
-                            <li>
+                            <li style="display: none;">
                                  <a class="" href="index.php?route=tree_view&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Tree View'); ?>">My Tree</a>
                             </li>
                             
