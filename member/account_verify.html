@@ -64,9 +64,17 @@
                                     <!-- Success State -->
                                     <div class="content-body" id="Content0" style="padding-top:30px;background-color:#1080881f;display:none;">
 										<h3 class="text-center alert alert-success" style="color:black;background: #95f403;border-radius: 10%;line-height: 2;font-weight: bold;">
-											<i class="fa fa-check-circle"></i> Thanks, For Completing Verification Process <br/>
-											<p style="font-size:15px;color:black;">You Are Now Verified <br/>
-											Account Details Sent To Your Email</p>
+											<i class="fa fa-check-circle"></i> Email Verification Successful! <br/>
+											<p style="font-size:15px;color:black;">
+												Your account has been successfully verified!<br/>
+												Account details have been sent to your email.<br/>
+												You can now login to your account.
+											</p>
+											<div style="margin-top: 20px;">
+												<a href="nz-login.html" class="btn btn-primary" style="background: #28a745; border: none; padding: 10px 30px; border-radius: 5px; color: white; text-decoration: none; font-size: 16px;">
+													<i class="fa fa-sign-in"></i> Login Now
+												</a>
+											</div>
 										</h3>
                                     </div>
                                     
@@ -141,8 +149,8 @@
 		if(dfgd != '' && dfgd != null) {
 			console.log('Sending verification request for user:', dfgd);
 			
-			// Hide loading and show result
-			$("#ContentLoading").hide();
+			// Keep loading visible during AJAX request
+			$("#ContentLoading").show();
 			
 			$.ajax({
 				method: "POST",
@@ -151,10 +159,37 @@
 				timeout: 30000,
 				beforeSend: function() {
 					console.log('Sending verification request...');
+					// Show loading state
+					$("#ContentLoading").show();
 				}
 			}).done(function(rer) {
-				console.log('Verification response:', rer);
-				$("#Content" + rer).show();
+				console.log('Verification response received:', rer);
+				console.log('Response type:', typeof rer);
+				
+				// Hide loading and show appropriate result
+				$("#ContentLoading").hide();
+				
+				// Ensure we're working with the right content ID
+				let contentId = "Content" + rer.toString().trim();
+				console.log('Showing content with ID:', contentId);
+				
+				$("#" + contentId).show();
+				
+				// Log which message should be displayed
+				if(rer == 0) {
+					console.log('First-time verification successful - showing success message');
+				} else if(rer == 1) {
+					console.log('Account already verified - showing already verified message');
+				} else if(rer == 2) {
+					console.log('Verification failed - showing error message');
+				} else {
+					console.log('Unknown response code:', rer);
+				}
+				
+				// Add a small delay to ensure the message is visible
+				setTimeout(function() {
+					console.log('Verification process completed with result:', rer);
+				}, 100);
 			}).fail(function(xhr, status, error) {
 				console.error('Verification request failed:');
 				console.error('Status:', status);
