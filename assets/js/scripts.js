@@ -3492,7 +3492,7 @@ jQuery(function($) {
         // ------------------------------------------------------- //
         // Coins Slider
         // ------------------------------------------------------ //
-        if ($(".coins-slider")){
+        if ($(".coins-slider") && typeof Swiper !== 'undefined'){
             var swiper = new Swiper('.coins-slider', {
                 slidesPerView: 3,
                 spaceBetween: 10,

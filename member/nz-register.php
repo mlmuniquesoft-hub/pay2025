@@ -30,19 +30,6 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon/cmp-icon.svg">
-    <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png">
-	<link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png">
-	<link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png">
-	<link rel="apple-touch-icon" sizes="76x76" href="/favicon/apple-icon-76x76.png">
-	<link rel="apple-touch-icon" sizes="114x114" href="/favicon/apple-icon-114x114.png">
-	<link rel="apple-touch-icon" sizes="120x120" href="/favicon/apple-icon-120x120.png">
-	<link rel="apple-touch-icon" sizes="144x144" href="/favicon/apple-icon-144x144.png">
-	<link rel="apple-touch-icon" sizes="152x152" href="/favicon/apple-icon-152x152.png">
-	<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-icon-180x180.png">
-	<link rel="icon" type="image/png" sizes="192x192"  href="/favicon/android-icon-192x192.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
 	<link rel="manifest" href="/favicon/manifest.json">
 	<meta name="msapplication-TileColor" content="#ffffff">
 	<meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png">
@@ -64,6 +51,7 @@
     <link href="../assets/css/animate.min.css" rel="stylesheet" type="text/css" />
     <link href="../assets/plugins/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" type="text/css" />
     <link href="../assets/plugins/icheck/skins/all.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/plugins/swiper/swiper.css" rel="stylesheet" type="text/css" />
     <!-- CORE CSS FRAMEWORK - END -->
 
     <!-- HEADER SCRIPTS INCLUDED ON THIS PAGE - START -->
@@ -91,6 +79,93 @@
 		  color: red;
 		}
 		
+	</style>
+	
+	<style>
+		/* Custom styles for sponsor ID and position fields */
+		.sponsor-section {
+			background-color: rgba(255, 255, 255, 0.1);
+			border-radius: 8px;
+			padding: 15px;
+			margin-bottom: 20px;
+			border: 1px solid rgba(255, 255, 255, 0.2);
+		}
+		
+		.sponsor-section .form-label {
+			color: #fff;
+			font-weight: 600;
+			margin-bottom: 8px;
+		}
+		
+		#sponsor_id, #poss {
+			border: 2px solid #007bff;
+			border-radius: 6px;
+			transition: all 0.3s ease;
+		}
+		
+		#sponsor_id:focus, #poss:focus {
+			border-color: #0056b3;
+			box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+		}
+		
+		.position-info {
+			font-size: 12px;
+			color: #ccc;
+			margin-top: 5px;
+		}
+		
+		.required-field {
+			color: #ff6b6b;
+		}
+		
+		/* Validation feedback styles */
+		.validation-feedback {
+			font-size: 12px;
+			margin-top: 5px;
+			transition: all 0.3s ease;
+		}
+		
+		.validation-success {
+			color: #28a745;
+		}
+		
+		.validation-error {
+			color: #dc3545;
+		}
+		
+		.validation-warning {
+			color: #ffc107;
+		}
+		
+		.form-control.is-valid {
+			border-color: #28a745;
+			box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+		}
+		
+		.form-control.is-invalid {
+			border-color: #dc3545;
+			box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+		}
+		
+		.form-control.is-warning {
+			border-color: #ffc107;
+			box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+		}
+		
+		.validation-spinner {
+			display: inline-block;
+			width: 16px;
+			height: 16px;
+			border: 2px solid #f3f3f3;
+			border-top: 2px solid #3498db;
+			border-radius: 50%;
+			animation: spin 1s linear infinite;
+		}
+		
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
 	</style>
 </head>
 <!-- END HEAD -->
@@ -213,21 +288,49 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 													<?php
 														if(isset($_GET['keys'])){
 															$UserId=explode("/", base64_decode($_GET['keys']));
-														} else {
-															$UserId = array('', ''); // Default empty values
-														}
 													?>
-                                                    <div class="form-group">
-                                                        <label class="form-label">Sponsor ID</label>
-                                                        <div class="controls">
-                                                            <input type="text" class="form-control" value="<?php echo $UserId[1]; ?>" name="sponsor_id" id="sponsor_id" placeholder="Sponsor ID" />
-                                                        </div>
-                                                    </div>
-													<input type='hidden' name="poss" value='<?php if($UserId[2]!=''){echo $UserId[2];}else{echo 1;} ?>'  />
-														<?php //}else{ ?>
-														<!--<input type="hidden" value="<?php //echo 'robotrade'; ?>" name="sponsor_id" id="sponsor_id" />
-														<input type='hidden' name="poss" value='1'  />-->
-														<?php //} ?>
+													<div class="sponsor-section">
+														<div class="form-group">
+															<label class="form-label">Sponsor ID <span class="required-field">*</span></label>
+															<div class="controls">
+																<input type="text" class="form-control" value="<?php echo $UserId[1]; ?>" name="sponsor_id" id="sponsor_id" placeholder="Enter Sponsor ID" style="background-color: #e7ebf5;" required />
+																<div id="sponsor_id_feedback" class="validation-feedback"></div>
+															</div>
+														</div>
+														
+														<div class="form-group">
+															<label class="form-label">Position <span class="required-field">*</span></label>
+															<div class="controls">
+																<select class="form-control" name="poss" id="poss" style="background-color: #e7ebf5;" required>
+																	<option value="1" <?php echo ($UserId[2] == '1' || $UserId[2] == '') ? 'selected' : ''; ?>>Left (1)</option>
+																	<option value="2" <?php echo ($UserId[2] == '2') ? 'selected' : ''; ?>>Right (2)</option>
+																</select>
+																<div class="position-info">Choose left or right position in your sponsor's ranks</div>
+															</div>
+														</div>
+													</div>
+														<?php }else{ ?>
+														<div class="sponsor-section">
+															<div class="form-group">
+																<label class="form-label">Sponsor ID <span class="required-field">*</span></label>
+																<div class="controls">
+																	<input type="text" class="form-control" name="sponsor_id" id="sponsor_id" placeholder="Enter Sponsor ID" style="background-color: #e7ebf5;" required />
+																	<div id="sponsor_id_feedback" class="validation-feedback"></div>
+																</div>
+															</div>
+															
+															<div class="form-group">
+																<label class="form-label">Position <span class="required-field">*</span></label>
+																<div class="controls">
+																	<select class="form-control" name="poss" id="poss" style="background-color: #e7ebf5;" required>
+																		<option value="1">Left (1)</option>
+																		<option value="2">Right (2)</option>
+																	</select>
+																	<div class="position-info">Choose left or right position in your sponsor's binary tree</div>
+																</div>
+															</div>
+														</div>
+														<?php } ?>
 													
 													<div class="form-group">
                                                         <label class="form-label">Full Name</label>
@@ -240,6 +343,7 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
                                                         <label class="form-label">Email</label>
                                                         <div class="controls">
                                                             <input style="background-color: #e7ebf5;" type="text" class="form-control" name="email" id="email" placeholder="Email">
+                                                            <div id="email_feedback" class="validation-feedback"></div>
                                                         </div>
                                                     </div>
 													<div class="form-group">
@@ -266,7 +370,7 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
                                                         <label class="form-label">User Name</label>
                                                         <div class="controls">
                                                             <input style="background-color: #e7ebf5;" type="text" class="form-control" name="log_id" id="log_id" placeholder="User Name">
-															<p id="UserError" style="color:#f55a0e;" class="text-center text-danger"></p>
+															<div id="log_id_feedback" class="validation-feedback"></div>
                                                         </div>
                                                     </div>
 													
@@ -326,6 +430,7 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
     <script src="../assets/plugins/pace/pace.min.js"></script>
     <script src="../assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="../assets/plugins/viewport/viewportchecker.js"></script>
+    <script src="../assets/plugins/swiper/swiper.js"></script>
     <script>
         window.jQuery || document.write('<script src="../assets/js/jquery-1.11.2.min.js"><\/script>');
     </script>
@@ -342,25 +447,83 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 			e.preventDefault();
 			e.stopPropagation();
 			
+			// Check if all required fields are valid
+			let isFormValid = true;
+			let errorMessage = "";
+			
+			// Check sponsor ID
+			if(!$("#sponsor_id").hasClass("is-valid") && $("#sponsor_id").val().trim() !== "") {
+				isFormValid = false;
+				errorMessage = "Please enter a valid Sponsor ID";
+			} else if($("#sponsor_id").val().trim() === "") {
+				isFormValid = false;
+				errorMessage = "Sponsor ID is required";
+			}
+			
+			// Check username
+			if(!$("#log_id").hasClass("is-valid") && $("#log_id").val().trim() !== "") {
+				isFormValid = false;
+				errorMessage = "Please enter a valid Username";
+			} else if($("#log_id").val().trim() === "") {
+				isFormValid = false;
+				errorMessage = "Username is required";
+			}
+			
+			// Check email
+			if(!$("#email").hasClass("is-valid") && $("#email").val().trim() !== "") {
+				isFormValid = false;
+				errorMessage = "Please enter a valid Email";
+			} else if($("#email").val().trim() === "") {
+				isFormValid = false;
+				errorMessage = "Email is required";
+			}
+			
+			// Check other required fields
+			if($("#full_name").val().trim() === "") {
+				isFormValid = false;
+				errorMessage = "Full Name is required";
+			}
+			
+			if($("#password").val().trim() === "") {
+				isFormValid = false;
+				errorMessage = "Password is required";
+			}
+			
+			if($("#re_password").val().trim() === "") {
+				isFormValid = false;
+				errorMessage = "Confirm Password is required";
+			}
+			
+			if($("#password").val() !== $("#re_password").val()) {
+				isFormValid = false;
+				errorMessage = "Passwords do not match";
+			}
+			
+			if(!isFormValid) {
+				$("#Mess").text(errorMessage);
+				$("#Mess").css("color","#f54242");
+				$("#Mess").css("font-size","18px");
+				return;
+			}
+			
 			let dfgfd=$("#terms:checked").val();
 			if(dfgfd==1){
 				if(dfgd==1){
 					$("#submit").trigger("click");
-					//$("#Mess").text("Please, Try Later");
-					$("#Mess").css("color","#f54242");
-					$("#Mess").css("font-size","22px;");
-					//counnb();
+					$("#Mess").text("Processing registration...");
+					$("#Mess").css("color","#28a745");
+					$("#Mess").css("font-size","18px");
 				}else{
 					$("#consHG").trigger("click");
 					$("#Mess").text("Read Terms & Condition");
 					$("#Mess").css("color","#f54242");
-					$("#Mess").css("font-size","22px;");
+					$("#Mess").css("font-size","18px");
 				}
 			}else{
 				$("#consHG").trigger("click");
 				$("#Mess").text("Accept Terms & Condition");
 				$("#Mess").css("color","#f54242");
-				$("#Mess").css("font-size","22px;");
+				$("#Mess").css("font-size","18px");
 			}
 			
 		});
@@ -376,23 +539,47 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 			});
 		});
 		$("#log_id").on("keyup", function(){
-			let user=$(this).val();
-			if(user!=''){
-				const redf=$.ajax({
-					mehtod:"GET",
-					url:"viewdata/checkuserd.php",
-					data:{dfgfd:user}
-				});
-				redf.done((redd)=>{
-					let dfgdf=JSON.parse(redd);
-					if(dfgdf['sts']=='error'){
-						$(this).parent().addClass("has-error");
-						$("#UserError").text(dfgdf['mess']);
-					}else{
-						$("#UserError").text(dfgdf['mess']);
-					}
-				});
+			let user = $(this).val();
+			let $field = $(this);
+			let $feedback = $("#log_id_feedback");
+			
+			if(user.length === 0) {
+				$field.removeClass("is-valid is-invalid is-warning");
+				$feedback.html("");
+				return;
 			}
+			
+			if(user.length < 4) {
+				$field.removeClass("is-valid is-warning").addClass("is-invalid");
+				$feedback.html("Minimum 4 characters required").removeClass("validation-success validation-warning").addClass("validation-error");
+				return;
+			}
+			
+			// Show loading spinner
+			$feedback.html('<span class="validation-spinner"></span> Checking availability...');
+			$field.removeClass("is-valid is-invalid is-warning");
+			
+			// Debounced AJAX call
+			clearTimeout(window.usernameTimeout);
+			window.usernameTimeout = setTimeout(function() {
+				$.ajax({
+					method: "GET",
+					url: "viewdata/checkuserd.php",
+					data: {dfgfd: user},
+					dataType: "json"
+				}).done(function(response) {
+					if(response.sts === 'error') {
+						$field.removeClass("is-valid is-warning").addClass("is-invalid");
+						$feedback.html(response.mess).removeClass("validation-success validation-warning").addClass("validation-error");
+					} else {
+						$field.removeClass("is-invalid is-warning").addClass("is-valid");
+						$feedback.html(response.mess || "Username is available").removeClass("validation-error validation-warning").addClass("validation-success");
+					}
+				}).fail(function() {
+					$field.removeClass("is-valid is-warning").addClass("is-invalid");
+					$feedback.html("Error checking username").removeClass("validation-success validation-warning").addClass("validation-error");
+				});
+			}, 500); // 500ms delay
 		});
 		const counnb=()=>{
 			let timer=50;
@@ -455,11 +642,128 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 			if(dfgfd==2){
 				$("#sponsor_id").val("5911051");
 				$("#sponsor_id").attr("type","password");
+				$("#sponsor_id").attr("readonly", true);
+				$("#poss").val("1");
+				$("#poss").attr("disabled", true);
 				$("#POssd").hide();
 			}else{
 				$("#sponsor_id").val("");
 				$("#sponsor_id").attr("type","text");
+				$("#sponsor_id").attr("readonly", false);
+				$("#poss").attr("disabled", false);
 				$("#POssd").show();
+			}
+		});
+		
+		// Add sponsor ID validation
+		$("#sponsor_id").on("blur keyup", function(){
+			let sponsorId = $(this).val().trim();
+			let $field = $(this);
+			let $feedback = $("#sponsor_id_feedback");
+			
+			if(sponsorId.length === 0) {
+				$field.removeClass("is-valid is-invalid is-warning");
+				$feedback.html("");
+				return;
+			}
+			
+			// Show loading spinner
+			$feedback.html('<span class="validation-spinner"></span> Validating sponsor...');
+			$field.removeClass("is-valid is-invalid is-warning");
+			
+			// Debounced AJAX call for sponsor validation
+			clearTimeout(window.sponsorTimeout);
+			window.sponsorTimeout = setTimeout(function() {
+				$.ajax({
+					method: "GET",
+					url: "viewdata/validate_sponsor.php",
+					data: {sponsor_id: sponsorId},
+					dataType: "json",
+					timeout: 10000 // 10 second timeout
+				}).done(function(response) {
+					console.log("Sponsor validation response:", response); // Debug log
+					if(response.status === 'error') {
+						$field.removeClass("is-valid is-warning").addClass("is-invalid");
+						$feedback.html(response.message).removeClass("validation-success validation-warning").addClass("validation-error");
+					} else if(response.status === 'warning') {
+						$field.removeClass("is-valid is-invalid").addClass("is-warning");
+						$feedback.html(response.message).removeClass("validation-success validation-error").addClass("validation-warning");
+					} else {
+						$field.removeClass("is-invalid is-warning").addClass("is-valid");
+						$feedback.html(response.message).removeClass("validation-error validation-warning").addClass("validation-success");
+					}
+				}).fail(function(xhr, status, error) {
+					console.error("Sponsor validation failed:", {xhr: xhr, status: status, error: error}); // Debug log
+					$field.removeClass("is-valid is-warning").addClass("is-invalid");
+					let errorMsg = "Error validating sponsor";
+					if(status === 'timeout') errorMsg = "Request timeout - check connection";
+					if(xhr.responseText) errorMsg = "Server error: " + xhr.responseText.substring(0, 50);
+					$feedback.html(errorMsg).removeClass("validation-success validation-warning").addClass("validation-error");
+				});
+			}, 300); // 300ms delay for sponsor
+		});
+		
+		// Add email validation
+		$("#email").on("blur keyup", function(){
+			let email = $(this).val().trim();
+			let $field = $(this);
+			let $feedback = $("#email_feedback");
+			
+			if(email.length === 0) {
+				$field.removeClass("is-valid is-invalid is-warning");
+				$feedback.html("");
+				return;
+			}
+			
+			// Basic email format check first
+			let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if(!emailRegex.test(email)) {
+				$field.removeClass("is-valid is-warning").addClass("is-invalid");
+				$feedback.html("Invalid email format").removeClass("validation-success validation-warning").addClass("validation-error");
+				return;
+			}
+			
+			// Show loading spinner
+			$feedback.html('<span class="validation-spinner"></span> Checking email...');
+			$field.removeClass("is-valid is-invalid is-warning");
+			
+			// Debounced AJAX call for email validation
+			clearTimeout(window.emailTimeout);
+			window.emailTimeout = setTimeout(function() {
+				$.ajax({
+					method: "GET",
+					url: "viewdata/validate_email.php",
+					data: {email: email},
+					dataType: "json",
+					timeout: 10000 // 10 second timeout
+				}).done(function(response) {
+					console.log("Email validation response:", response); // Debug log
+					if(response.status === 'error') {
+						$field.removeClass("is-valid is-warning").addClass("is-invalid");
+						$feedback.html(response.message).removeClass("validation-success validation-warning").addClass("validation-error");
+					} else {
+						$field.removeClass("is-invalid is-warning").addClass("is-valid");
+						$feedback.html(response.message).removeClass("validation-error validation-warning").addClass("validation-success");
+					}
+				}).fail(function(xhr, status, error) {
+					console.error("Email validation failed:", {xhr: xhr, status: status, error: error}); // Debug log
+					$field.removeClass("is-valid is-warning").addClass("is-invalid");
+					let errorMsg = "Error checking email";
+					if(status === 'timeout') errorMsg = "Request timeout - check connection";
+					if(xhr.responseText) errorMsg = "Server error: " + xhr.responseText.substring(0, 50);
+					$feedback.html(errorMsg).removeClass("validation-success validation-warning").addClass("validation-error");
+				});
+			}, 500); // 500ms delay for email
+		});
+		
+		// Position field interaction
+		$("#sponsor_id").on("input", function(){
+			let sponsorId = $(this).val();
+			if(sponsorId && sponsorId.length > 0) {
+				$("#poss").prop("disabled", false);
+			} else {
+				$("#poss").prop("disabled", true);
+				$("#poss").val("1"); // Default to left
 			}
 		});
 	</script>
