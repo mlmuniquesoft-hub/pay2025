@@ -47,9 +47,34 @@ $("#submit").on("click", function(e) {
         },
         error: function(xhr, status, error) {
             console.error('AJAX Error:', error);
-            console.error('Response:', xhr.responseText);
+            console.error('Status:', status);
+            console.error('Response Text:', xhr.responseText);
             
-            $("#Mess").html('<i class="fa fa-exclamation-triangle"></i> Network error. Please try again.');
+            let errorMsg = 'Registration failed. Please try again.';
+            
+            // Try to extract meaningful error from response
+            if(xhr.responseText) {
+                if(xhr.responseText.includes('Fatal error')) {
+                    errorMsg = 'Database error occurred. Please contact support.';
+                } else if(xhr.responseText.includes('Warning')) {
+                    errorMsg = 'Server configuration issue. Please try again.';
+                } else if(xhr.responseText.includes('Parse error')) {
+                    errorMsg = 'Server error. Please contact support.';
+                } else {
+                    // Try to parse JSON if possible
+                    try {
+                        let response = JSON.parse(xhr.responseText);
+                        if(response.mess) {
+                            errorMsg = response.mess;
+                        }
+                    } catch(e) {
+                        // If not JSON, use generic message
+                        errorMsg = 'Server communication error. Please try again.';
+                    }
+                }
+            }
+            
+            $("#Mess").html('<i class="fa fa-exclamation-triangle"></i> ' + errorMsg);
             $("#Mess").css("color", "#f54242");
         }
     });
@@ -60,6 +85,9 @@ $(document).ready(function() {
     $("#signup-form").validate({
         rules: {
             sponsor_id: {
+                required: true
+            },
+            poss: {
                 required: true
             },
             full_name: {
@@ -87,6 +115,7 @@ $(document).ready(function() {
         },
         messages: {
             sponsor_id: "Sponsor ID is required",
+            poss: "Please select a position (Left or Right)",
             full_name: "Full Name is required", 
             email: {
                 required: "Email is required",

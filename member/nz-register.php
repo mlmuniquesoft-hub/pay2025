@@ -302,7 +302,8 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 															<label class="form-label">Position <span class="required-field">*</span></label>
 															<div class="controls">
 																<select class="form-control" name="poss" id="poss" style="background-color: #e7ebf5;" required>
-																	<option value="1" <?php echo ($UserId[2] == '1' || $UserId[2] == '') ? 'selected' : ''; ?>>Left (1)</option>
+																	<option value="">-- Please Select Position --</option>
+																	<option value="1" <?php echo ($UserId[2] == '1') ? 'selected' : ''; ?>>Left (1)</option>
 																	<option value="2" <?php echo ($UserId[2] == '2') ? 'selected' : ''; ?>>Right (2)</option>
 																</select>
 																<div class="position-info">Choose left or right position in your sponsor's ranks</div>
@@ -323,6 +324,7 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 																<label class="form-label">Position <span class="required-field">*</span></label>
 																<div class="controls">
 																	<select class="form-control" name="poss" id="poss" style="background-color: #e7ebf5;" required>
+																		<option value="">-- Please Select Position --</option>
 																		<option value="1">Left (1)</option>
 																		<option value="2">Right (2)</option>
 																	</select>
@@ -481,6 +483,11 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 			if($("#full_name").val().trim() === "") {
 				isFormValid = false;
 				errorMessage = "Full Name is required";
+			}
+			
+			if($("#poss").val() === "") {
+				isFormValid = false;
+				errorMessage = "Please select a position (Left or Right)";
 			}
 			
 			if($("#password").val().trim() === "") {
@@ -761,7 +768,7 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 				$("#poss").prop("disabled", false);
 			} else {
 				$("#poss").prop("disabled", true);
-				$("#poss").val("1"); // Default to left
+				$("#poss").val(""); // Reset to default option
 			}
 		});
 	</script>

@@ -1,4 +1,7 @@
 <?php
+	// Suppress PHP warnings in production
+	error_reporting(E_ERROR | E_PARSE);
+	
 	session_start();
 	$_SESSION['token']="sfhshd";
 	require_once '../phpmailer/vendor/autoload.php';
@@ -189,7 +192,7 @@ try {
 			$query3="SELECT position,upline FROM member WHERE  upline='$uplink0'";
 			$result3=$mysqli->query($query3);
 			$row3=mysqli_fetch_array($result3);
-			$placement_po=$row3['position'];	
+			$placement_po = isset($row3['position']) ? $row3['position'] : '';	
 			$check3 = mysqli_num_rows($result3);
 			if($position_0001==''){
 				$rett['sts']='error';
@@ -253,7 +256,7 @@ try {
 			}
 			
 			$GHsdfs=explode(" ",$user0);
-			if($GHsdfs[1]!=''){
+			if(isset($GHsdfs[1]) && $GHsdfs[1]!=''){
 				$rett['sts']='error';
 				$rett['mess']="Space Not Allowed In User Name";
 				die(json_encode($rett));
@@ -285,15 +288,7 @@ try {
 					
 			
 
-			$query16 = "SELECT `b_bank`, `b_branch`, `b_name`, `b_number`, `s_code`, `account_name`, `account_number` FROM `admin`";
-			$bank_data = mysqli_fetch_array($mysqli->query($query16));
-			$b_bank = $bank_data['b_bank'];
-			$b_branch = $bank_data['b_branch'];
-			$b_name = $bank_data['b_name'];
-			$b_number = $bank_data['b_number'];
-			$s_code = $bank_data['s_code'];
-			$account_name = $bank_data['account_name'];
-			$account_number = $bank_data['account_number'];
+			// Remove bank data query as columns don't exist
 			$ticket=time();
 									
 
