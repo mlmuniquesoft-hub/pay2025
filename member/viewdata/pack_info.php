@@ -13,6 +13,15 @@
 		$Cher=mysqli_num_rows($Membv);
 		if($Cher>0){
 			$InfoMemm=mysqli_fetch_assoc($Membv);
+			
+			// Check if account is activated
+			if($InfoMemm['paid'] != 1){
+				$rett['sts']=0;
+				$rett['mess']="Account not activated! Please activate your account first with a one-time $10 fee.";
+				$rett['redirect_url']="index.php?route=activation&tild=".base64_encode(time());
+				die(json_encode($rett));
+			}
+			
 			if($InfoMemm['pack']>=$packFF[1]){
 				$rett['sts']=0;
 				$rett['mess']="Your Recent Robo Plan Better Than This Plan";
@@ -21,18 +30,20 @@
 				$cHECKpAK=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `package` WHERE `serial`='".$packFF[1]."'"));
 				$dfgKKj=remainAmn($user);
 				$jkhfskjd=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) as tyool FROM `upgrade` WHERE `user`='".$user."'"));
-				$membershipFee = 10; // $10 membership fee for every upgrade
-				$totalUpgradeCost = $cHECKpAK['pack_amn'] + $membershipFee;
-				$Chrge=$totalUpgradeCost-$jkhfskjd['tyool'];
+				
+				// No additional activation fee for activated accounts
+				$packageCost = $cHECKpAK['pack_amn'];
+				$Chrge=$packageCost-$jkhfskjd['tyool'];
+				
 				if($Chrge>$dfgKKj){
 					$rett['sts']=1;
-					$rett['mess']="Success - Package: $".$cHECKpAK['pack_amn']." + $10 Membership Fee = $".$totalUpgradeCost;
-					$rett['url']="index.php?route=deposit&tild=".base64_encode(time())."&title=&amount=".$totalUpgradeCost."&paccg=".base64_encode(time()."/DBOT".$cHECKpAK['pack_amn']."/".$cHECKpAK['serial']."/MF10");
+					$rett['mess']="Success - Package Upgrade: $".$packageCost." (No additional activation fee required)";
+					$rett['url']="index.php?route=deposit&tild=".base64_encode(time())."&title=&amount=".$packageCost."&paccg=".base64_encode(time()."/DBOT".$cHECKpAK['pack_amn']."/".$cHECKpAK['serial']."/ACTIVATED");
 					die(json_encode($rett));
 				}else{
 					$rett['sts']=1;
-					$rett['mess']="Success - Package: $".$cHECKpAK['pack_amn']." + $10 Membership Fee = $".$totalUpgradeCost;
-					$rett['url']="index.php?route=activation_details&tild=".base64_encode(time())."&title=&paccg=".base64_encode(time()."/DBOT".$cHECKpAK['pack_amn']."/".$cHECKpAK['serial']."/MF10");
+					$rett['mess']="Success - Package Upgrade: $".$packageCost." (No additional activation fee required)";
+					$rett['url']="index.php?route=activation_details&tild=".base64_encode(time())."&title=&paccg=".base64_encode(time()."/DBOT".$cHECKpAK['pack_amn']."/".$cHECKpAK['serial']."/ACTIVATED");
 					die(json_encode($rett));
 				}
 			}

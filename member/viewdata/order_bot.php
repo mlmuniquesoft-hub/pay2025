@@ -35,12 +35,17 @@
 	
 	$CheckUs=mysqli_num_rows($kjhgd);
 	if($CheckUs>0){
-		// Use custom amount instead of predefined package
-		$investmentAmount = $customAmount;
-		$activationFee = 10;
-		$totalRequired = $investmentAmount + $activationFee;
-		
 		$MemberInfo=mysqli_fetch_assoc($kjhgd);
+		
+		// Check if account is activated
+		if($MemberInfo['paid'] != 1){
+			$rett['sts']=0;
+			$rett['mess']="Account not activated! Please activate your account first with a one-time $10 fee.";
+			die(json_encode($rett));
+		}
+		
+		// Use custom amount for investment (no additional activation fee for activated accounts)
+		$investmentAmount = $customAmount;
 		
 		// Check if user already has an active investment
 		$existingInvestment = mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) as total_invested FROM `upgrade` WHERE `user`='".$user."'"));
@@ -52,9 +57,9 @@
 		
 		$dfgKKj=remainAmn($user);
 		
-		if($totalRequired > $dfgKKj){
+		if($investmentAmount > $dfgKKj){
 			$rett['sts']=0;
-			$rett['mess']="Insufficient Fund. Required: $".number_format($totalRequired, 2)." | Available: $".number_format($dfgKKj, 2);
+			$rett['mess']="Insufficient Fund. Required: $".number_format($investmentAmount, 2)." | Available: $".number_format($dfgKKj, 2);
 			die(json_encode($rett));
 		}
 		$Chhfgd=count($rett);
@@ -73,25 +78,56 @@
 				$packageName = "VIP Package";
 			}
 
-			// Calculate sponsor bonus (10% of investment amount)
-			$SponsorBonus = ($investmentAmount * 0.10);
-			$Shopping = ($investmentAmount * 0.00); // 0% shopping bonus
-			
+			$Shopping = 0; // No shopping bonus
 			$ActivaDate=date("Y-m-d H:i:s");
 			
-			// Insert upgrade record
-			$mysqli->query("INSERT INTO `upgrade`( `user`, `package`, `amount`, `bonus`, `shopping`, `sponsor`, `upline`, `invoice`, `charge`, `date`) VALUES ('".$user."','".$packageName."','".$investmentAmount."','".$SponsorBonus."','".$Shopping."','".$MemberInfo['sponsor']."','".$MemberInfo['upline']."','".$Invoice."','".$activationFee."','".$ActivaDate."')");
+			// Insert upgrade record (no activation fee for already activated accounts)
+			$mysqli->query("INSERT INTO `upgrade`( `user`, `package`, `amount`, `bonus`, `shopping`, `sponsor`, `upline`, `invoice`, `charge`, `date`) VALUES ('".$user."','".$packageName."','".$investmentAmount."','0','".$Shopping."','".$MemberInfo['sponsor']."','".$MemberInfo['upline']."','".$Invoice."','0','".$ActivaDate."')");
 			
-			// Update member status
-			$mysqli->query("UPDATE `member` SET `paid`='1',`pack`='1' WHERE `user`='".$user."'");
+			// Update member pack level
+			$mysqli->query("UPDATE `member` SET `pack`='1' WHERE `user`='".$user."'");
 			
-			// Add sponsor bonus to sponsor's account
-			$description="$".number_format($SponsorBonus, 2)." Sponsor Bonus from ".$user." (".$packageName.")";
-			$mysqli->query("INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) VALUES ('".$MemberInfo['sponsor']."', '".$date."', '".$description."', '".$SponsorBonus."','credit')");
+			// Process multi-level trading commissions (8%-1%-1%)
+			$commissionLevels = [
+				1 => 8, // 8% for direct referrals
+				2 => 1, // 1% for 2nd level
+				3 => 1  // 1% for 3rd level
+			];
 			
-			// Add debit record for user
-			$description="$".number_format($investmentAmount, 2)." ".$packageName." Investment + $".number_format($activationFee, 2)." Activation Fee";
-			$mysqli->query("INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) VALUES ('".$user."', '".$date."', '".$description."', '".$totalRequired."','debit')");
+			$currentSponsor = $MemberInfo['sponsor'];
+			$level = 1;
+			
+			while($currentSponsor && $level <= 3) {
+				// Check if sponsor is activated
+				$sponsorQuery = $mysqli->query("SELECT `paid`, `sponsor` FROM `member` WHERE `user`='$currentSponsor'");
+				$sponsorInfo = mysqli_fetch_assoc($sponsorQuery);
+				
+				if($sponsorInfo && $sponsorInfo['paid'] == 1) {
+					$commissionRate = $commissionLevels[$level];
+					$commissionAmount = ($investmentAmount * $commissionRate / 100);
+					
+					// Add commission to sponsor's account
+					$description="Level $level Trading Commission ($commissionRate%) from $user ($packageName)";
+					$mysqli->query("INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) VALUES ('$currentSponsor', '$date', '$description', '$commissionAmount','credit')");
+					
+					// Record in commission table
+					$mysqli->query("INSERT INTO `commission_record` 
+						(`user`, `from_user`, `amount`, `type`, `level`, `date_added`) 
+						VALUES 
+						('$currentSponsor', '$user', '$commissionAmount', 'trading', '$level', NOW())");
+					
+					// Move to next level
+					$currentSponsor = $sponsorInfo['sponsor'];
+					$level++;
+				} else {
+					// Stop if sponsor is not activated
+					break;
+				}
+			}
+			
+			// Add debit record for user (no activation fee)
+			$description="$".number_format($investmentAmount, 2)." ".$packageName." Investment";
+			$mysqli->query("INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) VALUES ('".$user."', '".$date."', '".$description."', '".$investmentAmount."','debit')");
 			
 			
 			$ProfileInfo=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `profile` WHERE `user`='".$MemberInfo['log_user']."' OR `user`='".$user."'"));
@@ -134,13 +170,23 @@
 								<table style='width: 100%;'>
 									<tr><td><strong>Plan:</strong></td><td>$packageName</td></tr>
 									<tr><td><strong>Investment:</strong></td><td>$".number_format($investmentAmount, 2)."</td></tr>
-									<tr><td><strong>Activation Fee:</strong></td><td>$".number_format($activationFee, 2)."</td></tr>
 									<tr><td><strong>Daily Rate:</strong></td><td>$dailyRate% (Mon-Fri)</td></tr>
 									<tr><td><strong>Daily Return:</strong></td><td>$".number_format($investmentAmount * $dailyRate / 100, 2)."</td></tr>
+									<tr><td><strong>Total Return:</strong></td><td>$".number_format($investmentAmount * 2, 2)." (2.0x multiplier)</td></tr>
 								</table>
 							</div>
 							
-							<p style='color: #374151;'>Your investment will start generating returns from the next business day. Returns are credited Monday through Friday.</p>
+							<div style='background: #ecfdf5; border-left: 4px solid #10b981; padding: 20px; margin: 20px 0; border-radius: 5px;'>
+								<h3 style='margin: 0 0 15px 0; color: #047857;'>Commission Benefits:</h3>
+								<ul style='margin: 0; padding-left: 20px; color: #065f46;'>
+									<li>Level 1 (Direct): 8% commission on referral investments</li>
+									<li>Level 2: 1% commission on 2nd level investments</li>
+									<li>Level 3: 1% commission on 3rd level investments</li>
+									<li><strong>Total Distribution: 10% across all levels</strong></li>
+								</ul>
+							</div>
+							
+			<p style='color: #374151;'>Your investment will start generating returns from the next business day. Returns are credited Monday through Friday.</p>
 							<p style='color: #059669; font-weight: bold;'>Thank you for choosing Capitol Money Pay!</p>
 						</div>
 						<div style='background: #f9fafb; padding: 20px; text-align: center; border-radius: 0 0 10px 10px; border-top: 1px solid #e5e7eb;'>
@@ -157,7 +203,7 @@
 			}
 			
 			$rett['sts']=1;
-			$rett['mess']="🎉 Investment activated successfully! You invested $".number_format($investmentAmount, 2)." in the $packageName with $dailyRate% daily returns.";
+			$rett['mess']="🎉 Investment activated successfully! You invested $".number_format($investmentAmount, 2)." in the $packageName with $dailyRate% daily returns. No additional activation fee required.";
 			die(json_encode($rett));
 		}else{
 			$rett['sts']=0;

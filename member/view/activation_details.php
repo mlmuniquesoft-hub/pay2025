@@ -282,7 +282,6 @@
 									<div style="margin-bottom: 10px; color: #000000;"><strong style="color: #000000;">⭐ Premium:</strong> $1000 - $4999 <span style="color: #dc2626; float: right;">0.7% Daily</span></div>
 									<div style="color: #000000;"><strong style="color: #000000;">👑 VIP:</strong> $5000+ <span style="color: #dc2626; float: right;">1.0% Daily</span></div>
 								</div>
-								<p class="uprofile-title" style="color: #e8ecf0ff; font-weight: bold;">All plans include $10 activation fee</p>
 							</div>
 							
 							<div class="uprofile-buttons">
