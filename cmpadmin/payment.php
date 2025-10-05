@@ -179,8 +179,18 @@
 									<div class="panel-body">
 										<div class="row">
 											<div class="col-xs-12">
-											<h3 style="color:red;text-align:center;"><?php echo $_SESSION['msg']; ?></h3>
-											<h3 style="color:green;text-align:center;"><?php echo $_SESSION['msg1']; ?></h3>
+											<h3 style="color:red;text-align:center;"><?php 
+												if(isset($_SESSION['msg'])) {
+													echo $_SESSION['msg']; 
+													unset($_SESSION['msg']);
+												}
+											?></h3>
+											<h3 style="color:green;text-align:center;"><?php 
+												if(isset($_SESSION['msg1'])) {
+													echo $_SESSION['msg1']; 
+													unset($_SESSION['msg1']);
+												}
+											?></h3>
 											</div>
 											<div class="col-sm-6">
 												<button class="btn btn-info" id="PrintMode">Print Mode</button>
@@ -269,9 +279,9 @@
 															$err =  mysqli_num_rows($q);
 															$a=  mysqli_fetch_object($q);
 															$total_items=  mysqli_num_rows($q);
-															$limit=$_GET['limit'];
-															$type=$_GET['type'];
-															$page=$_GET['page'];
+															$limit = isset($_GET['limit']) ? $_GET['limit'] : 30;
+															$type = isset($_GET['type']) ? $_GET['type'] : '';
+															$page = isset($_GET['page']) ? $_GET['page'] : 1;
 															if((!$limit)  || (is_numeric($limit) == false) || ($limit < 29) || ($limit > 30))
 															{$limit = 30; }
 															if((!$page) || (is_numeric($page) == false) || ($page < 0) || ($page > $total_items))
@@ -323,6 +333,7 @@
 													</table>
 														<p align="center" style="font-family:MV Boli, Helvetica, sans-serif, Arial;align:center;color:red;font-size:13px;"> 
 												<?php 
+												$cat = isset($cat) ? $cat : ''; 
 												$cat = urlencode($cat); 
 												$prev_page = $page - 1;if($prev_page >= 1){echo("<b>&lt;&lt;</b> <a href=?limit=$limit&amp;page=$prev_page><b>Prev</b></a>");}
 												$a = $page ;if($a <= $total_pages){ echo("|<a href=?limit=$limit&amp;page=$a><b>$a</b></a>|");}			
@@ -388,9 +399,9 @@
 
 													$a=  mysqli_fetch_object($t);
 													$total_items=  mysqli_num_rows($t);
-													$limit=$_GET['limit1'];
-													$type=$_GET['type1'];
-													$page=$_GET['page1'];
+													$limit = isset($_GET['limit1']) ? $_GET['limit1'] : 15;
+													$type = isset($_GET['type1']) ? $_GET['type1'] : '';
+													$page = isset($_GET['page1']) ? $_GET['page1'] : 1;
 													if((!$limit)  || (is_numeric($limit) == false) || ($limit < 14) || ($limit > 16))
 													{$limit = 15; }
 													if((!$page) || (is_numeric($page) == false) || ($page < 0) || ($page > $total_items))

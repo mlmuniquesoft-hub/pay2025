@@ -174,12 +174,12 @@
 								<span class="icon fa fa-file-text-o"></span><span class="title">Package</span>
 							</a>
 						</li>
-						<li>
+						<li style="display: none;">
 							<a href="product.php">
 								<span class="icon fa fa-file-text-o"></span><span class="title">Product</span>
 							</a>
 						</li>
-						<li>
+						<li style="display: none;">
 							<a href="allproduct.php">
 								<span class="icon fa fa-file-text-o"></span><span class="title">All Products</span>
 							</a>
