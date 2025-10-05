@@ -1,9 +1,11 @@
-<div class="page-sidebar fixedscroll" style="background-color: #26709a;margin-top: 0px;">
+<div class="page-sidebar fixedscroll" style="background-image:url('../image/blockchain.jpg');margin-top: 0px;">
 
             <!-- MAIN MENU - START -->
-            <div class="page-sidebar-wrapper crypto" id="main-menu-wrapper">
-
-                <ul class='wraplist' style="margin-top:60px;background-color: #1a4bb5;">
+			
+            <div class="page-sidebar-wrapper crypto" id="main-menu-wrapper" >
+				
+                <ul class='wraplist' style="margin-top:60px;background:rgba(0, 0, 0, 0.38)">
+			
                     <li class='menusection'>Main</li>
                     <li class="">
                         <a href="../index.php?route=index&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Robo Trade Dashboard'); ?>">
@@ -19,7 +21,7 @@
                              <i class="fa fa-user">
                                 
                             </i>
-                            <span class="title">Trader Profile</span>
+                            <span class="title">Profile</span>
                             <span class="arrow "></span>
                         </a>
                         <ul class="sub-menu">
@@ -40,7 +42,15 @@
                             <i class="fa fa-shopping-cart">
                                 
                             </i>
-                            <span class="title">Robotic Shop</span>
+                            <span class="title">Upgrade Package</span>
+                        </a>
+                    </li>
+					<li class="" style="display: none;">
+                        <a href="https://capitolmoneypay.com/product/" target="blank">
+                            <i class="fa fa-shopping-cart">
+                                
+                            </i>
+                            <span class="title">Nzrobo Product</span>
                         </a>
                     </li>
                     <?php 
@@ -106,8 +116,8 @@
 						}
 
 					</style>
-                    <li class="">
-                        <a href="index.php?route=turbo_bots&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Turbo Bots'); ?>">
+                    <li class="" style="display: none;">
+                        <a href="../index.php?route=turbo_bots&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Turbo Bots'); ?>">
                             <i class="fa fa-superpowers">
                                 
                             </i>
@@ -116,7 +126,6 @@
                         </a>
                     </li>
 					<?php } } ?>
-					
 					<li class="">
                         <a href="javascript:;">
                             <i class="fa fa-share-alt">
@@ -138,6 +147,29 @@
                             
                         </ul>
                     </li>
+					<?php
+						$MemberIDf=strtolower($_SESSION['roboMember']);
+						if($MemberIDf=='kalroys'){
+					?>
+					<li class="">
+                        <a href="javascript:;">
+                            <i class="fa fa-share-alt"></i>
+                            <span class="title">Team Info</span>
+                            <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a class="" href="../index.php?route=member_list&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Member List'); ?>">Member List</a>
+                            </li>
+                            <li style="display:none;">
+                                <a class="" href="../index.php?route=member_today&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Member Today'); ?>">Member Today</a>
+                            </li>
+                            <li style="display:none;">
+                                <a class="" href="../index.php?route=tree_view&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Tree View'); ?>">My Tree</a>
+                            </li>
+                        </ul>
+                    </li>
+					<?php } ?>
 					<li class="">
                         <a href="javascript:;">
                             <i class="fa fa-money">
@@ -171,57 +203,90 @@
                         </ul>
                     </li>
 					<li class="">
-                        <a href="javascript:;">
-                            <i class="fa fa-money">
-                                
-                            </i>
-                            <span class="title">Financial</span>
-                            <span class="arrow "></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a class="" href="../index.php?route=wallet_user&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Add Wallet/User'); ?>">Add Wallet</a>
-                            </li>
-							<li>
-                                <a class="" href="../index.php?route=deposit&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Deposit Fund'); ?>">Deposit</a>
-                            </li>
-							<li>
-                                <a class="" href="../index.php?route=withdraw&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Withdraw Fund '); ?>">Withdraw</a>
-                            </li>
-                            <li>
-                                <a class="" href="../index.php?route=transfer&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Transfer Fund '); ?>">Transfer</a>
-                            </li>
-                            
-                        </ul>
-                    </li>
-					<li class="">
-                        <a href="javascript:;">
-                            <i class="fa fa-exchange">
+						<a href="javascript:;">
+							<i class="fa fa-dollar">
 								
 							</i>
-                            <span class="title">Transaction</span>
-                            <span class="arrow "></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a class="" href="../index.php?route=deposit_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Deposit History'); ?>">Deposit History</a>
-                            </li>
+							<span class="title">Financial</span>
+							<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
 							<li>
-                                <a class="" href="index.php?route=purchase_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Purchase History'); ?>">Purchase History</a>
-                            </li>
+								<a class="" href="../index.php?route=wallet_user&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Add Wallet/User'); ?>">
+									<i class="fa fa-plus-circle" style="margin-right: 5px; color: #28a745;"></i>
+									Add Wallet
+								</a>
+								<ul class="sub-sub-menu">
+									<li>
+										<a class="" href="../index.php?route=wallet_user&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Add Bitcoin Wallet'); ?>">
+											<i class="fa fa-bitcoin" style="margin-right: 5px; color: #f7931a;"></i>
+											Bitcoin Wallet
+										</a>
+									</li>
+								</ul>
+							</li>
 							<li>
-                                <a class="" href="../index.php?route=withdraw_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Withdraw History'); ?>">Withdraw History</a>
-                            </li>
-                            <li>
-                                <a class="" href="../index.php?route=transfer_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Transfer History'); ?>">Transfer History</a>
-                            </li>
+								<a class="" href="../index.php?route=withdraw&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Withdraw Fund '); ?>">
+									<i class="fa fa-minus-circle" style="margin-right: 5px; color: #dc3545;"></i>
+									Withdraw
+								</a>
+							</li>
 							<li>
-                                <a class="" href="../index.php?route=receive_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Receive History'); ?>">Receive History</a>
-                            </li>
-                            
-                        </ul>
-                    </li>
-					<li class="">
+								<a class="" href="../index.php?route=transfer&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Transfer Fund '); ?>">
+									<i class="fa fa-exchange" style="margin-right: 5px; color: #6f42c1;"></i>
+									Transfer
+								</a>
+							</li>
+							
+						</ul>
+					</li>					<li class="">
+						<a href="javascript:;">
+							<i class="fa fa-exchange">
+								
+							</i>
+							<span class="title">Transaction History</span>
+							<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a class="" href="../index.php?route=deposit_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('All Deposit History'); ?>">
+									<i class="fa fa-plus-square" style="margin-right: 5px; color: #28a745;"></i>
+									All Deposits
+								</a>
+							</li>
+							<li>
+								<a class="" href="../index.php?route=deposit&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Manual Deposits'); ?>">
+									<i class="fa fa-file-image-o" style="margin-right: 5px; color: #17a2b8;"></i>
+									Manual Deposits
+								</a>
+							</li>
+							<li>
+								<a class="" href="../index.php?route=withdraw_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Withdraw History'); ?>">
+									<i class="fa fa-minus-square" style="margin-right: 5px; color: #dc3545;"></i>
+									Withdrawals
+								</a>
+							</li>
+							
+							<li>
+								<a class="" href="../index.php?route=transfer_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Transfer History'); ?>">
+									<i class="fa fa-arrow-right" style="margin-right: 5px; color: #6f42c1;"></i>
+									Transfers
+								</a>
+							</li>
+							<li>
+								<a class="" href="../index.php?route=activation_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Activation Report'); ?>">
+									<i class="fa fa-rocket" style="margin-right: 5px; color: #f59e0b;"></i>
+									Activations
+								</a>
+							</li>
+							<li>
+								<a class="" href="../index.php?route=receive_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Receive History'); ?>">
+									<i class="fa fa-arrow-left" style="margin-right: 5px; color: #20c997;"></i>
+									Received
+								</a>
+							</li>
+						</ul>
+					</li>					<li class="">
                         <a href="../index.php?route=common_question&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('FAQ'); ?>">
                             <i class="fa fa-linode">
                               
@@ -245,9 +310,9 @@
                             <span class="title">Logout</span>
                         </a>
                     </li>
-					<li class="GooleTrans" style="">
+					<!-- <li class="GooleTrans" style="">
                         <div id="google_translate_element"></div>
-                    </li>
+                    </li> -->
 					
 					
                 </ul>
@@ -262,9 +327,11 @@
 				color:white;
 			}
 		</style>
+		<!-- Temporarily disabled Google Translate to test dropdown functionality
 		<script type="text/javascript">
 			function googleTranslateElementInit() {
 			  new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
 			}
 			</script>
 		<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+		-->

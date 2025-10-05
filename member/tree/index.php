@@ -30,6 +30,8 @@ try {
 }
 
 // Load tree functions
+require_once("../part/top_header2.php");
+
 include("../part/sideTree.php");
 
 echo "<!-- Debug: sideTree.php loaded -->\n";
@@ -158,8 +160,8 @@ $i=0;
         <!-- START CONTENT -->
         <section id="main-content" class=" " style="background:#3c5c6f;">
            
-<div class="wrapper main-wrapper row" style='min-height:100vh;padding:0px;'>
-		 <div class="row">
+		<div class="wrapper main-wrapper row" style='min-height:100vh;padding:0px;'>
+				<div class="row">
 							<div class="col-sm-6">
 								<div class="row">
 								<?php
@@ -168,17 +170,18 @@ $i=0;
 									$i=0;
 									while($ppaasl=mysqli_fetch_assoc($jjk)){
 										if(($ppaasl['pack']=="NZBOT500")||($ppaasl['pack']=="NZBOT300")||($ppaasl['pack']=="NZBOT50000")){
-											
 											$coolk="#040404";
 										}else{
 											$coolk="#FFF";
 										}
-										//$coolk="#FFF";
 								?>
 								<div class="col-lg-3 col-md-4 col-sm-6 col-xs-6">
 									<p class="text-center" style="border: 2px solid #FFF;background:<?php echo $ppaasl['color']; ?>;color:<?php echo $coolk; ?>;font-size: 11px;"><?php echo $ppaasl['pack']. " (".$plans[$i] .")"; ?></p>
 								</div>
-								<?php $i++; } ?>
+								<?php
+									$i++;
+									}
+								?>
 								</div>
 							</div>
 							<div class="col-sm-4 col-xs-8" style="padding-right:0px;">
@@ -209,6 +212,9 @@ $i=0;
 		<div class="row" >
 		<div class="col-xs-12" style="padding:0px;margin:0px;">
 			<div id="summary" class="panel-body tree-container1" style="height:100%;margin: auto;width: 100%;top: 0px;">
+						<!-- Load jQuery FIRST before any jQuery plugins -->
+						<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+						
 						<link rel="stylesheet" href="css/styles-tree.css">
 						<link rel="stylesheet" href="css/custom-tree.css">
 						<link href="css/prettify-tree.css" type="text/css" rel="stylesheet">

@@ -218,7 +218,25 @@
 
     <script src="/assets/plugins/flot-chart/jquery.flot.js"></script>
     <script src="/assets/plugins/flot-chart/jquery.flot.time.js"></script>
+    <!-- SweetAlert with CDN fallback -->
     <script src="js/sweetalert.min.js"></script>
+    <script>
+        // Fallback to CDN if local SweetAlert fails to load
+        if (typeof swal === 'undefined') {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"><\/script>');
+        }
+        
+        // Fix broken avatar images
+        document.addEventListener('DOMContentLoaded', function() {
+            const avatarImages = document.querySelectorAll('img[src*="data/profile/avatar"]');
+            avatarImages.forEach(function(img) {
+                img.onerror = function() {
+                    this.src = '/member/photo/avatar.jpg';
+                    this.onerror = null; // Prevent infinite loop
+                };
+            });
+        });
+    </script>
     
     <script src="/assets/plugins/chartjs-chart/Chart.min.js"></script>
     <script >
