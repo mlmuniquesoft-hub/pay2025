@@ -56,7 +56,7 @@
 ?>
 	<div class="node" style="border-radius: 7px;cursor: default;min-width:110px !important;height:auto !important;">
 		<a href="<?php echo $link; ?>" id="level-0">
-			<img style="width:70px!important;height:70px!important;border-radius: 0%!important;border: 2px solid #454552 !important;" class="tree_icon" src="<?php echo $photo; ?>" alt="<?php echo $user; ?>" id="userlink_<?php echo $user; ?>" onclick="getGenologyTree(&quot;INF750391&quot;,event);"  title="">
+			<img style="width:70px!important;height:70px!important;border-radius: 0%!important;border: 2px solid #454552 !important;" class="tree_icon" src="<?php echo $photo; ?>" alt="<?php echo $user; ?>" id="userlink_<?php echo $user; ?>" onclick="getGenologyTree('<?php echo $user; ?>',event);"  title="<?php echo $name; ?>">
 		</a>
 		
 		<div class="username" style="color:<?php echo $coolk; ?>;border-radius: 10px; border:2px solid #FFF; margin-top: 2px;background: <?php echo $color;?> !important;"><?php echo $user; ?>
