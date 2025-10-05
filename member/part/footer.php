@@ -1,4 +1,5 @@
 <script>
+	/*
 	setTimeout(function(){
 		const redfg=$.ajax({
 			method:"GET",
@@ -24,7 +25,7 @@
 			}
 		});
 	}, 10000);
-	
+	*/
 </script>
 <div class="page-chatapi hideit">
 
@@ -201,44 +202,33 @@
     <!-- LOAD FILES AT PAGE END FOR FASTER LOADING -->
 
     <!-- CORE JS FRAMEWORK - START -->
-    <script src="/assets/plugins/swiper/jquery.min.js"></script>
-    <script src="/assets/js/jquery.easing.min.js"></script>
-    <script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/assets/plugins/pace/pace.min.js"></script>
-    <script src="/assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="/assets/plugins/viewport/viewportchecker.js"></script>
-    
+    <script src="assets/plugins/swiper/jquery.min.js"></script>
+    <script src="assets/js/jquery.easing.min.js"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/plugins/pace/pace.min.js"></script>
+    <script src="assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="assets/plugins/viewport/viewportchecker.js"></script>
+	
     <!-- CORE JS FRAMEWORK - END -->
 
     <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - START 
-	<script src="/assets/js/chart-flot.js"></script>
+	<script src="../../assets/js/chart-flot.js"></script>
 
 	-->
-    <script src="/assets/plugins/sparkline-chart/jquery.sparkline.min.js"></script>
+    <script src="assets/plugins/sparkline-chart/jquery.sparkline.min.js"></script>
 
-    <script src="/assets/plugins/flot-chart/jquery.flot.js"></script>
-    <script src="/assets/plugins/flot-chart/jquery.flot.time.js"></script>
-    <!-- SweetAlert with CDN fallback -->
+    <script src="assets/plugins/flot-chart/jquery.flot.js"></script>
+    <script src="assets/plugins/flot-chart/jquery.flot.time.js"></script>
     <script src="js/sweetalert.min.js"></script>
-    <script>
-        // Fallback to CDN if local SweetAlert fails to load
-        if (typeof swal === 'undefined') {
-            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"><\/script>');
-        }
-        
-        // Fix broken avatar images
-        document.addEventListener('DOMContentLoaded', function() {
-            const avatarImages = document.querySelectorAll('img[src*="data/profile/avatar"]');
-            avatarImages.forEach(function(img) {
-                img.onerror = function() {
-                    this.src = '/member/photo/avatar.jpg';
-                    this.onerror = null; // Prevent infinite loop
-                };
-            });
-        });
-    </script>
     
-    <script src="/assets/plugins/chartjs-chart/Chart.min.js"></script>
+	<script src="/member/theme/libs/jquery/tooltipster/js/tooltipster.bundle.min.js" type="text/javascript"></script>
+	<script src="/member/javascript/tree/jquery.panzoom.min.js"></script>
+    <script src="/member/javascript/tree/jquery.tree.js"></script>
+    <script src="/member/javascript/tree/genealogy.js"></script>
+
+
+	
+    <script src="assets/plugins/chartjs-chart/Chart.min.js"></script>
     <script >
 		if ($("#flot-realtime").length) {
 				// We use an inline data source in the example, usually data would
@@ -329,174 +319,16 @@
 	</script>
 
 
-    <script src="/assets/plugins/swiper/swiper.js"></script>
-    <script src="/assets/js/dashboard-crypto.js"></script>
-	<script src="/assets/plugins/autosize/autosize.min.js"></script>
-	<script src="/assets/plugins/icheck/icheck.min.js"></script>
-	
-	<!-- Highcharts for dashboard charts -->
-	<script src="/assets2/js/highcharts.js"></script>
-	<script src="/assets2/js/highcharts-3d.js"></script>
-	<!-- CORE TEMPLATE JS - Must load before other scripts -->
-	<script src="/assets/js/scripts.js"></script>
-	<!-- Slick Carousel JS - Must load before main.js -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
-	<script src="/assets2/js/main.js"></script>
-	
-	<!-- Clean Dropdown System -->
-	<style>
-	/* Force override all existing styles */
-	#main-menu-wrapper ul.wraplist li .sub-menu {
-		display: none !important;
-		visibility: hidden !important;
-		opacity: 0 !important;
-		position: static !important;
-		background: #1a1a1a !important;
-		border-left: 3px solid #007bff !important;
-		margin: 0 !important;
-		padding: 0 !important;
-		list-style: none !important;
-		box-shadow: inset 2px 0 10px rgba(0,0,0,0.3) !important;
-		border-radius: 0 !important;
-		width: 100% !important;
-		max-height: 0 !important;
-		overflow: hidden !important;
-		transition: all 0.3s ease !important;
-		z-index: 999 !important;
-	}
-	
-	#main-menu-wrapper ul.wraplist li.dropdown-active .sub-menu {
-		display: block !important;
-		visibility: visible !important;
-		opacity: 1 !important;
-		max-height: 500px !important;
-	}
-	
-	#main-menu-wrapper ul.wraplist li .sub-menu li {
-		border-bottom: 1px solid rgba(255,255,255,0.1) !important;
-		padding: 0 !important;
-		margin: 0 !important;
-		list-style: none !important;
-		background: none !important;
-		width: 100% !important;
-	}
-	
-	#main-menu-wrapper ul.wraplist li .sub-menu li:last-child {
-		border-bottom: none !important;
-	}
-	
-	#main-menu-wrapper ul.wraplist li .sub-menu li a {
-		display: block !important;
-		padding: 10px 15px 10px 35px !important;
-		color: #cccccc !important;
-		text-decoration: none !important;
-		font-size: 13px !important;
-		border: none !important;
-		background: none !important;
-		transition: all 0.2s ease !important;
-		width: auto !important;
-		height: auto !important;
-		line-height: 1.4 !important;
-		font-weight: normal !important;
-		white-space: nowrap !important;
-	}
-	
-	#main-menu-wrapper ul.wraplist li .sub-menu li a:hover,
-	#main-menu-wrapper ul.wraplist li .sub-menu li a:focus {
-		background: #007bff !important;
-		color: #ffffff !important;
-		padding-left: 40px !important;
-		text-decoration: none !important;
-		transform: none !important;
-	}
-	
-	#main-menu-wrapper ul.wraplist li .arrow {
-		float: right !important;
-		margin-top: 5px !important;
-		transition: transform 0.3s ease !important;
-		font-size: 10px !important;
-		color: #999 !important;
-		width: auto !important;
-		height: auto !important;
-	}
-	
-	#main-menu-wrapper ul.wraplist li .arrow:after {
-		content: '▼' !important;
-		font-family: Arial, sans-serif !important;
-		font-size: 10px !important;
-		color: #999 !important;
-	}
-	
-	#main-menu-wrapper ul.wraplist li.dropdown-active .arrow {
-		transform: rotate(180deg) !important;
-	}
-	
-	#main-menu-wrapper ul.wraplist li.dropdown-active .arrow:after {
-		color: #007bff !important;
-	}
-	</style>
-	
-	<script>
-	// Clean dropdown system
-	(function() {
-		function initDropdowns() {
-			// Clear ALL existing event handlers
-			$('#main-menu-wrapper').off();
-			$('#main-menu-wrapper a').off();
-			$('#main-menu-wrapper li').off();
-			
-			// Find all menu items with dropdowns
-			var dropdownItems = $('#main-menu-wrapper ul.wraplist li').filter(function() {
-				return $(this).find('.sub-menu').length > 0;
-			});
-			
-			// Add click handlers to main links
-			dropdownItems.each(function(index) {
-				var $item = $(this);
-				var $link = $item.children('a').first();
-				
-				$link.on('click.dropdown', function(event) {
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-					
-					// Close all other dropdowns
-					$('#main-menu-wrapper ul.wraplist li.dropdown-active').not($item).removeClass('dropdown-active');
-					
-					// Toggle current dropdown
-					if ($item.hasClass('dropdown-active')) {
-						$item.removeClass('dropdown-active');
-					} else {
-						$item.addClass('dropdown-active');
-					}
-					
-					return false;
-				});
-			});
-			
-			// Prevent submenu clicks from bubbling
-			$('#main-menu-wrapper .sub-menu a').on('click.dropdown', function(event) {
-				event.stopPropagation();
-			});
-		}
-		
-		// Initialize when DOM is ready
-		if (document.readyState === 'loading') {
-			$(document).ready(initDropdowns);
-		} else {
-			initDropdowns();
-		}
-		
-		// Also try after a delay to override any late-loading scripts
-		setTimeout(initDropdowns, 2000);
-		
-	})();
-	</script>
+    <script src="assets/plugins/swiper/swiper.js"></script>
+    <script src="assets/js/dashboard-crypto.js"></script>
+	<script src="assets/plugins/autosize/autosize.min.js"></script>
+	<script src="assets/plugins/icheck/icheck.min.js"></script>
 	
     
     <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - END -->
 
-    <!-- CORE TEMPLATE JS ALREADY LOADED ABOVE -->
+    <!-- CORE TEMPLATE JS - START -->
+    <script src="assets/js/scripts.js"></script>
     <!-- END CORE TEMPLATE JS - END -->
 	<script>
 		if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent) 

@@ -1,23 +1,23 @@
 	<div class="wrapper main-wrapper row" style=''>
 		
 		<div class='col-xs-12'>
-			<div class="page-title" style="background:#d8c8777a">
-
-				<div class="spull-left">
-					<!-- PAGE HEA						<h4 class="value blue-text										$sdfs=$memberInfo['pack']+1;
-										$allPack=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `package` WHERE `seria				<a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:3000/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."2/".time()); ?>" class="btn btn-success btn-block" style="color:white;font-size:18px;"><i class="fa fa-facebook"></i> <span > </span></a>`='				<a target="_blank" href="fb-messenger://share/?link=http://localhost:3000/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."2/".time()); ?>" class="btn btn-success btn-block" style="color:white;font-size:18px;"><i class="fa fa-comment-o"></i> <span ></span></a>.$s				<a target="_blank" href="https://twitter.com/home?status=http://localhost:3000/member/nz-register.php?keys=<?php echo base64_encode(time()."/".$member."/"."2/".time()); ?>" class="btn btn-success btn-block" style="color:white;font-size:18px;"><i class="fa fa-twitter"></i> <span > </span></a>fs."'"));
-										echo "<a href='#'class='Upgrade' data-pack='". base64_encode(time()."/".$allPack['serial']."/CAPBOT".$allPack['pack_amn']) ."' style='color: #fd6a6a;font-size: 24px;'>Purchase New Bot</a><br/>";i class="complete fa fa-arrow-up"></i><?php 
-						$jkhgkfd=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `game_return` ORDER BY `serial` DESC"));
-						if($jkhgkfd && isset($jkhgkfd['bonus_bal'])) {
-							echo $jkhgkfd['bonus_bal'];
-						} else {
-							echo '0';
-						}
-						?>%<span>increase By</span></h4>G TAG - START -->
-					<marquee scrollamount="5" scrolldelay="100"><h1 class="title" id="Hometitle">Capitol Dashboard</h1></marquee>
+			<div class="page-title">
+				<div class="pull-left">
+					<!-- PAGE HEADING TAG - START -->
+					<h1 class="title">Capitol Dashboard</h1>
+					<div style="background: linear-gradient(45deg, #28a745, #20c997); padding: 8px 15px; border-radius: 25px; display: inline-block; margin-top: 5px;">
+						<span style="color: #fff; font-weight: bold; font-size: 14px;">💼 Trading Dashboard</span>
+					</div>
 					<!-- PAGE HEADING TAG - END -->
 				</div>
 
+				<div class="pull-right hidden-xs">
+					<ol class="breadcrumb">
+						<li class="active" style="color:white">
+							<strong><i class="fa fa-home"></i> Dashboard</strong>
+						</li>
+					</ol>
+				</div>
 			</div>
 		</div>
 		<div class="clearfix"></div>

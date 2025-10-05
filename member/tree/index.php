@@ -161,39 +161,7 @@ $i=0;
         <section id="main-content" class=" " style="background:#3c5c6f;">
            
 		<div class="wrapper main-wrapper row" style='min-height:100vh;padding:0px;'>
-				<div class="row">
-							<div class="col-sm-6">
-								<div class="row">
-								<?php
-									$plans=array("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K");
-									$jjk=$mysqli->query("SELECT * FROM `package`");
-									$i=0;
-									while($ppaasl=mysqli_fetch_assoc($jjk)){
-										if(($ppaasl['pack']=="NZBOT500")||($ppaasl['pack']=="NZBOT300")||($ppaasl['pack']=="NZBOT50000")){
-											$coolk="#040404";
-										}else{
-											$coolk="#FFF";
-										}
-								?>
-								<div class="col-lg-3 col-md-4 col-sm-6 col-xs-6">
-									<p class="text-center" style="border: 2px solid #FFF;background:<?php echo $ppaasl['color']; ?>;color:<?php echo $coolk; ?>;font-size: 11px;"><?php echo $ppaasl['pack']. " (".$plans[$i] .")"; ?></p>
-								</div>
-								<?php
-									$i++;
-									}
-								?>
-								</div>
-							</div>
-							<div class="col-sm-4 col-xs-8" style="padding-right:0px;">
-								<div class="form-group">
-									<input type="search" class="form-control" name="receiveID" id="valjj" placeholder="Search for records...">
-								</div>
-								
-							</div>
-							<div class="col-sm-2 col-xs-4" style="padding-left:0px;">
-								<button class="btn btn-success" id="search">Search</button>
-							</div>
-						</div>
+				
 						<?php
 							if($_SESSION['roboMember']!=$referral){
 						?>
@@ -211,6 +179,71 @@ $i=0;
 						</script>
 		<div class="row" >
 		<div class="col-xs-12" style="padding:0px;margin:0px;">
+			<style>
+			/* Additional tree page layout fixes */
+			.page-container {
+				display: flex !important;
+				flex-direction: row !important;
+				width: 100% !important;
+				min-height: 100vh !important;
+			}
+			
+			.page-sidebar {
+				flex: 0 0 250px !important;
+				order: 1 !important;
+			}
+			
+			#main-content {
+				flex: 1 !important;
+				order: 2 !important;
+				margin-left: 0 !important;
+				padding: 20px !important;
+				overflow-x: auto !important;
+			}
+			
+			/* Hide any duplicate sidebars */
+			.page-sidebar:nth-of-type(2) {
+				display: none !important;
+			}
+			
+			/* Center the tree properly */
+			.tree-container1 {
+				display: flex !important;
+				justify-content: center !important;
+				align-items: flex-start !important;
+				width: 100% !important;
+				min-height: 500px !important;
+			}
+			
+			#tree {
+				display: inline-block !important;
+				margin: 0 auto !important;
+			}
+			
+			.jOrgChart {
+				display: inline-block !important;
+			}
+			
+			/* Ensure tree table is centered */
+			#tree_div {
+				margin: 0 auto !important;
+				display: table !important;
+			}
+			
+			/* When sidebar is collapsed */
+			body.sidebar-collapsed .page-container {
+				margin-left: 0 !important;
+			}
+			
+			body.sidebar-collapsed .page-sidebar {
+				margin-left: -250px !important;
+			}
+			
+			body.sidebar-collapsed #main-content {
+				margin-left: 0 !important;
+				width: 100% !important;
+			}
+			</style>
 			<div id="summary" class="panel-body tree-container1" style="height:100%;margin: auto;width: 100%;top: 0px;">
 						<!-- Load jQuery FIRST before any jQuery plugins -->
 						<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -327,5 +360,5 @@ $i=0;
 		
 		
         <!-- END CONTENT -->
-        <?php require_once("../part/footer.php"); ?>
+        <?php require_once("../part/footer_tree.php"); ?>
 		
