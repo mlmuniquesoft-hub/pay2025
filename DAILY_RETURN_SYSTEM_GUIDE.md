@@ -28,7 +28,7 @@ Capitol Money Pay now features a comprehensive package-wise daily return system 
 ### Core System Files:
 1. **`db/invest_return.php`** - Main daily return processing engine
 2. **`db/cron_daily_returns.php`** - Cron job interface for automation
-3. **`nzroboadmin/daily_return_settings.php`** - Admin control panel
+3. **`cmpadmin/daily_return_settings.php`** - Admin control panel
 
 ### Database Changes:
 - **`return_settings` table** - Stores all system configuration
@@ -38,7 +38,7 @@ Capitol Money Pay now features a comprehensive package-wise daily return system 
 
 ### Access URL:
 ```
-http://localhost:3000/nzroboadmin/daily_return_settings.php
+http://localhost:3000/cmpadmin/daily_return_settings.php
 ```
 
 ### Features Available:

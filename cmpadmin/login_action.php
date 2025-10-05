@@ -28,17 +28,17 @@
 			$_SESSION['OriginalAdmin'] = strtolower($user);
 			$_SESSION['Admin'] ="admin";
 			if($_SESSION['OriginalAdmin']=="message"){
-				header("Location: ../nzroboadmin/send_message.php");
+				header("Location: ../cmpadmin/send_message.php");
 				exit;
 			}else{
-				header("Location: ../nzroboadmin/home.php");
+				header("Location: ../cmpadmin/home.php");
 				exit;
 			}
 			
 		}else{
 			session_destroy();
 			$ErrorMessage = "Invalid ID or Password";
-			header("Location: ../nzroboadmin/index.php?ErrorMessage=$ErrorMessage");
+			header("Location: ../cmpadmin/index.php?ErrorMessage=$ErrorMessage");
 			exit;
 		}
 	}

@@ -9,6 +9,6 @@
     $mysqli->query("UPDATE admin SET last_login='$date0'  WHERE user_id='".$memberid."'");	
 	session_destroy();
 	
-	header("Location: ../nzroboadmin/index.php");
+	header("Location: ../cmpadmin/index.php");
 	exit;
 ?>
