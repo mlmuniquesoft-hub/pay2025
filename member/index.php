@@ -33,7 +33,7 @@
 					include("view/index.php");
 				}else{
 					if($_GET['route']=="tree_view"){
-						echo "<script>javascript:location.href='tree_bs5/index.php'</script>";
+						echo "<script>javascript:location.href='tree/index.php'</script>";
 						die();
 						
 					}else{
