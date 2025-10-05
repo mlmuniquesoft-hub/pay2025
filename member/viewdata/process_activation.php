@@ -1,6 +1,7 @@
 <?php
 session_start();
 include '../../db/db.php';
+include '../../db/functions.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['roboMember']) || empty($_SESSION['roboMember'])) {
@@ -88,6 +89,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Process sponsor commission (10% of $10 = $1)
             $sponsor = $memberInfo['sponsor'];
             if (!empty($sponsor) && $sponsor != 0) {
+                // Debug: Log activation commission attempt
+                $activationDebug = "\n=== ACTIVATION COMMISSION PROCESS ===\n";
+                $activationDebug .= "Date: " . date('Y-m-d H:i:s') . "\n";
+                $activationDebug .= "Member: $member\n";
+                $activationDebug .= "Sponsor: $sponsor\n";
+                file_put_contents('../../commission_debug.log', $activationDebug, FILE_APPEND);
+                
                 // Check if sponsor is activated
                 $sponsorQuery = $mysqli->query("SELECT `paid` FROM `member` WHERE `user`='$sponsor'");
                 $sponsorInfo = mysqli_fetch_assoc($sponsorQuery);
@@ -116,11 +124,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         throw new Exception("Failed to record sponsor commission");
                     }
                     
-                    // Record in commission table if exists
-                    $mysqli->query("INSERT INTO `commission_record` 
-                        (`user`, `from_user`, `amount`, `type`, `level`, `date_added`) 
+                    // Record in commission table
+                    $commission = (float) $commission; // Ensure proper data type
+                    $level = 1; // Activation is always level 1
+                    
+                    $commissionSql = "INSERT INTO commission_record 
+                        (user, from_user, amount, type, level, date_added) 
                         VALUES 
-                        ('$sponsor', '$member', '$commission', 'activation', '1', NOW())");
+                        ('$sponsor', '$member', $commission, 'activation', $level, NOW())";
+                    
+                    $commissionInsert = $mysqli->query($commissionSql);
+                    
+                    if (!$commissionInsert) {
+                        // Log error but don't fail activation for commission record issue
+                        error_log("Activation commission record insertion failed: " . $mysqli->error);
+                        error_log("SQL: $commissionSql");
+                    } else {
+                        error_log("Activation commission record inserted successfully with ID: " . $mysqli->insert_id);
+                    }
                 }
             }
             

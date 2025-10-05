@@ -1,0 +1,46 @@
+
+=== ACTIVATION COMMISSION PROCESS ===
+Date: 2025-10-06 10:40:31
+Member: robotrade
+Sponsor: sarkar
+
+=== NEW INVESTMENT COMMISSION PROCESS ===
+Date: 2025-10-06 10:41:34
+Member: robotrade
+Amount: 500
+Package: Basic Package
+Sponsor Chain: {"1":{"user":"Sarkar","paid":"1","sponsor":"kingkhan"},"2":{"user":"KINGKHAN","paid":"1","sponsor":"habib"},"3":{"user":"HABIB","paid":"1","sponsor":"jackma"}}
+Records before: 1
+=== COMMISSION DEBUG ===
+Timestamp: 2025-10-06 10:41:34
+Member: robotrade
+Sponsor: Sarkar
+Level: 1 (integer)
+Amount: 40 (double)
+SQL: INSERT INTO commission_record 
+                    (user, from_user, amount, type, level, date_added) 
+                    VALUES 
+                    ('Sarkar', 'robotrade', 40, 'trading', 1, NOW())
+SUCCESS! Insert ID: 11
+=== COMMISSION DEBUG ===
+Timestamp: 2025-10-06 10:41:34
+Member: robotrade
+Sponsor: KINGKHAN
+Level: 2 (integer)
+Amount: 5 (double)
+SQL: INSERT INTO commission_record 
+                    (user, from_user, amount, type, level, date_added) 
+                    VALUES 
+                    ('KINGKHAN', 'robotrade', 5, 'trading', 2, NOW())
+SUCCESS! Insert ID: 12
+=== COMMISSION DEBUG ===
+Timestamp: 2025-10-06 10:41:34
+Member: robotrade
+Sponsor: HABIB
+Level: 3 (integer)
+Amount: 5 (double)
+SQL: INSERT INTO commission_record 
+                    (user, from_user, amount, type, level, date_added) 
+                    VALUES 
+                    ('HABIB', 'robotrade', 5, 'trading', 3, NOW())
+SUCCESS! Insert ID: 13
