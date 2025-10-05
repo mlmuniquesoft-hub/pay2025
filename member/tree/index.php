@@ -7,8 +7,8 @@ $i=0;
 		if(isset($_GET['ref22'])){
 			$_GET['ref']=base64_encode($_GET['ref22']);
 		}
-		$refer=$_GET['ref'];
-		$tableq=$_GET['table'];
+		$refer = isset($_GET['ref']) ? $_GET['ref'] : '';
+		$tableq = isset($_GET['table']) ? $_GET['table'] : '';
 		if($refer==''){
 			$referral=strtolower($_SESSION['roboMember']);
 		}elseif($refer!=''){
