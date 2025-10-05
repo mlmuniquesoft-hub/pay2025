@@ -88,6 +88,7 @@ $_SESSION['token']="uerutgeruioer";
 		$DepositReceiveWorld=mysqli_fetch_assoc($mysqli->query("SELECT SUM(curent_bal) AS asmDeposit2 FROM `game_return2` WHERE `user`='".$user."'"));
 		$BinaryReceive=mysqli_fetch_assoc($mysqli->query("SELECT SUM(slot_match) AS asmBinary FROM `binary_income` WHERE `user`='".$user."'"));
 		$GenerationReceive=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS asmGeneration FROM `generation_income` WHERE `user`='".$user."'"));
+		$sponCommission=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS asmCommission FROM `commission_record` WHERE `user`='".$user."'"));
 		
 		// PHP 8.2 compatibility: Handle null results
 		$SponsorReceive['asmSponsor'] = $SponsorReceive['asmSponsor'] ?? 0;
@@ -95,11 +96,12 @@ $_SESSION['token']="uerutgeruioer";
 		$DepositReceiveWorld['asmDeposit2'] = $DepositReceiveWorld['asmDeposit2'] ?? 0;
 		$BinaryReceive['asmBinary'] = $BinaryReceive['asmBinary'] ?? 0;
 		$GenerationReceive['asmGeneration'] = $GenerationReceive['asmGeneration'] ?? 0;
+		$sponCommission['asmCommission'] = $sponCommission['asmCommission'] ?? 0;
 		
 		if($cons!=''){
-			$income=$GenerationReceive['asmGeneration']+$BinaryReceive['asmBinary']+$DepositReceiveWorld['asmDeposit2']+$DepositReceive['asmDeposit'];
+			$income=$GenerationReceive['asmGeneration']+$BinaryReceive['asmBinary']+$DepositReceiveWorld['asmDeposit2']+$DepositReceive['asmDeposit']+$sponCommission['asmCommission'];
 		}else{
-			$income=$GenerationReceive['asmGeneration']+$BinaryReceive['asmBinary']+$DepositReceiveWorld['asmDeposit2']+$DepositReceive['asmDeposit']+$SponsorReceive['asmSponsor'];
+			$income=$GenerationReceive['asmGeneration']+$BinaryReceive['asmBinary']+$DepositReceiveWorld['asmDeposit2']+$DepositReceive['asmDeposit']+$SponsorReceive['asmSponsor']+$sponCommission['asmCommission'];
 		}
 		
 		if($income>0){
