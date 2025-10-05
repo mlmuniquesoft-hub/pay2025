@@ -69,8 +69,18 @@
 										<div class="panel-body">
 											<div class="row">
 												<div class="col-xs-12">
-													<p style="color: red;font-size:16px;margin-left:15px;"><?php echo $_SESSION['msg']; ?></p>
-													<p style="color: green;font-size:16px;margin-left:15px;"><?php echo $_SESSION['msg1']; ?></p>
+													<p style="color: red;font-size:16px;margin-left:15px;"><?php 
+														if(isset($_SESSION['msg'])) {
+															echo $_SESSION['msg']; 
+															unset($_SESSION['msg']);
+														}
+													?></p>
+													<p style="color: green;font-size:16px;margin-left:15px;"><?php 
+														if(isset($_SESSION['msg1'])) {
+															echo $_SESSION['msg1']; 
+															unset($_SESSION['msg1']);
+														}
+													?></p>
 													<form class="form-horizontal" action="send_message_action.php" method="post" name="memberpasschng">
 														<div class="form-group" style="margin:10px 0;">
 															<label class="col-sm-3 control-label">Send Criteria:</label>
