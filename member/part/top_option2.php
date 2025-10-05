@@ -80,43 +80,7 @@ if(isset($_SESSION['roboMember']) && isset($mysqli)) {
             </style>
         </div>
         <div class='quick-area'>
-            <div class='pull-left'>
-                <ul class="info-menu left-links list-inline list-unstyled">
-                    <li class="sidebar-toggle-wrap">
-                        <a href="#" data-toggle="sidebar" class="sidebar_toggle">
-                            <i class="fa fa-bars"></i>
-                        </a>
-                    </li>
-                    <li class="topnav-item item1">
-                        <a href="../index.php?route=schedule_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Trading Report'); ?>" class="new-link w-text">Schedule
-                          <span class="badge badge-primary ml-5">New</span>
-                        </a>
-                    </li>
-                    <li class="topnav-item active item2">
-                        <a href="../index.php?route=index&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Robo Trade Dashboard'); ?>" class="nav-link w-text">
-                          <i class="fa fa-area-chart mr-10"></i>Reports
-                        </a>
-                    </li>
-                    <li class="topnav-item item3">
-                        <a href="../index.php?route=trading_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Trading Report'); ?>" class="nav-link w-text">
-                          <i class="fa fa-sitemap mr-10"></i>Trading
-                        </a>
-                    </li>
-                
-                    
-                    <li class="hidden-sm hidden-xs searchform">
-                        <form action="#" method="post">
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                <i class="fa fa-search"></i>
-                            </span>
-                                <input type="text" class="form-control animated fadeIn" placeholder="Search & Enter">
-                            </div>
-                            <input type='submit' value="">
-                        </form>
-                    </li>
-                </ul>
-            </div>
+            
             <div class='pull-right'>
                 <ul class="info-menu right-links list-inline list-unstyled">
                     <li class="notify-toggle-wrapper spec">
