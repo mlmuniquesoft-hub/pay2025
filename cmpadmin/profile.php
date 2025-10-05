@@ -7,6 +7,28 @@
 		require '../db/db.php';
 		require_once '../db/calculation_admin.php';
 		require_once '../db/template.php';
+		
+		// Fetch admin profile data
+		$admin_user = $_SESSION['Admin'];
+		$query = "SELECT * FROM admin WHERE user_id = '$admin_user' LIMIT 1";
+		$result = $mysqli->query($query);
+		
+		if($result && mysqli_num_rows($result) > 0) {
+			$row = mysqli_fetch_assoc($result);
+		} else {
+			// Initialize empty array if no data found
+			$row = array(
+				'email' => '',
+				'paypal_id' => '',
+				'payza_id' => '',
+				'join_date' => '',
+				'address' => '',
+				'district' => '',
+				'state' => '',
+				'post_code' => '',
+				'country' => ''
+			);
+		}
 	}
 ?>
 <!DOCTYPE html>
@@ -52,60 +74,60 @@
 									<div class="panel-body" style="background-color: azure;">
 										<div class="row">
 											<div class="col-lg-12">
-								<p style="color: red;font-size:16px;"><?php echo $_GET['msg']; ?></p> 	  	
+								<p style="color: red;font-size:16px;"><?php echo isset($_GET['msg']) ? $_GET['msg'] : ''; ?></p> 	  	
 <form class="form-horizontal" action="profileaction.php" method="post">
 	<div class="form-group">
 		<label for="inputEmail3" class="col-sm-3 control-label">E-Mail:</label>
 		<div class="col-sm-9">
-		<input type="text" name="email" class="form-control" placeholder="E-Mail" value="<?php echo $row["email"];?>" readonly>
+		<input type="text" name="email" class="form-control" placeholder="E-Mail" value="<?php echo isset($row['email']) ? $row['email'] : ''; ?>" readonly>
 		</div>
 	</div>
 	<div class="form-group">
 		<label for="inputEmail3" class="col-sm-3 control-label">Paypal ID:</label>
 		<div class="col-sm-9">
-		<input type="text" name="paypal_id" class="form-control" placeholder="Paypal ID" value="<?php echo $row["paypal_id"];?>" readonly>
+		<input type="text" name="paypal_id" class="form-control" placeholder="Paypal ID" value="<?php echo isset($row['paypal_id']) ? $row['paypal_id'] : ''; ?>" readonly>
 		</div>
 	</div>
 	<div class="form-group">
 		<label for="inputEmail3" class="col-sm-3 control-label">Payza ID:</label>
 		<div class="col-sm-9">
-		<input type="text" name="payza_id" class="form-control" placeholder="Payza ID" value="<?php echo $row["payza_id"];?>" readonly>
+		<input type="text" name="payza_id" class="form-control" placeholder="Payza ID" value="<?php echo isset($row['payza_id']) ? $row['payza_id'] : ''; ?>" readonly>
 		</div>
 	</div>
 	<div class="form-group">
 		<label for="inputEmail3" class="col-sm-3 control-label">Joining Date:</label>
 		<div class="col-sm-9">
-		<input type="text" name="join_date" class="form-control" placeholder="Joining Date" value="<?php echo $row["join_date"];?>" readonly>
+		<input type="text" name="join_date" class="form-control" placeholder="Joining Date" value="<?php echo isset($row['join_date']) ? $row['join_date'] : ''; ?>" readonly>
 		</div>
 	</div>
 	<div class="form-group">
 		<label for="inputEmail3" class="col-sm-3 control-label">Address:</label>
 		<div class="col-sm-9">
-		<textarea type="text" name="address" class="form-control" placeholder="Address"> <?php echo $row["address"];?> </textarea>
+		<textarea type="text" name="address" class="form-control" placeholder="Address"><?php echo isset($row['address']) ? $row['address'] : ''; ?></textarea>
 		</div>
 	</div>
 	<div class="form-group">
 		<label for="inputEmail3" class="col-sm-3 control-label">City:</label>
 		<div class="col-sm-9">
-		<input type="text" name="city" class="form-control" placeholder="City" value="<?php echo $row['district'];?>">
+		<input type="text" name="city" class="form-control" placeholder="City" value="<?php echo isset($row['district']) ? $row['district'] : ''; ?>">
 		</div>
 	</div>
 	<div class="form-group">
 		<label for="inputEmail3" class="col-sm-3 control-label">State:</label>
 		<div class="col-sm-9">
-		<input type="text" name="state" class="form-control" placeholder="State" value="<?php echo $row["state"];?>">
+		<input type="text" name="state" class="form-control" placeholder="State" value="<?php echo isset($row['state']) ? $row['state'] : ''; ?>">
 		</div>
 	</div>
 	<div class="form-group">
 		<label for="inputEmail3" class="col-sm-3 control-label">Post Code:</label>
 		<div class="col-sm-9">
-		<input type="text" name="post_code" class="form-control" placeholder="Post Code" value="<?php echo $row["post_code"];?>">
+		<input type="text" name="post_code" class="form-control" placeholder="Post Code" value="<?php echo isset($row['post_code']) ? $row['post_code'] : ''; ?>">
 		</div>
 	</div>
 	<div class="form-group">
 		<label for="inputEmail3" class="col-sm-3 control-label">Country:</label>
 		<div class="col-sm-9">
-		<input type="text" name="country" class="form-control" placeholder="Country" value="<?php echo $row["country"];?>"readonly>
+		<input type="text" name="country" class="form-control" placeholder="Country" value="<?php echo isset($row['country']) ? $row['country'] : ''; ?>" readonly>
 		</div>
 	</div>
 	<div class="form-group">
