@@ -52,7 +52,7 @@
 									<!-- /.panel-heading -->
 									<div class="panel-body">
 										<div class="row">
-										<p style="color: red;font-size:16px;"><?php echo $_GET['msg']; ?></p>
+										<p style="color: red;font-size:16px;"><?php echo isset($_GET['msg']) ? $_GET['msg'] : ''; ?></p>
 <form class="form-horizontal" action="suspend_action_member.php" method="post">
 	<div class="form-group">
 		<label class="col-sm-4 control-label">Active/Inactive Member:</label>
@@ -97,9 +97,9 @@
 	$t1 =  $mysqli->query("SELECT * FROM member where `active`=0 ");						   
 	$a1= mysqli_fetch_object($t1);
 	$total_items1= mysqli_num_rows($t1);
-	$limit1=$_GET['limit1'];
-	$type1=$_GET['type1'];
-	$page1=$_GET['page1'];
+	$limit1 = isset($_GET['limit1']) ? $_GET['limit1'] : 25;
+	$type1 = isset($_GET['type1']) ? $_GET['type1'] : '';
+	$page1 = isset($_GET['page1']) ? $_GET['page1'] : 1;
 	if((!$limit1)  || (is_numeric($limit1) == false) || ($limit1 < 24) || ($limit1 > 25))
 	{$limit1 = 25; }
 	if((!$page1) || (is_numeric($page1) == false) || ($page1 < 0) || ($page1 > $total_items1))
@@ -124,30 +124,30 @@
 													</table>
 <p align="center" style="font-family:MV Boli, Helvetica, sans-serif, Arial;align:center;color:red;font-size:13px;"> 
 <?php 
-	$cat = urlencode($cat); 
-	$prev_page = $page - 1;if($prev_page >= 1){echo("<b>&lt;&lt;</b> <a href=?limit=$limit&amp;page=$prev_page><b>Prev</b></a>");}
-	$a = $page ;if($a <= $total_pages){ echo("|<a href=?limit=$limit&amp;page=$a><b>$a</b></a>|");}			
-	$b = $page + 1;if($b <= $total_pages){ echo("<a href=?limit=$limit&amp;page=$b><b>$b</b></a>|");}			
-	$c = $page + 2;if($c <= $total_pages){ echo("<a href=?limit=$limit&amp;page=$c><b>$c</b></a>|");}	
-	$d = $page + 3;if($d <= $total_pages){ echo("<a href=?limit=$limit&amp;page=$d><b>$d</b></a>|");}
-	$d = $page + 4;if($d <= $total_pages){ echo("<a href=?limit=$limit&amp;page=$d><b>$d</b></a>|");}
-	$e = $page + 5;if($e <= $total_pages){ echo("<a href=?limit=$limit&amp;page=$e><b>$e</b></a>|");}			
-	$f = $page + 6;if($f <= $total_pages){ echo("<a href=?limit=$limit&amp;page=$f><b>$f</b></a>|");}			
-	$g = $page + 7;if($g <= $total_pages){ echo("<a href=?limit=$limit&amp;page=$g><b>$g</b></a>|");}
-	$h = $page + 8;if($h <= $total_pages){ echo("<a href=?limit=$limit&amp;page=$h><b>$h</b></a>|");}			
-	$i = $page + 9;if($i <= $total_pages){ echo("<a href=?limit=$limit&amp;page=$i><b>$i</b></a>|");}			
-	$j = $page + 10;if($j <= $total_pages){ echo("<a href=?limit=$limit&amp;page=$j><b>$j</b></a>|");}
-	$next_page = $page + 1;if($next_page <= $total_pages){ echo("<a href=?limit=$limit&amp;page=$next_page><b>Next</b></a> &gt;&gt;");}
+	$cat = ''; // Category for filtering if needed
+	$prev_page = $page1 - 1;if($prev_page >= 1){echo("<b>&lt;&lt;</b> <a href=?limit1=$limit1&amp;page1=$prev_page><b>Prev</b></a>");}
+	$a = $page1 ;if($a <= $total_pages){ echo("|<a href=?limit1=$limit1&amp;page1=$a><b>$a</b></a>|");}			
+	$b = $page1 + 1;if($b <= $total_pages){ echo("<a href=?limit1=$limit1&amp;page1=$b><b>$b</b></a>|");}			
+	$c = $page1 + 2;if($c <= $total_pages){ echo("<a href=?limit1=$limit1&amp;page1=$c><b>$c</b></a>|");}	
+	$d = $page1 + 3;if($d <= $total_pages){ echo("<a href=?limit1=$limit1&amp;page1=$d><b>$d</b></a>|");}
+	$d = $page1 + 4;if($d <= $total_pages){ echo("<a href=?limit1=$limit1&amp;page1=$d><b>$d</b></a>|");}
+	$e = $page1 + 5;if($e <= $total_pages){ echo("<a href=?limit1=$limit1&amp;page1=$e><b>$e</b></a>|");}			
+	$f = $page1 + 6;if($f <= $total_pages){ echo("<a href=?limit1=$limit1&amp;page1=$f><b>$f</b></a>|");}			
+	$g = $page1 + 7;if($g <= $total_pages){ echo("<a href=?limit1=$limit1&amp;page1=$g><b>$g</b></a>|");}
+	$h = $page1 + 8;if($h <= $total_pages){ echo("<a href=?limit1=$limit1&amp;page1=$h><b>$h</b></a>|");}			
+	$i = $page1 + 9;if($i <= $total_pages){ echo("<a href=?limit1=$limit1&amp;page1=$i><b>$i</b></a>|");}			
+	$j = $page1 + 10;if($j <= $total_pages){ echo("<a href=?limit1=$limit1&amp;page1=$j><b>$j</b></a>|");}
+	$next_page = $page1 + 1;if($next_page <= $total_pages){ echo("<a href=?limit1=$limit1&amp;page1=$next_page><b>Next</b></a> &gt;&gt;");}
 ?>	
 	<form method="get" action="" style="text-align: center;">
-		<span style="font-family:MV Boli, Helvetica, sans-serif, Arial;align:center;color:red;font-size:13px;">Total Pages </span>
+		<span style="font-family:MV Boli, Helvetica, sans-serif, Arial;color:red;font-size:13px;">Total Pages </span>
 		
-		<b style="font-family:MV Boli, Helvetica, sans-serif, Arial;align:center;color:blue;font-size:13px;">
+		<b style="font-family:MV Boli, Helvetica, sans-serif, Arial;color:blue;font-size:13px;">
 		<?php echo $total_pages;?></b>
 		
-		<span style="font-family:MV Boli, Helvetica, sans-serif, Arial;align:center;color:red;font-size:13px;"> Show 
-			<input type="text"  name="page" value="<?php echo $page;?>" size="4" />
-			<input type="hidden" name="limit" value="<?php echo $limit;?>" />
+		<span style="font-family:MV Boli, Helvetica, sans-serif, Arial;color:red;font-size:13px;"> Show 
+			<input type="text"  name="page1" value="<?php echo $page1;?>" size="4" />
+			<input type="hidden" name="limit1" value="<?php echo $limit1;?>" />
 		</span>
 		<input type="submit"  value="Submit" /> 
 	</form>     
