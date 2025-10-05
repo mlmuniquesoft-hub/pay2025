@@ -1,7 +1,39 @@
 <?php 
-require_once("../part/top_header2.php");
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
+echo "<!-- Debug: Starting tree page -->\n";
+
+// Check session first before including files
+session_start();
+if(!isset($_SESSION['roboMember'])){
+    echo "<!DOCTYPE html><html><head><title>Access Denied</title></head><body>";
+    echo "<h1>Access Denied</h1><p>Please <a href='../nz-login.html'>login</a> to view this page.</p>";
+    echo "</body></html>";
+    exit();
+}
+
+echo "<!-- Debug: Session check passed for user: " . $_SESSION['roboMember'] . " -->\n";
+
+// Now safely include database files
+try {
+    require_once("../../db/db.php");
+    echo "<!-- Debug: Database connected -->\n";
+    require_once("../../db/functions.php");
+    echo "<!-- Debug: Functions loaded -->\n";
+} catch(Exception $e) {
+    echo "<!DOCTYPE html><html><head><title>Database Error</title></head><body>";
+    echo "<h1>Database Error</h1><p>" . $e->getMessage() . "</p>";
+    echo "</body></html>";
+    exit();
+}
+
+// Load tree functions
 include("../part/sideTree.php");
+
+echo "<!-- Debug: sideTree.php loaded -->\n";
+
 $i=0;
 
 		if(isset($_GET['ref22'])){
@@ -16,6 +48,15 @@ $i=0;
 		}
 		//$ttt=array();
 		$iiuu=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `member_total` WHERE `user`='".$_SESSION['roboMember']."'"));
+		
+		// Check if member_total data exists, provide defaults if not
+		if(!$iiuu || $iiuu === null) {
+			$iiuu = array(
+				'totalLeftId' => '',
+				'totalrightId' => ''
+			);
+		}
+		
 		$leftall=explode(",", strtolower($iiuu['totalLeftId']));
 		$rightall=explode(",", strtolower($iiuu['totalrightId']));
 		$ttt=array_merge($leftall,$rightall);
@@ -68,11 +109,37 @@ $i=0;
 		
 		$usekk=leftRightww12($referral, $table);
 		
+		// Ensure left and right keys exist
+		if(!isset($usekk['left'])) {
+			$usekk['left'] = '';
+		}
+		if(!isset($usekk['right'])) {
+			$usekk['right'] = '';
+		}
+		
 		//$totalLeft=CountUserss12($usekk['left'],$table, "left");
 		//$totalRight=CountUserss12($usekk['right'],$table, "right");
 		
 		$usermmmqq=mysqli_fetch_assoc($mysqli->query("SELECT `user`,`log_user` FROM `member` WHERE `user`='".$referral."'"));
+		
+		// Check if user data exists
+		if(!$usermmmqq || $usermmmqq === null) {
+			$usermmmqq = array(
+				'user' => $referral,
+				'log_user' => $referral
+			);
+		}
+		
 		$usermmm=mysqli_fetch_assoc($mysqli->query("SELECT `name`,`photo`,`user` FROM `profile` WHERE `user`='".$usermmmqq['log_user']."'"));
+		
+		// Check if profile data exists
+		if(!$usermmm || $usermmm === null) {
+			$usermmm = array(
+				'name' => 'Unknown User',
+				'photo' => 'default.jpg',
+				'user' => $referral
+			);
+		}
 		
 
 
@@ -174,8 +241,14 @@ $i=0;
 						<div id="tooltip_div" style="display: none;">
 							<?php //include("infoTree.php"); ?>
 						</div>
-						<div id="tree" class="orgChart" style="overflow:scroll;">
+						<div id="tree" class="orgChart" style="overflow:scroll;min-height:500px;border:1px solid #ccc;">
 							<div class="jOrgChart">
+								<?php 
+								echo "<!-- Debug: Tree container loaded -->\n";
+								echo "<!-- Debug: About to display tree for referral: " . $referral . " -->\n";
+								echo "<!-- Debug: User left: " . (isset($usekk['left']) ? $usekk['left'] : 'NOT SET') . " -->\n";
+								echo "<!-- Debug: User right: " . (isset($usekk['right']) ? $usekk['right'] : 'NOT SET') . " -->\n";
+								?>
 								<table id="tree_div" cellpadding="0" cellspacing="0" border="0" align="center" style="zoom: 1; transform-origin: 0px 0px 0px;">
 									<tbody>
 										<tr class="node-cells">

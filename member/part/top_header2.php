@@ -7,13 +7,21 @@
 		require_once("../../db/db.php");
 		require_once("../../db/functions.php");
 		$member=$_SESSION['roboMember'];
-		$result3=$mysqli->query("select * from member where user='".$_SESSION['roboMember']."' ");
-		$memberInfo = mysqli_fetch_array($result3); 
+	$result3=$mysqli->query("select * from member where user='".$_SESSION['roboMember']."' ");
+	$memberInfo = mysqli_fetch_array($result3); 
 	
-		$result1=$mysqli->query("select * from profile where `user`='".$memberInfo['log_user']."' OR `user`='".$memberInfo['user']."' ");
-		$ProfileInfo = mysqli_fetch_array($result1); 
-		
-		$jkfghkd=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `package` WHERE `serial`='".$memberInfo['pack']."'"));
+	// PHP 8.2 compatibility: Check if memberInfo is valid
+	if(!$memberInfo) {
+		$memberInfo = array('log_user' => '', 'user' => '', 'pack' => 0, 'paid' => 0);
+	}
+	
+	$result1=$mysqli->query("select * from profile where `user`='".$memberInfo['log_user']."' OR `user`='".$memberInfo['user']."' ");
+	$ProfileInfo = mysqli_fetch_array($result1); 
+	
+	// PHP 8.2 compatibility: Check if ProfileInfo is valid  
+	if(!$ProfileInfo) {
+		$ProfileInfo = array('photo' => 'default.jpg');
+	}		$jkfghkd=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `package` WHERE `serial`='".$memberInfo['pack']."'"));
 	// Handle null package data with default values
 	if($jkfghkd === null) {
 		$jkfghkd = array(
@@ -21,7 +29,7 @@
 			'pack' => 'Default Package'
 		);
 	}
-		$Tiell=$_GET['title'];
+		$Tiell = isset($_GET['title']) ? $_GET['title'] : '';
 		if($Tiell==''){
 			$Tiell=" Capitol Money Pay";
 		}

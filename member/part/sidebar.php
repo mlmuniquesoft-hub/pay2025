@@ -163,7 +163,7 @@
                             <li>
                                  <a class="" href="index.php?route=unilevel_view&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Unilevel View'); ?>">Unilevel</a>
                             </li>
-                            <li style="display: none;">
+                            <li>
                                  <a class="" href="index.php?route=tree_view&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Tree View'); ?>">My Tree</a>
                             </li>
                             

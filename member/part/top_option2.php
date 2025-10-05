@@ -1,3 +1,30 @@
+<?php
+// Initialize notification variables
+if(isset($_SESSION['roboMember']) && isset($mysqli)) {
+    $member = $_SESSION['roboMember'];
+    $Noerte = $mysqli->query("SELECT * FROM `view` WHERE `user`='".$member."' AND `active`='1' ORDER BY `serial` DESC");
+    $NomerNoty = $Noerte ? mysqli_num_rows($Noerte) : 0;
+    
+    // Initialize member info
+    $result3 = $mysqli->query("select * from member where user='".$member."' ");
+    $memberInfo = mysqli_fetch_array($result3);
+    if(!$memberInfo) {
+        $memberInfo = array('log_user' => '', 'user' => '', 'pack' => 0);
+    }
+    
+    // Initialize profile info
+    $result1 = $mysqli->query("select * from profile where `user`='".$memberInfo['log_user']."' OR `user`='".$memberInfo['user']."' ");
+    $ProfileInfo = mysqli_fetch_array($result1);
+    if(!$ProfileInfo) {
+        $ProfileInfo = array('photo' => 'default.jpg', 'name' => 'User');
+    }
+} else {
+    $NomerNoty = 0;
+    $Noerte = null;
+    $memberInfo = array('log_user' => '', 'user' => '', 'pack' => 0);
+    $ProfileInfo = array('photo' => 'default.jpg', 'name' => 'User');
+}
+?>
 <body class=" ">
     <!-- START TOPBAR -->
     <div class='page-topbar gradient-blue1'>
@@ -60,6 +87,7 @@
 
                                 <ul class="dropdown-menu-list list-unstyled ps-scrollbar">
                                     <?php
+									if($Noerte && mysqli_num_rows($Noerte) > 0) {
 										while($mydfsIo=mysqli_fetch_assoc($Noerte)){
 											if($mydfsIo['types']=="credit"){
 												$dfgdf="available";
@@ -86,7 +114,20 @@
                                             </div>
                                         </a>
                                     </li>
-									<?php } ?>
+									<?php } } else { ?>
+                                    <li class="unread">
+                                        <a href="javascript:;">
+                                            <div class="notice-icon">
+                                                <i class="fa fa-info"></i>
+                                            </div>
+                                            <div>
+                                                <span class="name">
+                                                    <strong>No notifications</strong>
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <?php } ?>
                                 </ul>
 
                             </li>
