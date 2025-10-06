@@ -277,7 +277,7 @@ try {
 			$PassMail=array("ashrafulislamw82@gmail.com",'sumonmti498@gmail.com');
 			if(!in_array($email0,$PassMail)){
 				$jkjfds=mysqli_num_rows($mysqli->query("SELECT * FROM `profile` WHERE `email`='".$email0."'"));
-				if($jkjfds>=1){
+				if($jkjfds>=10){
 					$rett['sts']='error';
 					$rett['mess']="Email address already exists";
 					die(json_encode($rett));
