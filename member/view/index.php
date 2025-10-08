@@ -5,10 +5,6 @@
 				<div class="pull-left">
 					<!-- PAGE HEADING TAG - START -->
 					<h1 class="title">Capitol Dashboard</h1>
-					<div style="background: linear-gradient(45deg, #28a745, #20c997); padding: 8px 15px; border-radius: 25px; display: inline-block; margin-top: 5px;">
-						<span style="color: #fff; font-weight: bold; font-size: 14px;">💼 Trading Dashboard</span>
-					</div>
-					<!-- PAGE HEADING TAG - END -->
 				</div>
 
 				<div class="pull-right hidden-xs">

@@ -18,7 +18,7 @@
         <!-- START CONTENT -->
         <section id="main-content" class=" " style=" background-image:url(image/term_bg.jpg) /*background: #1163ab;*/">
             <div style="background:#0c0c0c36">
-				<div class="row" style="margin-top: 60px;margin-bottom: -60px;">
+				<div class="row" style="margin-top: 40px;margin-bottom: -40px;">
 					<div class="col-sm-12">
 						<?php
 							$NoticeK=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `notice`"));
@@ -28,7 +28,7 @@
 				</div>
 				
 				<!-- Crypto Price Ticker -->
-				<div class="row" style="margin-top: 10px;margin-bottom: -40px;">
+				<div class="row" style="margin-top: 30px;margin-bottom: -60px;">
 					<div class="col-sm-12">
 						<div style="background: linear-gradient(45deg, #1a1a2e, #16213e); padding: 8px; border-radius: 5px; border: 1px solid #333;">
 							<h3 style="margin: 0; font-family: Arial, sans-serif; color: #00ff88; font-size: 16px;">
