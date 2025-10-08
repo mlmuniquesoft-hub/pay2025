@@ -62,131 +62,386 @@
     <link href="../assets/css/style.css" rel="stylesheet" type="text/css" />
     <link href="../assets/css/responsive.css" rel="stylesheet" type="text/css" />
     <!-- CORE CSS TEMPLATE - END -->
+	<!-- Modern Registration Page Styling -->
 	<style>
-		.error{
-			color:#f55a0e;
-		}
-		
-		::-webkit-input-placeholder { /* Edge */
-		  color: red;
-		}
-
-		:-ms-input-placeholder { /* Internet Explorer */
-		  color: red;
-		}
-
-		::placeholder {
-		  color: red;
-		}
-		
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .modern-register-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .register-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .register-header img {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 15px;
+        }
+        
+        .register-header h2 {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .register-header p {
+            color: #666;
+            font-size: 16px;
+            margin: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 14px;
+        }
+        
+        .required-field {
+            color: #dc3545;
+        }
+        
+        .form-control {
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 12px 15px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: #fff !important;
+            color: #333 !important;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        /* Only apply appearance none to inputs, not selects */
+        input.form-control {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+            background: #fff !important;
+        }
+        
+        /* Specific styling for select dropdowns */
+        select.form-control {
+            background: #fff !important;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23666' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 15px center !important;
+            background-size: 12px !important;
+            padding-right: 40px !important;
+            height: auto !important;
+            min-height: 45px !important;
+        }
+        
+        select.form-control option {
+            background: #ffffff !important;
+            color: #333333 !important;
+            padding: 10px 15px !important;
+            border: none !important;
+            font-size: 14px !important;
+            line-height: 1.4 !important;
+            display: block !important;
+            width: 100% !important;
+        }
+        
+        select.form-control option:hover {
+            background: #f8f9fa !important;
+            color: #333333 !important;
+        }
+        
+        select.form-control option:checked,
+        select.form-control option:selected {
+            background: #667eea !important;
+            color: #ffffff !important;
+        }
+        
+        /* Force select visibility */
+        #country, #poss {
+            background-color: #ffffff !important;
+            color: #333333 !important;
+            border: 2px solid #e1e8ed !important;
+            -webkit-appearance: menulist !important;
+            -moz-appearance: menulist !important;
+            appearance: menulist !important;
+        }
+        
+        #country option, #poss option {
+            background-color: #ffffff !important;
+            color: #333333 !important;
+            padding: 8px 12px !important;
+        }
+        
+        .form-control.is-valid {
+            border-color: #28a745;
+        }
+        
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+        
+        .form-control.is-warning {
+            border-color: #ffc107;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        .sponsor-section {
+            background: rgba(102, 126, 234, 0.05);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .sponsor-section .form-label {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .alert {
+            border-radius: 12px;
+            border: none;
+            margin-bottom: 20px;
+        }
+        
+        .alert-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+        
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.2);
+        }
+        
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+        
+        .validation-feedback {
+            font-size: 12px;
+            margin-top: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .validation-success {
+            color: #28a745;
+        }
+        
+        .validation-error {
+            color: #dc3545;
+        }
+        
+        .validation-warning {
+            color: #ffc107;
+        }
+        
+        .validation-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .position-info {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo-container img {
+            max-height: 50px;
+            width: auto;
+        }
+        
+        .links-section a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .links-section a:hover {
+            color: #764ba2;
+            text-decoration: none;
+        }
+        
+        .terms-link {
+            color: #667eea !important;
+            font-size: 18px;
+            text-decoration: underline;
+        }
+        
+        .terms-link:hover {
+            color: #764ba2 !important;
+        }
+        
+        #Mess {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .register-card {
+                padding: 30px 20px;
+                margin: 10px;
+                max-width: 95%;
+            }
+            
+            .register-header h2 {
+                font-size: 24px;
+            }
+            
+            .form-control {
+                padding: 10px 12px;
+            }
+        }
+        
+        /* Hide old styling */
+        .login-wrapper, .box.login, .content-body {
+            display: none;
+        }
+        
+        /* Ensure dropdown visibility */
+        .register-card {
+            position: relative;
+            z-index: 1;
+        }
+        
+        select.form-control {
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Fix for dropdown options visibility */
+        select option {
+            background-color: #ffffff !important;
+            color: #333333 !important;
+            padding: 10px !important;
+            font-size: 14px !important;
+        }
+        
+        /* Ensure select dropdown is clickable */
+        .form-group select {
+            cursor: pointer;
+        }
+        
+        /* Additional select styling for better visibility */
+        select.form-control::-ms-expand {
+            display: none;
+        }
+        
+        .form-control[multiple], .form-control[size] {
+            height: auto;
+        }
 	</style>
-	
-	<style>
-		/* Custom styles for sponsor ID and position fields */
-		.sponsor-section {
-			background-color: rgba(255, 255, 255, 0.1);
-			border-radius: 8px;
-			padding: 15px;
-			margin-bottom: 20px;
-			border: 1px solid rgba(255, 255, 255, 0.2);
-		}
-		
-		.sponsor-section .form-label {
-			color: #fff;
-			font-weight: 600;
-			margin-bottom: 8px;
-		}
-		
-		#sponsor_id, #poss {
-			border: 2px solid #007bff;
-			border-radius: 6px;
-			transition: all 0.3s ease;
-		}
-		
-		#sponsor_id:focus, #poss:focus {
-			border-color: #0056b3;
-			box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-		}
-		
-		.position-info {
-			font-size: 12px;
-			color: #ccc;
-			margin-top: 5px;
-		}
-		
-		.required-field {
-			color: #ff6b6b;
-		}
-		
-		/* Validation feedback styles */
-		.validation-feedback {
-			font-size: 12px;
-			margin-top: 5px;
-			transition: all 0.3s ease;
-		}
-		
-		.validation-success {
-			color: #28a745;
-		}
-		
-		.validation-error {
-			color: #dc3545;
-		}
-		
-		.validation-warning {
-			color: #ffc107;
-		}
-		
-		.form-control.is-valid {
-			border-color: #28a745;
-			box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-		}
-		
-		.form-control.is-invalid {
-			border-color: #dc3545;
-			box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-		}
-		
-		.form-control.is-warning {
-			border-color: #ffc107;
-			box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
-		}
-		
-		.validation-spinner {
-			display: inline-block;
-			width: 16px;
-			height: 16px;
-			border: 2px solid #f3f3f3;
-			border-top: 2px solid #3498db;
-			border-radius: 50%;
-			animation: spin 1s linear infinite;
-		}
-		
-		@keyframes spin {
-			0% { transform: rotate(0deg); }
-			100% { transform: rotate(360deg); }
-		}
-	</style>
+
 </head>
 <!-- END HEAD -->
 
 <!-- BEGIN BODY -->
 
-<body class=" login_page login-bg" style="background-image:url('image/140132_Cover.png')!important;background-repeat: repeat!important;">
+<body class="login_page login-bg">
 	 <div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" style="color:#000;">Important Announcement</h5>
+        <h5 class="modal-title" style="color:#000;">Welcome to Capitol Money Pay</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p style='color:#000'>Hi Everyone, 😃 <br/>
-The COVID19 Pandemic is disrupting businesses everywhere. People are observing self-isolation in government-imposed lockdowns to keep everyone safe. Many industries have adapted to these new changes and we believe that Digital Technology will play a strong part in the current scenario. 🌐</p>
-		  <p style='color:#000'>*_Important announcement:*_ <br/>
-Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the world.Status is running.We are sincerely sorry that all our activities including trading were stopped due to the Covid-19. In this case, all traders are 100% safe.As per the decision of the company, all the activities of In the first week of June 2020 are going to be resumed for the information of the successful traders considering the past and present times.The company is committed to work with a long-term plan to manage the business activities of traders.Your cooperation is highly desirable.Follow the rules of the World Health Organization and stay safe.</p>
+        <p style='color:#000'>Welcome to Capitol Money Pay! 🚀<br/>
+We're excited to have you join our investment community. Our platform provides cutting-edge trading technology and investment opportunities for modern investors.</p>
+		  <p style='color:#000'><strong>Important Information:</strong><br/>
+Dear investors, Capitol Money Pay is committed to providing you with secure and profitable investment opportunities. Our platform operates with advanced trading algorithms and comprehensive risk management systems. All investments are processed through secure channels with full transparency.</p>
       </div>
       <div class="modal-footer">
         
@@ -211,35 +466,33 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 		  <div class="modal-body" style="width:100%;min-height:100vh;color:#000;background-image:url('image/term_bg.jpg')">
 				<div style="background: #23202080;padding: 17px;">
 				<h2 style="color:#fff240;">Terms & Condition</h2>
-				<p style="color:#fff240;">Mail Verification is Mandatory Within Next 48 Hours Of Registration.</p>
-				<p style="color:#fff240;">Free Joining, The First Time You Start A Plan, $10 Is Paid As A System Service For Life Time.There is No Second Chance To Purchase A Smaller Plan Than The Purchased Plan.</p>
-				<p style="color:#fff240;">Withdraw: <br/>
+				<p style="color: rgba(255, 255, 255, 0.9); background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0;">Mail Verification is Mandatory Within Next 48 Hours Of Registration.</p>
+				<p style="color: rgba(255, 255, 255, 0.9); background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0;">Free Joining, The First Time You Start A Plan, $10 Is Paid As A System Service For Life Time. There is No Second Chance To Purchase A Smaller Plan Than The Purchased Plan.</p>
+				<p style="color: rgba(255, 255, 255, 0.9); background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0;"><strong>Withdraw:</strong><br/>
 					Fund Transfer Account To Account (P2P) Instant. Convert USD To BTC(Bitcoin) Minimum Withdrawal USD 50.00 With 8% Transaction Fee, Maximum Withdrawal For Each Day $3000.00/$5000.00 In Terms Of Appeal. Weekly, Monday Fund Will Be Transfered To Account Holders Requesting Address.
 				</p>
-				<p style="color:#fff240;">Daily Earning:<br/>
-					Be Active After Bought The Product, D.Bot Trading Earning Will Get Daily Return Up To 2.65%. All Earning Will Be Transfered To Account Balance From Monday To Friday.
-
+				<p style="color: rgba(255, 255, 255, 0.9); background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0;"><strong>Daily Earning:</strong><br/>
+					Be Active After Bought The Product, Investment Trading Earning Will Get Daily Return Up To 2.65%. All Earning Will Be Transfered To Account Balance From Monday To Friday.
 				</p>
-				<p style="color:#fff240;">Sponsor Honor:<br/>
+				<p style="color: rgba(255, 255, 255, 0.9); background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0;"><strong>Sponsor Honor:</strong><br/>
 					6% To 10% Unlimited Daily. It Will Be Real Time Payout.
 				</p>
-				<p style="color:#fff240;">Binary Bonus:<br/>
-					You Are Required To Sponsor At Least One Activation To Get a Pairing Bonus 10% From Smaller Side. 
-
+				<p style="color: rgba(255, 255, 255, 0.9); background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0;"><strong>Binary Bonus:</strong><br/>
+					You Are Required To Sponsor At Least One Activation To Get a Pairing Bonus 10% From Smaller Side.
 				</p>
-				<p style="color:#fff240;">Generation Bonus:<br/>
+				<p style="color: rgba(255, 255, 255, 0.9); background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0;"><strong>Generation Bonus:</strong><br/>
 					Active Account Will Get Reschedule Gain Generation Bonus(Matching Profit). Earn Generation Bonus Up To 12% From 12 Level.
 				</p>
-				<p style="color:#fff240;">Global Profit Sharing (GPS):<br/>
-					Buy Minimum D.Bot 3000 Since Then You Can Received Global Profit Sharing(GPS) From All Across The World. GPS Is Gain By Companies Source Of Income Will Be Paid According To Its Rules. The Holiday Will Be Credited As A Todays WOrking Profit Transfer To The Trading Earning Side Of Company.
+				<p style="color: rgba(255, 255, 255, 0.9); background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0;"><strong>Global Profit Sharing (GPS):</strong><br/>
+					Buy Minimum Investment 3000 Since Then You Can Received Global Profit Sharing(GPS) From All Across The World. GPS Is Gain By Companies Source Of Income Will Be Paid According To Its Rules. The Holiday Will Be Credited As A Todays Working Profit Transfer To The Trading Earning Side Of Company.
 				</p>
-				<p style="color:#fff240;">Upgrade:<br/>
+				<p style="color: rgba(255, 255, 255, 0.9); background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0;"><strong>Upgrade:</strong><br/>
 					Every Upgrade Can Be Done By Purchasing The Bigger Plan From Your Initial Plan.
 				</p>
-				<p style="color:#fff240;">Renew:<br/>
-					Estimated You Will Get Approximate 400% Earning From The Activation Plan.You WIll Need To Update To The Next Plan After The Plan Is Complete. You Can See The Plan Change Warning Also A Notification Alert Receive To Requested Mail.
+				<p style="color: rgba(255, 255, 255, 0.9); background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0;"><strong>Renew:</strong><br/>
+					Estimated You Will Get Approximate 400% Earning From The Activation Plan. You Will Need To Update To The Next Plan After The Plan Is Complete. You Can See The Plan Change Warning Also A Notification Alert Receive To Requested Mail.
 				</p>
-				<p style="color:#fff240;">Bot Trading Technology Is Higher Level Security, Cost Efficient, Energy Saving, P2P Quick Transaction.</p>
+				<p style="color: rgba(255, 255, 255, 0.9); background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0;">Investment Trading Technology Is Higher Level Security, Cost Efficient, Energy Saving, P2P Quick Transaction.</p>
 				<p style="color:#fff240;">
 					Pormise:<br/>
 						I'm An Adult. I Know Such Site Are In Danger, Interested In Working In Compliance With Obligation. 
@@ -254,170 +507,161 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 		</div>
 	  </div>
 	</div>
-    <div class="container">
-        <div class="row">
-            
-            <div class=" mt-90 col-lg-8 col-lg-offset-2">
-                <div class="row">
-                    <div class="login-wrapper crypto" style="background: #25239024!important;">
-                        <div class="col-lg-6 col-sm-12 over-h hidden-sm no-padding-left  no-padding-right">
-                            <img src="../image/200w.webp" style="width: 100%;height: 795px;margin-top: 71px;margin-left: 10px;" alt="">
-                        </div>
-                        <div class="col-lg-6 col-sm-12">
-                            <div id="login" class="login loginpage mt-0 no-pl no-pr pt30 pb30">    
-                                <div class="login-form-header flex align-items-center">
-                                     <img src="../data/crypto-dash/signup.png" alt="login-icon" style="max-width:64px">
-                                     <div class="login-header">
-                                         <h4 class="bold" style="color: #dcb413;">Signup Now!</h4>
-                                         <h4><small>Enter your data to register.</small></h4>
-                                     </div>
-                                </div>
-                               
-                                <div class="box login" style="background-color: #16a8b100 !important;">
-
-                                    <div class="content-body" style="background-color: #16a8b100 !important">
-
-                                        <form id="signup-form" action="#" novalidate="novalidate" class="no-mb no-mt">
-                                            <div class="row">
-                                                <div class="col-xs-12">
-													<div class="form-group" style="display:none;">
-														<label >Do You Have Sponsor ID</label>
-														<input type='radio' class="shfsd" name="sponn" value='1' checked /> Yes &nbsp;&nbsp;&nbsp;&nbsp;
-														<input type='radio' class="shfsd" name="sponn" value='2'/> No
-													</div>
-													<?php
-														if(isset($_GET['keys'])){
-															$UserId=explode("/", base64_decode($_GET['keys']));
-													?>
-													<div class="sponsor-section">
-														<div class="form-group">
-															<label class="form-label">Sponsor ID <span class="required-field">*</span></label>
-															<div class="controls">
-																<input type="text" class="form-control" value="<?php echo $UserId[1]; ?>" name="sponsor_id" id="sponsor_id" placeholder="Enter Sponsor ID" style="background-color: #e7ebf5;" required />
-																<div id="sponsor_id_feedback" class="validation-feedback"></div>
-															</div>
-														</div>
-														
-														<div class="form-group">
-															<label class="form-label">Position <span class="required-field">*</span></label>
-															<div class="controls">
-																<select class="form-control" name="poss" id="poss" style="background-color: #e7ebf5;" required>
-																	<option value="">-- Please Select Position --</option>
-																	<option value="1" <?php echo ($UserId[2] == '1') ? 'selected' : ''; ?>>Left (1)</option>
-																	<option value="2" <?php echo ($UserId[2] == '2') ? 'selected' : ''; ?>>Right (2)</option>
-																</select>
-																<div class="position-info">Choose left or right position in your sponsor's ranks</div>
-															</div>
-														</div>
-													</div>
-														<?php }else{ ?>
-														<div class="sponsor-section">
-															<div class="form-group">
-																<label class="form-label">Sponsor ID <span class="required-field">*</span></label>
-																<div class="controls">
-																	<input type="text" class="form-control" name="sponsor_id" id="sponsor_id" placeholder="Enter Sponsor ID" style="background-color: #e7ebf5;" required />
-																	<div id="sponsor_id_feedback" class="validation-feedback"></div>
-																</div>
-															</div>
-															
-															<div class="form-group">
-																<label class="form-label">Position <span class="required-field">*</span></label>
-																<div class="controls">
-																	<select class="form-control" name="poss" id="poss" style="background-color: #e7ebf5;" required>
-																		<option value="">-- Please Select Position --</option>
-																		<option value="1">Left (1)</option>
-																		<option value="2">Right (2)</option>
-																	</select>
-																	<div class="position-info">Choose left or right position in your sponsor's binary tree</div>
-																</div>
-															</div>
-														</div>
-														<?php } ?>
-													
-													<div class="form-group">
-                                                        <label class="form-label">Full Name</label>
-                                                        <div class="controls">
-                                                            <input style="background-color: #e7ebf5;" type="text" class="form-control" name="full_name"  id="full_name" placeholder="Full Name">
-                                                        </div>
-                                                    </div>
-													
-                                                    <div class="form-group">
-                                                        <label class="form-label">Email</label>
-                                                        <div class="controls">
-                                                            <input style="background-color: #e7ebf5;" type="text" class="form-control" name="email" id="email" placeholder="Email">
-                                                            <div id="email_feedback" class="validation-feedback"></div>
-                                                        </div>
-                                                    </div>
-													<div class="form-group">
-                                                        <label class="form-label">Country</label>
-                                                        <div class="controls">
-                                                            <select class="form-control" name="country" id="country" style="background-color: #e7ebf5;">
-																<option value=''>Select Your Country</option>
-																<?php
-																	$kljfgs=$mysqli->query("SELECT * FROM `country`");
-																	while($askdja=mysqli_fetch_assoc($kljfgs)){
-																?>
-																<option><?php echo $askdja['name']; ?></option>
-																<?php } ?>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-													<div class="form-group">
-                                                        <label class="form-label">Phone Number</label>
-                                                        <div class="controls">
-                                                            <input style="background-color: #e7ebf5;" type="text" class="form-control" name="phone_number" id="phone_number" placeholder="Phone Number">
-                                                        </div>
-                                                    </div>
-													<div class="form-group">
-                                                        <label class="form-label">User Name</label>
-                                                        <div class="controls">
-                                                            <input style="background-color: #e7ebf5;" type="text" class="form-control" name="log_id" id="log_id" placeholder="User Name">
-															<div id="log_id_feedback" class="validation-feedback"></div>
-                                                        </div>
-                                                    </div>
-													
-                                                    <div class="form-group">
-                                                        <label class="form-label">Password</label>
-                                                        <div class="controls">
-                                                            <input style="background-color: #e7ebf5;" type="password" class="form-control" name="password" id="password" placeholder="Enter Password">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="form-label">Confirm Password</label>
-                                                        <div class="controls">
-                                                            <input style="background-color: #e7ebf5;" type="password" class="form-control" name="re_password" id="re_password" placeholder="Confirm Password">
-                                                        </div>
-                                                    </div>
-													<div class="form-group">
-                                                        <label class="form-label">Set Transaction Code</label>
-                                                        <div class="controls">
-                                                            <input style="background-color: #e7ebf5;" type="password" class="form-control" name="Password_tr" id="Password_tr" placeholder="Set Transaction Code">
-                                                        </div>
-                                                    </div>
-													<div class="form-group">
-                                                        <input type="checkbox" style="display:none;" name="terms" id="terms" value='1'  /><span id="ssd" style="color:#FFF"> Accept</span> <a href="#" id="consHG" data-toggle="modal" data-target="#exampleModalLong" style="color:#fff240;font-size:22px;">Terms & Condition</a>
-                                                    </div>
-													
-													<div class="text-center" id="Mess">
-														
-													</div>
-                                                    <div class="text-center">
-                                                        <button type="button" id="submitTest" class="btn btn-primary mt-10 btn-corner right-15">Sign up</button>
-                                                        <button id="submit" style="display:none" class="btn btn-primary mt-10 btn-corner right-15">Sign up</button>
-                                                        <a href="nz-login.html" style="background:#d2cd19" class="btn mt-10 btn-corner signup">Login</a>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
+	
+	<!-- Main Registration Container -->
+    <div class="modern-register-container">
+        <div class="register-card">
+            <!-- Logo Section -->
+            <div class="logo-container">
+                <img src="/assets/images/cmp-logo.svg" alt="Capitol Money Pay" />
             </div>
+            
+            <!-- Registration Header -->
+            <div class="register-header">
+                <img src="../data/crypto-dash/signup.png" alt="signup-icon">
+                <h2>Create Your Account</h2>
+                <p>Join Capitol Money Pay today and start investing</p>
+            </div>
+            
+            <!-- Registration Form -->
+            <form id="signup-form" action="#" novalidate="novalidate" class="no-mb no-mt">
+				
+				<div id="Mess"></div>
+				
+				<?php
+					if(isset($_GET['keys'])){
+						$UserId=explode("/", base64_decode($_GET['keys']));
+				?>
+				<div class="sponsor-section">
+					<div class="form-group">
+						<label class="form-label">Sponsor ID <span class="required-field">*</span></label>
+						<div class="controls">
+							<input type="text" class="form-control" value="<?php echo $UserId[1]; ?>" name="sponsor_id" id="sponsor_id" placeholder="Enter Sponsor ID" required />
+							<div id="sponsor_id_feedback" class="validation-feedback"></div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="form-label">Position <span class="required-field">*</span></label>
+						<div class="controls">
+							<select class="form-control" name="poss" id="poss" required>
+								<option value="">-- Please Select Position --</option>
+								<option value="1" <?php echo ($UserId[2] == '1') ? 'selected' : ''; ?>>Left (1)</option>
+								<option value="2" <?php echo ($UserId[2] == '2') ? 'selected' : ''; ?>>Right (2)</option>
+							</select>
+							<div class="position-info">Choose left or right position in your sponsor's tree</div>
+						</div>
+					</div>
+				</div>
+					<?php }else{ ?>
+					<div class="sponsor-section">
+						<div class="form-group">
+							<label class="form-label">Sponsor ID <span class="required-field">*</span></label>
+							<div class="controls">
+								<input type="text" class="form-control" name="sponsor_id" id="sponsor_id" placeholder="Enter Sponsor ID" required />
+								<div id="sponsor_id_feedback" class="validation-feedback"></div>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="form-label">Position <span class="required-field">*</span></label>
+							<div class="controls">
+								<select class="form-control" name="poss" id="poss" required>
+									<option value="">-- Please Select Position --</option>
+									<option value="1">Left (1)</option>
+									<option value="2">Right (2)</option>
+								</select>
+								<div class="position-info">Choose left or right position in your sponsor's binary tree</div>
+							</div>
+						</div>
+					</div>
+					<?php } ?>
+				
+				<div class="form-group">
+					<label class="form-label">Full Name <span class="required-field">*</span></label>
+					<div class="controls">
+						<input type="text" class="form-control" name="full_name" id="full_name" placeholder="Enter your full name" required>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="form-label">Email <span class="required-field">*</span></label>
+					<div class="controls">
+						<input type="email" class="form-control" name="email" id="email" placeholder="Enter your email" required>
+						<div id="email_feedback" class="validation-feedback"></div>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="form-label">Country <span class="required-field">*</span></label>
+					<div class="controls">
+						<select class="form-control" name="country" id="country" required>
+							<option value=''>Select Your Country</option>
+							<?php
+								$kljfgs=$mysqli->query("SELECT * FROM `country`");
+								while($askdja=mysqli_fetch_assoc($kljfgs)){
+							?>
+							<option><?php echo $askdja['name']; ?></option>
+							<?php } ?>
+						</select>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="form-label">Phone Number <span class="required-field">*</span></label>
+					<div class="controls">
+						<input type="text" class="form-control" name="phone_number" id="phone_number" placeholder="Enter phone number" required>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="form-label">Username <span class="required-field">*</span></label>
+					<div class="controls">
+						<input type="text" class="form-control" name="log_id" id="log_id" placeholder="Choose a username" required>
+						<div id="log_id_feedback" class="validation-feedback"></div>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="form-label">Password <span class="required-field">*</span></label>
+					<div class="controls">
+						<input type="password" class="form-control" name="password" id="password" placeholder="Enter password" required>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="form-label">Confirm Password <span class="required-field">*</span></label>
+					<div class="controls">
+						<input type="password" class="form-control" name="re_password" id="re_password" placeholder="Confirm password" required>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="form-label">Transaction Code <span class="required-field">*</span></label>
+					<div class="controls">
+						<input type="password" class="form-control" name="Password_tr" id="Password_tr" placeholder="Set transaction code" required>
+					</div>
+				</div>
+				
+				<div class="form-group" style="text-align: center; margin-bottom: 20px;">
+					<input type="checkbox" style="display:none;" name="terms" id="terms" value='1' />
+					<span id="ssd" style="color:#333; font-weight: 500;"> Accept</span> 
+					<a href="#" id="consHG" data-toggle="modal" data-target="#exampleModalLong" class="terms-link">Terms & Conditions</a>
+				</div>
+				
+				<div class="text-center">
+					<button type="button" id="submitTest" class="btn btn-primary">Create Account</button>
+					<button id="submit" style="display:none" class="btn btn-primary">Create Account</button>
+				</div>
+				
+				<!-- Links Section -->
+				<div class="links-section" style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e1e8ed;">
+					<p style="color: #666; margin: 0;">
+						Already have an account? 
+						<a href="nz-login.html">Login here</a>
+					</p>
+				</div>
+            </form>
         </div>
     </div>
 
@@ -436,6 +680,27 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
         window.jQuery || document.write('<script src="../assets/js/jquery-1.11.2.min.js"><\/script>');
     </script>
     <script>
+		// Force select dropdown visibility
+		$(document).ready(function() {
+			// Ensure select elements are visible and functional
+			$("#country, #poss").each(function() {
+				$(this).css({
+					'background-color': '#ffffff',
+					'color': '#333333',
+					'border': '2px solid #e1e8ed',
+					'appearance': 'menulist',
+					'-webkit-appearance': 'menulist',
+					'-moz-appearance': 'menulist'
+				});
+			});
+			
+			// Add click handler for better debugging
+			$("#country, #poss").on('click focus', function() {
+				console.log('Select clicked:', $(this).attr('id'));
+				console.log('Options count:', $(this).find('option').length);
+			});
+		});
+		
 		let dfgd=0;
 		$("#Accept").on("click", function(){
 			dfgd=1;
