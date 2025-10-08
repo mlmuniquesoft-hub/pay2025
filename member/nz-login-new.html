@@ -339,10 +339,11 @@
     </div>
 
     <!-- CORE JS FRAMEWORK -->
-    <script src="../assets/js/jquery-1.11.2.min.js"></script>
+    <script src="../assets/plugins/pace/pace.min.js"></script>
+    <script src="../assets/plugins/jquery/jquery-1.11.3.min.js"></script>
     <script src="../assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../assets/plugins/jquery-validation/js/jquery.validate.min.js"></script>
-    <script src="../assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="../assets/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <script src="../assets/plugins/perfect-scrollbar/perfect-scrollbar.jquery.min.js"></script>
 
     <!-- Login JavaScript -->
     <script>
@@ -373,32 +374,16 @@
                     const loginRequest = $.ajax({
                         method: "POST",
                         url: 'viewdata/logincheck.php',
-                        dataType: 'json', // Explicitly expect JSON
                         data: { user: user_id, pass: password },
-                        success: function(result) {
-                            console.log("Parsed result:", result);
+                        success: function(response) {
+                            const result = JSON.parse(response);
                             if (result[0] == 1) {
-                                // Direct login success - redirect to dashboard
-                                if (result[1].includes('.php') || result[1].includes('/')) {
-                                    // It's a redirect URL
-                                    $("#submit").html("<div class='alert alert-success'>Login successful! Redirecting...</div>");
-                                    setTimeout(function() {
-                                        window.location.href = result[1];
-                                    }, 1000);
-                                } else {
-                                    // It's a message for 2-step auth (fallback)
-                                    $("#Sttes1").hide();
-                                    $("#MessA").text(result[1]);
-                                    $("#Sttes2").show();
-                                }
+                                $("#Sttes1").hide();
+                                $("#MessA").text(result[1]);
+                                $("#Sttes2").show();
                             } else {
                                 $("#submit").html("<div class='alert alert-warning'>" + result[1] + "</div>");
                             }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error("AJAX Error:", status, error);
-                            console.error("Response:", xhr.responseText);
-                            $("#submit").html("<div class='alert alert-danger'>Connection error. Please try again.</div>");
                         }
                     });
                 } else {
@@ -423,20 +408,15 @@
                     
                     const verifyRequest = $.ajax({
                         method: "POST",
-                        url: 'viewdata/logincheck2_test.php',
-                        dataType: 'json', // Explicitly expect JSON
+                        url: 'viewdata/logincheck2.php',
                         data: { code: secureCode, user: user_id },
-                        success: function(result) {
-                            console.log("Step 2 result:", result);
+                        success: function(response) {
+                            const result = JSON.parse(response);
                             if (result[0] == 1) {
                                 location.href = result[1];
                             } else {
                                 $("#submit2").html("<div class='alert alert-warning'>" + result[1] + "</div>");
                             }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error("Step 2 AJAX Error:", status, error);
-                            $("#submit2").html("<div class='alert alert-danger'>Verification error. Please try again.</div>");
                         }
                     });
                 } else {
@@ -461,17 +441,14 @@
                     const forgotRequest = $.ajax({
                         method: "GET",
                         url: 'viewdata/forgot_pass.php',
-                        dataType: 'json',
                         data: { userdf: user_id },
-                        success: function(result) {
+                        success: function(response) {
+                            const result = JSON.parse(response);
                             if (result[0] == 1) {
                                 $("#submit").html("<div class='alert alert-success'>" + result[1] + "</div>");
                             } else {
                                 $("#submit").html("<div class='alert alert-warning'>" + result[1] + "</div>");
                             }
-                        },
-                        error: function() {
-                            $("#submit").html("<div class='alert alert-danger'>Error processing request</div>");
                         }
                     });
                 } else {
@@ -484,6 +461,9 @@
 
     <!-- Additional Scripts -->
     <script src="../assets/js/scripts.js"></script>
+    <script src="/login/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="/login/vendor/jquery-validation/dist/additional-methods.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LfTCbIUAAAAACb_PpflJsnEXymUtTIYUZY62HrA"></script>
     <script src="js/login.js"></script>
 
 </body>
