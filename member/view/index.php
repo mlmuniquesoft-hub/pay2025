@@ -113,6 +113,172 @@
 							</div>
 						</div>
 						
+						<!-- Additional Income Cards Row -->
+						<div class="col-lg-3 col-sm-6 col-xs-12">
+							<div class="statistics-box" style="background-color:#28a745d9">
+								<div class="mb-15">
+									<i class="pull-left ico-icon icon-md icon-success">
+										<i class="fa fa-users" style="font-size: 49px; color: #28a745;"></i>
+									</i>
+									<div class="stats">
+										<h3 class="boldy mb-5" style="color:#5bec74!important;font-size: 18px;">$<span id="PoolIncome">0.00</span></h3>
+										<span style="font-size: 12px;">Pool Income</span>
+									</div>
+								</div>
+								<span class="crypto1"><canvas width="239" height="60"></canvas></span>
+							</div>
+						</div>
+						
+						<div class="col-lg-3 col-sm-6 col-xs-12">
+							<div class="statistics-box" style="background-color:#17a2b8d9">
+								<div class="mb-15">
+									<i class="pull-left ico-icon icon-md icon-info">
+										<i class="fa fa-share-alt" style="font-size: 49px; color: #17a2b8;"></i>
+									</i>
+									<div class="stats">
+										<h3 class="boldy mb-5" style="color:#5bec74!important;font-size: 18px;">$<span id="PoolReferIncome">0.00</span></h3>
+										<span style="font-size: 12px;">Pool Refer Income</span>
+									</div>
+								</div>
+								<span class="crypto2"><canvas width="239" height="60"></canvas></span>
+							</div>
+						</div>
+						
+						<div class="col-lg-3 col-sm-6 col-xs-12">
+							<div class="statistics-box" style="background-color:#ffc107d9">
+								<div class="mb-15">
+									<i class="pull-left ico-icon icon-md icon-warning">
+										<i class="fa fa-calendar-check-o" style="font-size: 49px; color: #ffc107;"></i>
+									</i>
+									<div class="stats">
+										<h3 class="boldy mb-5" style="color:#5bec74!important;font-size: 18px;">$<span id="DailyROIIncome">0.00</span></h3>
+										<span style="font-size: 12px;">Daily ROI Income</span>
+									</div>
+								</div>
+								<span class="crypto3"><canvas width="239" height="60"></canvas></span>
+							</div>
+						</div>
+						
+						<div class="col-lg-3 col-sm-6 col-xs-12">
+							<div class="statistics-box" style="background-color:#6f42c1d9">
+								<div class="mb-15">
+									<i class="pull-left ico-icon icon-md icon-primary">
+										<i class="fa fa-sitemap" style="font-size: 49px; color: #6f42c1;"></i>
+									</i>
+									<div class="stats">
+										<h3 class="boldy mb-5" style="color:#5bec74!important;font-size: 18px;">$<span id="ReferGenerationIncome">0.00</span></h3>
+										<span style="font-size: 12px;">Refer Generation Income</span>
+									</div>
+								</div>
+								<span class="crypto4"><canvas width="239" height="60"></canvas></span>
+							</div>
+						</div>
+						
+						<div class="col-lg-3 col-sm-6 col-xs-12">
+							<div class="statistics-box" style="background-color:#fd7e14d9">
+								<div class="mb-15">
+									<i class="pull-left ico-icon icon-md icon-warning">
+										<i class="fa fa-line-chart" style="font-size: 49px; color: #fd7e14;"></i>
+									</i>
+									<div class="stats">
+										<h3 class="boldy mb-5" style="color:#5bec74!important;font-size: 18px;">$<span id="GenerationROIIncome">0.00</span></h3>
+										<span style="font-size: 12px;">Generation Income(On ROI)</span>
+									</div>
+								</div>
+								<span class="crypto1"><canvas width="239" height="60"></canvas></span>
+							</div>
+						</div>
+						
+						<div class="col-lg-3 col-sm-6 col-xs-12">
+							<div class="statistics-box" style="background-color:#dc3545d9">
+								<div class="mb-15">
+									<i class="pull-left ico-icon icon-md icon-danger">
+										<i class="fa fa-trophy" style="font-size: 49px; color: #dc3545;"></i>
+									</i>
+									<div class="stats">
+										<h3 class="boldy mb-5" style="color:#5bec74!important;font-size: 18px;">$<span id="SpecialReferSales">0.00</span></h3>
+										<span style="font-size: 12px;">Special Refer Sales Profit</span>
+									</div>
+								</div>
+								<span class="crypto2"><canvas width="239" height="60"></canvas></span>
+							</div>
+						</div>
+						
+						<div class="col-lg-3 col-sm-6 col-xs-12">
+							<div class="statistics-box" style="background-color:#6610f2d9">
+								<div class="mb-15">
+									<i class="pull-left ico-icon icon-md icon-primary">
+										<i class="fa fa-diamond" style="font-size: 49px; color: #6610f2;"></i>
+									</i>
+									<div class="stats">
+										<h3 class="boldy mb-5" style="color:#5bec74!important;font-size: 18px;">$<span id="PremiumClubProfit">0.00</span></h3>
+										<span style="font-size: 12px;">Premium Club Trade Profit</span>
+									</div>
+								</div>
+								<span class="crypto3"><canvas width="239" height="60"></canvas></span>
+							</div>
+						</div>
+						
+						<div class="col-lg-3 col-sm-6 col-xs-12">
+							<div class="statistics-box" style="background-color:#e83e8cd9">
+								<div class="mb-15">
+									<i class="pull-left ico-icon icon-md icon-danger">
+										<i class="fa fa-star" style="font-size: 49px; color: #e83e8c;"></i>
+									</i>
+									<div class="stats">
+										<h3 class="boldy mb-5" style="color:#5bec74!important;font-size: 18px;">$<span id="VipClubProfit">0.00</span></h3>
+										<span style="font-size: 12px;">VIP Club Trade Profit</span>
+									</div>
+								</div>
+								<span class="crypto4"><canvas width="239" height="60"></canvas></span>
+							</div>
+						</div>
+						
+						<div class="col-lg-3 col-sm-6 col-xs-12">
+							<div class="statistics-box" style="background-color:#20c997d9">
+								<div class="mb-15">
+									<i class="pull-left ico-icon icon-md icon-success">
+										<i class="fa fa-medal" style="font-size: 49px; color: #20c997;"></i>
+									</i>
+									<div class="stats">
+										<h3 class="boldy mb-5" style="color:#5bec74!important;font-size: 18px;">$<span id="RankRewardIncentive">0.00</span></h3>
+										<span style="font-size: 12px;">Rank & Reward Incentive</span>
+									</div>
+								</div>
+								<span class="crypto1"><canvas width="239" height="60"></canvas></span>
+							</div>
+						</div>
+						
+						<div class="col-lg-3 col-sm-6 col-xs-12">
+							<div class="statistics-box" style="background-color:#6c757dd9">
+								<div class="mb-15">
+									<i class="pull-left ico-icon icon-md icon-secondary">
+										<i class="fa fa-money" style="font-size: 49px; color: #6c757d;"></i>
+									</i>
+									<div class="stats">
+										<h3 class="boldy mb-5" style="color:#5bec74!important;font-size: 18px;">$<span id="TotalWithdraw">0.00</span></h3>
+										<span style="font-size: 12px;">Total Withdraw</span>
+									</div>
+								</div>
+								<span class="crypto2"><canvas width="239" height="60"></canvas></span>
+							</div>
+						</div>
+						
+						<div class="col-lg-3 col-sm-6 col-xs-12">
+							<div class="statistics-box" style="background-color:#fd7e14d9">
+								<div class="mb-15">
+									<i class="pull-left ico-icon icon-md icon-warning">
+										<i class="fa fa-crown" style="font-size: 49px; color: #fd7e14;"></i>
+									</i>
+									<div class="stats">
+										<h3 class="boldy mb-5" style="color:#5bec74!important;font-size: 18px;"><span id="CurrentRank">No Rank</span></h3>
+										<span style="font-size: 12px;">Current Rank</span>
+									</div>
+								</div>
+								<span class="crypto3"><canvas width="239" height="60"></canvas></span>
+							</div>
+						</div>
+						
 					</div>
 					<!-- End .row -->
 				</div>

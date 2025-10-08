@@ -11,7 +11,12 @@ $(document).ready(function(){
 			for(result in outpu){
 				console.log(outpu[result]);
 				console.log(result);
-				$("#"+result).text(outpu[result]);
+				// Special handling for CurrentRank (no $ prefix needed)
+				if(result === 'CurrentRank') {
+					$("#"+result).text(outpu[result]);
+				} else {
+					$("#"+result).text(outpu[result]);
+				}
 			}
 			//dfg();
 		});
