@@ -57,9 +57,9 @@
 																<td><a class="btn btn-success" href="member_login.php?user=<?php echo $mghh['user']; ?>" id="color"><?php echo $mghh['user']; ?></a></td> 
 																<td>
 																	
-																	Name: <?php echo $mghh211['name']; ?><br/>
-																	Email: <?php echo $mghh211['email']; ?><br/>
-																	Mobile: <?php echo $mghh211['mobile']; ?><br/>
+																	Name: <?php echo isset($mghh211['name']) ? $mghh211['name'] : 'N/A'; ?><br/>
+																	Email: <?php echo isset($mghh211['email']) ? $mghh211['email'] : 'N/A'; ?><br/>
+																	Mobile: <?php echo isset($mghh211['mobile']) ? $mghh211['mobile'] : 'N/A'; ?><br/>
 																	</td>
 																<td>
 																	<?php echo date("d M-Y", strtotime($mghh['time'])); ?><br/>
@@ -70,20 +70,26 @@
 																			$uuu=$mghh['pack'];
 																			 $mghh22=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `upgrade` WHERE `user`='".$mghh['user']."' ORDER BY `serial` ASC"));
 																			$packnnm=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `package` WHERE `serial`='".$mghh['pack']."' "));
-																			echo "<span style='color:#FFF;padding:10px;background-color:".$packnnm['color']."'>" . $packnnm['pack'] ."</span> <p style='margin-top: 8px;'>";
-																			echo date("d M-Y", strtotime($mghh22['date'])) ."</p>";
+																			if($packnnm && isset($packnnm['color']) && isset($packnnm['pack'])) {
+																				echo "<span style='color:#FFF;padding:10px;background-color:".$packnnm['color']."'>" . $packnnm['pack'] ."</span> <p style='margin-top: 8px;'>";
+																			}
+																			if($mghh22 && isset($mghh22['date'])) {
+																				echo date("d M-Y", strtotime($mghh22['date'])) ."</p>";
+																			} else {
+																				echo "No upgrade date</p>";
+																			}
 																		}else{
 																			echo  "Starter";
 																		}
 																	?></td>   
 																<td>
 																Login ID: <?php echo $mghh['sponsor']; ?><br/>
-																Name: <?php echo $mghh21['name']; ?><br/>
-																Email: <?php echo $mghh21['email']; ?><br/>
-																Mobile: <?php echo $mghh21['mobile']; ?><br/>
+																Name: <?php echo isset($mghh21['name']) ? $mghh21['name'] : 'N/A'; ?><br/>
+																Email: <?php echo isset($mghh21['email']) ? $mghh21['email'] : 'N/A'; ?><br/>
+																Mobile: <?php echo isset($mghh21['mobile']) ? $mghh21['mobile'] : 'N/A'; ?><br/>
 																</td>
-																<td><?php echo $row1['direct_taka']; ?></td>
-																<td><?php echo $row1['bcpp_taka']; ?></td>
+																<td><?php echo isset($row1['direct_taka']) ? $row1['direct_taka'] : '0'; ?></td>
+																<td><?php echo isset($row1['bcpp_taka']) ? $row1['bcpp_taka'] : '0'; ?></td>
 																<td>
 																		<a href="member_total_sponsor.php?uud=<?php echo base64_encode($mghh['user']); ?>" class="btn btn-danger">
 																			<?php
@@ -91,7 +97,7 @@
 																			?>
 																		</a>
 																	</td>   	 
-																<td><?php echo $row1['generation_taka']; ?></td>
+																<td><?php echo isset($row1['generation_taka']) ? $row1['generation_taka'] : '0'; ?></td>
 																<td></td>
 																<td><?php echo remainAmn($mghh['user']); ?></td>
 																
