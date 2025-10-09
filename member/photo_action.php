@@ -10,7 +10,7 @@
 		$location=$_POST['location'];
 		$ExtPos=strrpos($FileName,".");
 		$Extension=strtolower(substr($FileName,$ExtPos+1,strlen($FileName)-$ExtPos));
-		$ImageName="$memberid.".jpg;
+		$ImageName="$memberid."."jpg";
 		$FinalName = "images/".$ImageName;
 		
 		if ($_FILES['userfile']['size'] > 5000000){
