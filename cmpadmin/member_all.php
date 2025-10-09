@@ -241,9 +241,9 @@
 						   
 	$a= mysqli_fetch_object($t);
 	$total_items= mysqli_num_rows($t);
-	$limit=$_GET['limit'];
-	$type=$_GET['type'];
-	$page=$_GET['page'];
+	$limit = isset($_GET['limit']) ? $_GET['limit'] : 40;
+	$type = isset($_GET['type']) ? $_GET['type'] : '';
+	$page = isset($_GET['page']) ? $_GET['page'] : 1;
 	if((!$limit)  || (is_numeric($limit) == false) || ($limit < 39) || ($limit > 41))
 	{$limit = 40; }
 	if((!$page) || (is_numeric($page) == false) || ($page < 0) || ($page > $total_items))
@@ -270,9 +270,9 @@
 																	<td><a class="btn btn-success" href="member_login.php?user=<?php echo $querygetexeres->user; ?>" id="color"><?php echo $querygetexeres->user; ?></a></td> 
 																	<td>
 																	
-																	Name: <?php echo $mghh211['name']; ?><br/>
-																	Email: <?php echo $mghh211['email']; ?><br/>
-																	Mobile: <?php echo $mghh211['mobile']; ?><br/>
+																	Name: <?php echo isset($mghh211['name']) ? $mghh211['name'] : 'N/A'; ?><br/>
+																	Email: <?php echo isset($mghh211['email']) ? $mghh211['email'] : 'N/A'; ?><br/>
+																	Mobile: <?php echo isset($mghh211['mobile']) ? $mghh211['mobile'] : 'N/A'; ?><br/>
 																	</td>
 																	<td>
 																		<?php echo date("d M-Y", strtotime($mghh['time'])); ?><br/>
@@ -283,8 +283,14 @@
 																			$uuu=$mghh['pack'];
 																			 $mghh22=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `upgrade` WHERE `user`='".$mghh['user']."' ORDER BY `serial` ASC"));
 																			$packnnm=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `package` WHERE `serial`='".$mghh['pack']."' "));
-																			echo "<span style='color:#FFF;padding:10px;background-color:".$packnnm['color']."'>" . $packnnm['pack'] ."</span> <p style='margin-top: 8px;'>";
-																			echo date("d M-Y", strtotime($mghh22['date'])) ."</p>";
+																			if($packnnm && isset($packnnm['color']) && isset($packnnm['pack'])) {
+																				echo "<span style='color:#FFF;padding:10px;background-color:".$packnnm['color']."'>" . $packnnm['pack'] ."</span> <p style='margin-top: 8px;'>";
+																			}
+																			if($mghh22 && isset($mghh22['date'])) {
+																				echo date("d M-Y", strtotime($mghh22['date'])) ."</p>";
+																			} else {
+																				echo "No upgrade date</p>";
+																			}
 																		}else{
 																			echo  "Starter";
 																		}
@@ -292,9 +298,9 @@
 																	
 																	<td>
 																	Login ID: <?php echo $mghh['sponsor']; ?><br/>
-																	Name: <?php echo $mghh21['name']; ?><br/>
-																	Email: <?php echo $mghh21['email']; ?><br/>
-																	Mobile: <?php echo $mghh21['mobile']; ?><br/>
+																	Name: <?php echo isset($mghh21['name']) ? $mghh21['name'] : 'N/A'; ?><br/>
+																	Email: <?php echo isset($mghh21['email']) ? $mghh21['email'] : 'N/A'; ?><br/>
+																	Mobile: <?php echo isset($mghh21['mobile']) ? $mghh21['mobile'] : 'N/A'; ?><br/>
 																	</td>
 																	
 																	
