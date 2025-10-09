@@ -214,17 +214,40 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 														if(isset($_GET['keys'])){
 															$UserId=explode("/", base64_decode($_GET['keys']));
 														} else {
-															$UserId = array('', ''); // Default empty values
+															$UserId = array('', '', ''); // Default empty values for indices 0, 1, 2
 														}
 													?>
                                                     <div class="form-group">
                                                         <label class="form-label">Sponsor ID</label>
                                                         <div class="controls">
-                                                            <input type="text" class="form-control" value="<?php echo $UserId[1]; ?>" name="sponsor_id" id="sponsor_id" placeholder="Sponsor ID" />
+                                                            <input type="text" class="form-control" value="<?php echo isset($UserId[1]) ? $UserId[1] : ''; ?>" name="sponsor_id" id="sponsor_id" placeholder="Sponsor ID" />
                                                             <span id="SponsorError" style="color: red; font-size: 12px;"></span>
                                                         </div>
                                                     </div>
-													<input type='hidden' name="poss" value='<?php if($UserId[2]!=''){echo $UserId[2];}else{echo 1;} ?>'  />
+													
+													<div class="form-group">
+                                                        <label class="form-label">Position <span style="color: red;">*</span></label>
+                                                        <div class="controls">
+                                                            <select class="form-control" name="position" id="position" style="background-color: #e7ebf5;" required>
+																<option value="">Select Position</option>
+																<option value="1" <?php if(isset($UserId[2]) && $UserId[2]=='1'){echo 'selected';} ?>>1 - Left</option>
+																<option value="2" <?php if(isset($UserId[2]) && $UserId[2]=='2'){echo 'selected';} ?>>2 - Right</option>
+															</select>
+															<span id="PositionError" style="color: red; font-size: 12px;"></span>
+															<small style="color: #fff240;">Position 1 = Left side, Position 2 = Right side</small>
+                                                        </div>
+                                                    </div>
+													
+													<div class="form-group">
+                                                        <label class="form-label">Placement ID <span style="color: red;">*</span></label>
+                                                        <div class="controls">
+                                                            <input type="text" class="form-control" value="<?php echo isset($UserId[1]) ? $UserId[1] : ''; ?>" name="placement_id" id="placement_id" placeholder="Enter Placement ID" style="background-color: #e7ebf5;" required />
+                                                            <span id="PlacementError" style="color: red; font-size: 12px;"></span>
+															<small style="color: #fff240;">Enter the member ID under whom you want to be placed</small>
+                                                        </div>
+                                                    </div>
+													
+													<input type='hidden' name="poss" value='<?php if(isset($UserId[2]) && $UserId[2]!=''){echo $UserId[2];}else{echo 1;} ?>'  />
 														<?php //}else{ ?>
 														<!--<input type="hidden" value="<?php //echo 'robotrade'; ?>" name="sponsor_id" id="sponsor_id" />
 														<input type='hidden' name="poss" value='1'  />-->
@@ -343,9 +366,11 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 			e.preventDefault();
 			e.stopPropagation();
 			
-			// Validate sponsor ID and username before submission
+			// Validate sponsor ID, username, placement and position before submission
 			let sponsor_id = $("#sponsor_id").val().trim();
 			let username = $("#log_id").val().trim();
+			let placement_id = $("#placement_id").val().trim();
+			let position = $("#position").val();
 			let hasErrors = false;
 			
 			// Check sponsor ID
@@ -363,6 +388,22 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 				$("#UserError").css("color", "red");
 				hasErrors = true;
 			} else if($("#UserError").text().includes("already taken") || $("#UserError").text().includes("Server error")) {
+				hasErrors = true;
+			}
+			
+			// Check placement ID
+			if(placement_id === '') {
+				$("#PlacementError").text("Placement ID is required");
+				$("#PlacementError").css("color", "red");
+				hasErrors = true;
+			} else if($("#PlacementError").text().includes("does not exist") || $("#PlacementError").text().includes("Server error") || $("#PlacementError").text().includes("already filled")) {
+				hasErrors = true;
+			}
+			
+			// Check position
+			if(position === '') {
+				$("#PositionError").text("Position selection is required");
+				$("#PositionError").css("color", "red");
 				hasErrors = true;
 			}
 			
@@ -487,6 +528,78 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 			} else {
 				$("#SponsorError").text("");
 				$(this).parent().removeClass("has-error");
+			}
+		});
+		
+		// Placement ID validation
+		$("#placement_id, #position").on("keyup blur change", function(){
+			let placement_id = $("#placement_id").val().trim();
+			let position = $("#position").val();
+			
+			if(placement_id != ''){
+				const placementAjax = $.ajax({
+					method: "GET",
+					url: "./viewdata/checkplacement.php",
+					data: {
+						placement_id: placement_id,
+						position: position
+					},
+					dataType: "json",
+					timeout: 10000
+				});
+				placementAjax.done((response) => {
+					try {
+						// Check if response is already an object
+						let result = (typeof response === 'object') ? response : JSON.parse(response);
+						if(result['sts'] == 'error'){
+							$("#PlacementError").text(result['mess']);
+							$("#PlacementError").css("color", "red");
+							$("#placement_id").parent().addClass("has-error");
+						} else if(result['sts'] == 'warning'){
+							$("#PlacementError").text(result['mess']);
+							$("#PlacementError").css("color", "orange");
+							$("#placement_id").parent().removeClass("has-error");
+						} else {
+							$("#PlacementError").text(result['mess']);
+							$("#PlacementError").css("color", "green");
+							$("#placement_id").parent().removeClass("has-error");
+						}
+					} catch(e) {
+						console.error("JSON Parse Error:", e);
+						console.log("Response received:", response);
+						$("#PlacementError").text("Server error occurred");
+						$("#PlacementError").css("color", "red");
+					}
+				}).fail(function(xhr, status, error) {
+					console.error("AJAX Error:", status, error);
+					console.log("XHR:", xhr);
+					$("#PlacementError").text("Connection error: " + status);
+					$("#PlacementError").css("color", "red");
+				});
+			} else {
+				$("#PlacementError").text("");
+				$("#placement_id").parent().removeClass("has-error");
+			}
+		});
+		
+		// Update position when placement ID changes and validate
+		$("#position").on("change", function(){
+			let selectedPosition = $(this).val();
+			let placement_id = $("#placement_id").val().trim();
+			
+			// Update hidden field
+			$("input[name='poss']").val(selectedPosition);
+			
+			// Validate position selection
+			if(selectedPosition === '') {
+				$("#PositionError").text("Position selection is required");
+				$("#PositionError").css("color", "red");
+			} else {
+				$("#PositionError").text("");
+				// Re-validate placement with new position if placement_id exists
+				if(placement_id !== '') {
+					$("#placement_id").trigger("blur");
+				}
 			}
 		});
 		

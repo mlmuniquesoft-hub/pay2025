@@ -267,21 +267,22 @@ $_SESSION['token']="uerutgeruioer";
 		$MenualDolarAmount=$DepositMenual['asmSatoshi'];
 		$MemberReceive=mysqli_fetch_assoc($mysqli->query("SELECT SUM(ammount) AS asmMember FROM `trans_receive` WHERE `user_receive`='".$user."' AND `type`='Transfer'"));
 		$iNcome=TtalIncome($user);
-		$shopping=TtalShopping($user);
+		//$shopping=TtalShopping($user);
 		$TotalIn=$iNcome+$DolarAmount+$MemberReceive['asmMember']+$AdminReceive['asmAdmin']+$MenualDolarAmount;
 		
 		$MemberTrans=mysqli_fetch_assoc($mysqli->query("SELECT SUM(ammount) AS asmTrans FROM `trans_receive` WHERE `user_trans`='".$user."' AND `type`='Transfer'"));
 		$MemberWithdraw=mysqli_fetch_assoc($mysqli->query("SELECT SUM(ammount) AS asmWithdraw FROM `trans_receive` WHERE `user_trans`='".$user."' AND `type`='Withdraw' AND `status`!='Cancel'"));
 		$MemberUpgrade=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS asmUpgrade FROM `upgrade` WHERE `user`='".$user."'"));
 		$MemberUpgradeCharge=mysqli_fetch_assoc($mysqli->query("SELECT SUM(charge) AS asmChhr FROM `upgrade` WHERE `user`='".$user."'"));
-		$MemberProductAdj=mysqli_fetch_assoc($mysqli->query("SELECT SUM(adj_bal) AS pro_pur FROM `order` WHERE `user_id`='".$user."'"));
-		$TotalOut=$MemberUpgradeCharge['asmChhr']+$MemberUpgrade['asmUpgrade']+$MemberWithdraw['asmWithdraw']+$MemberTrans['asmTrans'];
-		$Finalshopping=$shopping-$MemberProductAdj['pro_pur'];
+		$bal_deduct=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS amount FROM `bal_deduct` WHERE `user`='".$user."' AND `active`='1'"));
+		//$MemberProductAdj=mysqli_fetch_assoc($mysqli->query("SELECT SUM(adj_bal) AS pro_pur FROM `order` WHERE `user_id`='".$user."'"));
+		$TotalOut=$MemberUpgradeCharge['asmChhr']+$MemberUpgrade['asmUpgrade']+$MemberWithdraw['asmWithdraw']+$MemberTrans['asmTrans']+$bal_deduct['amount'];
+		//$FinalShopping=$shopping-$MemberProductAdj['pro_pur'];
 		$FinalAmount=$TotalIn-$TotalOut;
 		$rett=array();
 		$rett['in']=$TotalIn;
 		$rett['out']=$TotalOut;
-		$rett['shop']=$Finalshopping;
+		// $rett['shop']=$FinalShopping;
 		$rett['final']=$FinalAmount; 
 		return $rett;
 	}
