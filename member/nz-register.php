@@ -221,6 +221,7 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
                                                         <label class="form-label">Sponsor ID</label>
                                                         <div class="controls">
                                                             <input type="text" class="form-control" value="<?php echo $UserId[1]; ?>" name="sponsor_id" id="sponsor_id" placeholder="Sponsor ID" />
+                                                            <span id="SponsorError" style="color: red; font-size: 12px;"></span>
                                                         </div>
                                                     </div>
 													<input type='hidden' name="poss" value='<?php if($UserId[2]!=''){echo $UserId[2];}else{echo 1;} ?>'  />
@@ -342,6 +343,36 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 			e.preventDefault();
 			e.stopPropagation();
 			
+			// Validate sponsor ID and username before submission
+			let sponsor_id = $("#sponsor_id").val().trim();
+			let username = $("#log_id").val().trim();
+			let hasErrors = false;
+			
+			// Check sponsor ID
+			if(sponsor_id === '') {
+				$("#SponsorError").text("Sponsor ID is required");
+				$("#SponsorError").css("color", "red");
+				hasErrors = true;
+			} else if($("#SponsorError").text().includes("does not exist") || $("#SponsorError").text().includes("Server error")) {
+				hasErrors = true;
+			}
+			
+			// Check username
+			if(username === '') {
+				$("#UserError").text("Username is required");
+				$("#UserError").css("color", "red");
+				hasErrors = true;
+			} else if($("#UserError").text().includes("already taken") || $("#UserError").text().includes("Server error")) {
+				hasErrors = true;
+			}
+			
+			if(hasErrors) {
+				$("#Mess").text("Please fix validation errors before submitting");
+				$("#Mess").css("color","red");
+				$("#Mess").css("font-size","18px");
+				return false;
+			}
+			
 			let dfgfd=$("#terms:checked").val();
 			if(dfgfd==1){
 				if(dfgd==1){
@@ -379,21 +410,86 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 			let user=$(this).val();
 			if(user!=''){
 				const redf=$.ajax({
-					mehtod:"GET",
-					url:"viewdata/checkuserd.php",
-					data:{dfgfd:user}
+					method:"GET",
+					url:"./viewdata/checkuserd.php",
+					data:{dfgfd:user},
+					dataType: "json",
+					timeout: 10000
 				});
 				redf.done((redd)=>{
-					let dfgdf=JSON.parse(redd);
-					if(dfgdf['sts']=='error'){
-						$(this).parent().addClass("has-error");
-						$("#UserError").text(dfgdf['mess']);
-					}else{
-						$("#UserError").text(dfgdf['mess']);
+					try {
+						// Check if response is already an object
+						let dfgdf = (typeof redd === 'object') ? redd : JSON.parse(redd);
+						if(dfgdf['sts']=='error'){
+							$(this).parent().addClass("has-error");
+							$("#UserError").text(dfgdf['mess']);
+							$("#UserError").css("color","red");
+						}else{
+							$("#UserError").text(dfgdf['mess']);
+							$("#UserError").css("color","green");
+							$(this).parent().removeClass("has-error");
+						}
+					} catch(e) {
+						console.error("JSON Parse Error:", e);
+						console.log("Response received:", redd);
+						$("#UserError").text("Server error occurred");
+						$("#UserError").css("color","red");
 					}
+				}).fail(function(xhr, status, error) {
+					console.error("AJAX Error:", status, error);
+					console.log("XHR:", xhr);
+					$("#UserError").text("Connection error: " + status);
+					$("#UserError").css("color","red");
 				});
 			}
 		});
+		
+		// Sponsor ID validation
+		$("#sponsor_id").on("keyup blur", function(){
+			let sponsor_id = $(this).val().trim();
+			if(sponsor_id != ''){
+				const sponsorAjax = $.ajax({
+					method: "GET",
+					url: "./viewdata/checksponsor.php",
+					data: {sponsor_id: sponsor_id},
+					dataType: "json",
+					timeout: 10000
+				});
+				sponsorAjax.done((response) => {
+					try {
+						// Check if response is already an object
+						let result = (typeof response === 'object') ? response : JSON.parse(response);
+						if(result['sts'] == 'error'){
+							$("#SponsorError").text(result['mess']);
+							$("#SponsorError").css("color", "red");
+							$(this).parent().addClass("has-error");
+						} else if(result['sts'] == 'warning'){
+							$("#SponsorError").text(result['mess']);
+							$("#SponsorError").css("color", "orange");
+							$(this).parent().removeClass("has-error");
+						} else {
+							$("#SponsorError").text(result['mess']);
+							$("#SponsorError").css("color", "green");
+							$(this).parent().removeClass("has-error");
+						}
+					} catch(e) {
+						console.error("JSON Parse Error:", e);
+						console.log("Response received:", response);
+						$("#SponsorError").text("Server error occurred");
+						$("#SponsorError").css("color", "red");
+					}
+				}).fail(function(xhr, status, error) {
+					console.error("AJAX Error:", status, error);
+					console.log("XHR:", xhr);
+					$("#SponsorError").text("Connection error: " + status);
+					$("#SponsorError").css("color", "red");
+				});
+			} else {
+				$("#SponsorError").text("");
+				$(this).parent().removeClass("has-error");
+			}
+		});
+		
 		const counnb=()=>{
 			let timer=50;
 			let dfgd=setInterval(function(){
@@ -421,11 +517,22 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 					const redfg=$.ajax({
 						method:"GET",
 						url:"/login/resend_signup.php",
-						data:{user:userd,name:full_name,email:email}
+						data:{user:userd,name:full_name,email:email},
+						dataType: "json"
 					});
 					redfg.done(function(ress){
-						let dfg=JSOn.parse(ress);
-						$("#Mess").before('<h3 style="color:#3c3535;" class="alert alert-warning text-center Ertyy">'+dfg.mess+"</h3>");
+						try {
+							// Check if response is already an object
+							let dfg = (typeof ress === 'object') ? ress : JSON.parse(ress);
+							$("#Mess").before('<h3 style="color:#3c3535;" class="alert alert-warning text-center Ertyy">'+dfg.mess+"</h3>");
+						} catch(e) {
+							console.error("JSON Parse Error:", e);
+							console.log("Response received:", ress);
+							$("#Mess").before('<h3 style="color:red;" class="alert alert-danger text-center">Server error occurred</h3>');
+						}
+					}).fail(function(xhr, status, error) {
+						console.error("AJAX Error:", status, error);
+						$("#Mess").before('<h3 style="color:red;" class="alert alert-danger text-center">Connection error occurred</h3>');
 					});
 				}else{
 					$("#Mess").text("Submit Your Email");
@@ -447,7 +554,8 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
    
 	<script src="/login/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="/login/vendor/jquery-validation/dist/additional-methods.min.js"></script>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LfTCbIUAAAAACb_PpflJsnEXymUtTIYUZY62HrA"></script>
+    <!-- reCAPTCHA disabled for localhost development -->
+    <!-- <script src="https://www.google.com/recaptcha/api.js?render=6LfTCbIUAAAAACb_PpflJsnEXymUtTIYUZY62HrA"></script> -->
 	<script src="js/signup.js"></script>
 	<script >
 		$(".shfsd").on("click", function(){
