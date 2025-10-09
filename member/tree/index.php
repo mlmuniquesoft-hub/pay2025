@@ -157,6 +157,32 @@ $i=0;
 
         <?php require_once("../part/sidebar.php"); ?>
         <!--  SIDEBAR - END -->
+        
+        <!-- Fix navigation links for tree subdirectory -->
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fix sidebar navigation links to point to correct parent directory
+            const sidebarLinks = document.querySelectorAll('.page-sidebar a[href^="index.php"]');
+            sidebarLinks.forEach(function(link) {
+                const href = link.getAttribute('href');
+                if (href.startsWith('index.php')) {
+                    link.setAttribute('href', '../' + href);
+                }
+            });
+            
+            // Fix logo link in top navigation
+            const logoLink = document.querySelector('.logo-text[href="index.php"]');
+            if (logoLink) {
+                logoLink.setAttribute('href', '../index.php');
+            }
+            
+            // Fix dropdown menu links in top navigation
+            const dropdownLinks = document.querySelectorAll('.dropdown-menu a[href^="../index.php"]');
+            // These are already correct with ../ prefix, no need to modify
+            
+            console.log('Tree page navigation links fixed');
+        });
+        </script>
 
         <!-- START CONTENT -->
         <section id="main-content" class=" " style="background:#3c5c6f;">
