@@ -37,7 +37,7 @@
 								<span class="crypto1"><canvas width="239" height="60"></canvas></span>
 							</div>
 						</div>
-						<div class="col-lg-3 col-sm-6 col-xs-12">
+						<div class="col-lg-3 col-sm-6 col-xs-12" style="display: none;">
 							<div class="statistics-box" style="background-color:#193492d9">
 								<div class="mb-15">
 									<i class="pull-left ico-icon icon-md icon-success">
@@ -53,7 +53,7 @@
 							</div> 
 						</div>
 						
-						<div class="col-lg-3 col-sm-6 col-xs-12">
+						<div class="col-lg-3 col-sm-6 col-xs-12" style="display: none;">
 							<div class="statistics-box" style="background-color:#193492d9">
 								<div class="mb-15">
 									<i class="pull-left ico-icon icon-md icon-warning">
@@ -67,7 +67,7 @@
 								<span class="crypto3"><canvas width="239" height="60"></canvas></span>
 							</div>
 						</div>
-						<div class="col-lg-3 col-sm-6 col-xs-12">
+						<div class="col-lg-3 col-sm-6 col-xs-12" style="display: none;">
 							<div class="statistics-box" style="background-color:#193492d9">
 								<div class="mb-15">
 									<i class="pull-left ico-icon icon-md icon-warning">
@@ -81,7 +81,7 @@
 								<span class="crypto1"><canvas width="239" height="60"></canvas></span>
 							</div>
 						</div>
-						<div class="col-lg-3 col-sm-6 col-xs-12">
+						<div class="col-lg-3 col-sm-6 col-xs-12" style="display: none;">
 							<div class="statistics-box" style="background-color:#193492d9">
 								<div class="mb-15">
 									<i class="pull-left ico-icon icon-md icon-primary">
