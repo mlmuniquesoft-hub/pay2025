@@ -31,6 +31,7 @@ try {
 
 // Load tree functions
 require_once("../part/top_header2.php");
+require_once("../part/top_option.php");
 
 include("../part/sideTree.php");
 

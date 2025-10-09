@@ -2,6 +2,8 @@
     <!-- LOAD FILES AT PAGE END FOR FASTER LOADING -->
 
     <!-- CORE JS FRAMEWORK - START -->
+    <script src="../assets/js/jquery.easing.min.js"></script>
+    <script src="../assets/plugins/bootstrap/js/bootstrap.min.js"></script>
     <script src="../assets/plugins/pace/pace.min.js"></script>
     <script src="../assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="../assets/plugins/viewport/viewportchecker.js"></script>
