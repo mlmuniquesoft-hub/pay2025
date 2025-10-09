@@ -59,14 +59,7 @@ try {
     
     $sponsorData = mysqli_fetch_assoc($checkSponsor);
     
-    // Check if sponsor is activated (has a package)
-    if($sponsorData['pack'] == '0') {
-        $rett['sts'] = 'warning';
-        $rett['mess'] = "Sponsor is not activated yet";
-        echo json_encode($rett);
-        exit;
-    }
-    
+    // Sponsor exists - no activation requirement
     // Get sponsor profile information - check both user and log_user fields
     $profileQuery = mysqli_query($mysqli, "SELECT `name` FROM `profile` WHERE `user`='".$sponsor_id."' OR `user`='".$sponsorData['log_user']."'");
     if(!$profileQuery) {
