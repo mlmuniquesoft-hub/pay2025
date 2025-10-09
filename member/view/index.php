@@ -529,6 +529,188 @@
 						</div>
 					</section>
 				</div>
+				
+				<!-- Forex Trading Graph Section -->
+				<div class="col-lg-6">
+					<section class="box">
+						<header class="panel_header">
+							<h2 class="title pull-left">📈 Live Forex Trading</h2>
+							<div class="actions panel_actions pull-right">
+								<i class="box_toggle fa fa-chevron-down"></i>
+							</div>
+						</header>
+						<div class="content-body" style="padding: 20px;">
+							<div id="forexChart" style="height: 300px; background: linear-gradient(135deg, #1e3c72, #2a5298); border-radius: 10px; position: relative; overflow: hidden;">
+								<!-- Forex Chart Canvas -->
+								<canvas id="forexCanvas" width="100%" height="300" style="position: absolute; top: 0; left: 0;"></canvas>
+								<div style="position: absolute; top: 10px; left: 10px; color: white; z-index: 10;">
+									<h4 style="margin: 0; color: #00ff88;">EUR/USD</h4>
+									<span id="currentPrice" style="font-size: 24px; font-weight: bold;">1.0785</span>
+									<span id="priceChange" style="margin-left: 10px; color: #00ff88;">+0.0023 (+0.21%)</span>
+								</div>
+								<div style="position: absolute; bottom: 10px; right: 10px; color: #ccc; font-size: 12px;">
+									<span id="lastUpdate">Last updated: <span id="updateTime"><?php echo date('H:i:s'); ?></span></span>
+								</div>
+							</div>
+							
+							<!-- Forex Pairs Display -->
+							<div style="margin-top: 15px;">
+								<div class="row">
+									<div class="col-md-6">
+										<div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+											<strong style="color: #333;">GBP/USD</strong>
+											<span style="float: right; color: #dc3545;">1.2654 -0.18%</span>
+										</div>
+										<div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+											<strong style="color: #333;">USD/JPY</strong>
+											<span style="float: right; color: #28a745;">149.85 +0.34%</span>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+											<strong style="color: #333;">AUD/USD</strong>
+											<span style="float: right; color: #28a745;">0.6745 +0.12%</span>
+										</div>
+										<div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+											<strong style="color: #333;">USD/CAD</strong>
+											<span style="float: right; color: #dc3545;">1.3678 -0.08%</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+				</div>
+				
+				<!-- Country-wise Investment Activity -->
+				<div class="col-lg-6">
+					<section class="box">
+						<header class="panel_header">
+							<h2 class="title pull-left">🌍 Global Investment Activity</h2>
+							<div class="actions panel_actions pull-right">
+								<i class="box_toggle fa fa-chevron-down"></i>
+							</div>
+						</header>
+						<div class="content-body" style="padding: 20px;">
+							<!-- Live Investment Feed -->
+							<div id="investmentFeed" style="height: 300px; overflow-y: auto; background: #f8f9fa; border-radius: 10px; padding: 15px;">
+								<div class="investment-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+									<div style="display: flex; align-items: center;">
+										<img src="https://flagcdn.com/w20/us.png" alt="USA" style="width: 16px; height: 12px; margin-right: 8px; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); object-fit: cover;">
+										<div style="flex: 1;">
+											<strong style="color: #333;">John D.</strong> from <strong>United States</strong>
+											<div style="color: #666; font-size: 12px;">Invested $500 in Basic Package</div>
+										</div>
+										<div style="color: #28a745; font-weight: bold;">$500</div>
+									</div>
+									<div style="color: #999; font-size: 11px; margin-top: 5px;">2 minutes ago</div>
+								</div>
+								
+								<div class="investment-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+									<div style="display: flex; align-items: center;">
+										<img src="https://flagcdn.com/w20/gb.png" alt="UK" style="width: 16px; height: 12px; margin-right: 8px; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); object-fit: cover;">
+										<div style="flex: 1;">
+											<strong style="color: #333;">Sarah M.</strong> from <strong>United Kingdom</strong>
+											<div style="color: #666; font-size: 12px;">Invested $1,200 in Premium Package</div>
+										</div>
+										<div style="color: #28a745; font-weight: bold;">$1,200</div>
+									</div>
+									<div style="color: #999; font-size: 11px; margin-top: 5px;">5 minutes ago</div>
+								</div>
+								
+								<div class="investment-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+									<div style="display: flex; align-items: center;">
+										<img src="https://flagcdn.com/w20/de.png" alt="Germany" style="width: 16px; height: 12px; margin-right: 8px; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); object-fit: cover;">
+										<div style="flex: 1;">
+											<strong style="color: #333;">Michael K.</strong> from <strong>Germany</strong>
+											<div style="color: #666; font-size: 12px;">Invested $750 in Basic Package</div>
+										</div>
+										<div style="color: #28a745; font-weight: bold;">$750</div>
+									</div>
+									<div style="color: #999; font-size: 11px; margin-top: 5px;">8 minutes ago</div>
+								</div>
+								
+								<div class="investment-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+									<div style="display: flex; align-items: center;">
+										<img src="https://flagcdn.com/w20/ca.png" alt="Canada" style="width: 16px; height: 12px; margin-right: 8px; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); object-fit: cover;">
+										<div style="flex: 1;">
+											<strong style="color: #333;">Emma L.</strong> from <strong>Canada</strong>
+											<div style="color: #666; font-size: 12px;">Invested $2,500 in VIP Package</div>
+										</div>
+										<div style="color: #28a745; font-weight: bold;">$2,500</div>
+									</div>
+									<div style="color: #999; font-size: 11px; margin-top: 5px;">12 minutes ago</div>
+								</div>
+								
+								<div class="investment-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+									<div style="display: flex; align-items: center;">
+										<img src="https://flagcdn.com/w20/au.png" alt="Australia" style="width: 16px; height: 12px; margin-right: 8px; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); object-fit: cover;">
+										<div style="flex: 1;">
+											<strong style="color: #333;">Robert W.</strong> from <strong>Australia</strong>
+											<div style="color: #666; font-size: 12px;">Invested $350 in Basic Package</div>
+										</div>
+										<div style="color: #28a745; font-weight: bold;">$350</div>
+									</div>
+									<div style="color: #999; font-size: 11px; margin-top: 5px;">15 minutes ago</div>
+								</div>
+								
+								<div class="investment-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+									<div style="display: flex; align-items: center;">
+										<img src="https://flagcdn.com/w20/jp.png" alt="Japan" style="width: 16px; height: 12px; margin-right: 8px; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); object-fit: cover;">
+										<div style="flex: 1;">
+											<strong style="color: #333;">Yuki T.</strong> from <strong>Japan</strong>
+											<div style="color: #666; font-size: 12px;">Invested $1,800 in Premium Package</div>
+										</div>
+										<div style="color: #28a745; font-weight: bold;">$1,800</div>
+									</div>
+									<div style="color: #999; font-size: 11px; margin-top: 5px;">18 minutes ago</div>
+								</div>
+								
+								<div class="investment-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+									<div style="display: flex; align-items: center;">
+										<img src="https://flagcdn.com/w20/fr.png" alt="France" style="width: 16px; height: 12px; margin-right: 8px; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); object-fit: cover;">
+										<div style="flex: 1;">
+											<strong style="color: #333;">Pierre B.</strong> from <strong>France</strong>
+											<div style="color: #666; font-size: 12px;">Invested $950 in Basic Package</div>
+										</div>
+										<div style="color: #28a745; font-weight: bold;">$950</div>
+									</div>
+									<div style="color: #999; font-size: 11px; margin-top: 5px;">22 minutes ago</div>
+								</div>
+								
+								<div class="investment-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+									<div style="display: flex; align-items: center;">
+										<img src="https://flagcdn.com/w20/br.png" alt="Brazil" style="width: 16px; height: 12px; margin-right: 8px; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); object-fit: cover;">
+										<div style="flex: 1;">
+											<strong style="color: #333;">Carlos R.</strong> from <strong>Brazil</strong>
+											<div style="color: #666; font-size: 12px;">Invested $650 in Basic Package</div>
+										</div>
+										<div style="color: #28a745; font-weight: bold;">$650</div>
+									</div>
+									<div style="color: #999; font-size: 11px; margin-top: 5px;">25 minutes ago</div>
+								</div>
+							</div>
+							
+							<!-- Statistics -->
+							<div style="margin-top: 15px;">
+								<div class="row">
+									<div class="col-md-6">
+										<div style="text-align: center; padding: 10px; background: #28a745; color: white; border-radius: 5px;">
+											<h4 style="margin: 0;">$247,850</h4>
+											<small>Today's Total</small>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div style="text-align: center; padding: 10px; background: #17a2b8; color: white; border-radius: 5px;">
+											<h4 style="margin: 0;">1,247</h4>
+											<small>Active Investors</small>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+				</div>
 				<div class="clearfix"></div>
 				<div class="col-lg-12">
 					<div class="ask-box active" onclick="location.href='index.php?route=deposit&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Deposit Fund'); ?>'">
@@ -739,11 +921,343 @@
 						setTimeout(realtimeupdate, updateInterval);
 					}
 
-					realtimeupdate();
+				realtimeupdate();
 
+			}
+			
+			// Forex Chart Animation
+			function initForexChart() {
+				const canvas = document.getElementById('forexCanvas');
+				if (!canvas) return;
+				
+				const ctx = canvas.getContext('2d');
+				const width = canvas.width = canvas.offsetWidth;
+				const height = canvas.height = 300;
+				
+				let prices = [];
+				let timeLabels = [];
+				let basePrice = 1.0785;
+				
+				// Generate initial data
+				for (let i = 0; i < 50; i++) {
+					const variation = (Math.random() - 0.5) * 0.01;
+					basePrice += variation;
+					prices.push(basePrice);
+					timeLabels.push(new Date(Date.now() - (50 - i) * 60000));
 				}
 				
+				function drawChart() {
+					ctx.clearRect(0, 0, width, height);
+					
+					// Draw grid
+					ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+					ctx.lineWidth = 1;
+					for (let i = 0; i < 10; i++) {
+						const y = (height / 10) * i;
+						ctx.beginPath();
+						ctx.moveTo(0, y);
+						ctx.lineTo(width, y);
+						ctx.stroke();
+					}
+					
+					// Draw price line
+					ctx.strokeStyle = '#00ff88';
+					ctx.lineWidth = 2;
+					ctx.beginPath();
+					
+					const minPrice = Math.min(...prices);
+					const maxPrice = Math.max(...prices);
+					const priceRange = maxPrice - minPrice;
+					
+					for (let i = 0; i < prices.length; i++) {
+						const x = (width / (prices.length - 1)) * i;
+						const y = height - ((prices[i] - minPrice) / priceRange) * height;
+						
+						if (i === 0) {
+							ctx.moveTo(x, y);
+						} else {
+							ctx.lineTo(x, y);
+						}
+					}
+					ctx.stroke();
+					
+					// Draw dots
+					ctx.fillStyle = '#00ff88';
+					for (let i = 0; i < prices.length; i++) {
+						const x = (width / (prices.length - 1)) * i;
+						const y = height - ((prices[i] - minPrice) / priceRange) * height;
+						ctx.beginPath();
+						ctx.arc(x, y, 2, 0, Math.PI * 2);
+						ctx.fill();
+					}
+				}
 				
+				function updateChart() {
+					// Add new price point
+					const variation = (Math.random() - 0.5) * 0.005;
+					const newPrice = prices[prices.length - 1] + variation;
+					prices.push(newPrice);
+					timeLabels.push(new Date());
+					
+					// Remove old data
+					if (prices.length > 50) {
+						prices.shift();
+						timeLabels.shift();
+					}
+					
+					// Update display
+					const currentPriceEl = document.getElementById('currentPrice');
+					const priceChangeEl = document.getElementById('priceChange');
+					const updateTimeEl = document.getElementById('updateTime');
+					
+					if (currentPriceEl) {
+						currentPriceEl.textContent = newPrice.toFixed(4);
+					}
+					
+					if (priceChangeEl) {
+						const change = newPrice - prices[0];
+						const changePercent = (change / prices[0]) * 100;
+						const isPositive = change >= 0;
+						
+						priceChangeEl.textContent = `${isPositive ? '+' : ''}${change.toFixed(4)} (${isPositive ? '+' : ''}${changePercent.toFixed(2)}%)`;
+						priceChangeEl.style.color = isPositive ? '#00ff88' : '#ff4757';
+					}
+					
+					if (updateTimeEl) {
+						updateTimeEl.textContent = new Date().toLocaleTimeString();
+					}
+					
+					drawChart();
+				}
+				
+				// Initial draw
+				drawChart();
+				
+				// Update every 3 seconds
+				setInterval(updateChart, 3000);
+			}
+			
+			// Investment Feed Animation
+			function updateInvestmentFeed() {
+				const countries = [
+					{code: 'us', name: 'United States', flag: 'https://flagcdn.com/w20/us.png'},
+					{code: 'gb', name: 'United Kingdom', flag: 'https://flagcdn.com/w20/gb.png'},
+					{code: 'de', name: 'Germany', flag: 'https://flagcdn.com/w20/de.png'},
+					{code: 'ca', name: 'Canada', flag: 'https://flagcdn.com/w20/ca.png'},
+					{code: 'au', name: 'Australia', flag: 'https://flagcdn.com/w20/au.png'},
+					{code: 'jp', name: 'Japan', flag: 'https://flagcdn.com/w20/jp.png'},
+					{code: 'fr', name: 'France', flag: 'https://flagcdn.com/w20/fr.png'},
+					{code: 'br', name: 'Brazil', flag: 'https://flagcdn.com/w20/br.png'},
+					{code: 'it', name: 'Italy', flag: 'https://flagcdn.com/w20/it.png'},
+					{code: 'es', name: 'Spain', flag: 'https://flagcdn.com/w20/es.png'},
+					{code: 'nl', name: 'Netherlands', flag: 'https://flagcdn.com/w20/nl.png'},
+					{code: 'ch', name: 'Switzerland', flag: 'https://flagcdn.com/w20/ch.png'},
+					{code: 'se', name: 'Sweden', flag: 'https://flagcdn.com/w20/se.png'},
+					{code: 'no', name: 'Norway', flag: 'https://flagcdn.com/w20/no.png'},
+					{code: 'dk', name: 'Denmark', flag: 'https://flagcdn.com/w20/dk.png'},
+					{code: 'be', name: 'Belgium', flag: 'https://flagcdn.com/w20/be.png'},
+					{code: 'at', name: 'Austria', flag: 'https://flagcdn.com/w20/at.png'},
+					{code: 'nz', name: 'New Zealand', flag: 'https://flagcdn.com/w20/nz.png'},
+					{code: 'sg', name: 'Singapore', flag: 'https://flagcdn.com/w20/sg.png'},
+					{code: 'hk', name: 'Hong Kong', flag: 'https://flagcdn.com/w20/hk.png'},
+					{code: 'mx', name: 'Mexico', flag: 'https://flagcdn.com/w20/mx.png'},
+					{code: 'za', name: 'South Africa', flag: 'https://flagcdn.com/w20/za.png'},
+					{code: 'ae', name: 'UAE', flag: 'https://flagcdn.com/w20/ae.png'},
+					{code: 'sa', name: 'Saudi Arabia', flag: 'https://flagcdn.com/w20/sa.png'}
+				];
+				
+				const firstNames = [
+					'James', 'Mary', 'John', 'Patricia', 'Robert', 'Jennifer', 'Michael', 'Linda', 'William', 'Elizabeth',
+					'David', 'Barbara', 'Richard', 'Susan', 'Joseph', 'Jessica', 'Thomas', 'Sarah', 'Christopher', 'Karen',
+					'Daniel', 'Nancy', 'Matthew', 'Lisa', 'Anthony', 'Betty', 'Mark', 'Helen', 'Donald', 'Sandra',
+					'Steven', 'Donna', 'Paul', 'Carol', 'Andrew', 'Ruth', 'Joshua', 'Sharon', 'Kenneth', 'Michelle',
+					'Kevin', 'Laura', 'Brian', 'Sarah', 'George', 'Kimberly', 'Edward', 'Deborah', 'Ronald', 'Dorothy',
+					'Timothy', 'Amy', 'Jason', 'Angela', 'Jeffrey', 'Ashley', 'Ryan', 'Brenda', 'Jacob', 'Emma',
+					'Gary', 'Olivia', 'Nicholas', 'Cynthia', 'Eric', 'Marie', 'Jonathan', 'Janet', 'Stephen', 'Catherine',
+					'Larry', 'Frances', 'Justin', 'Christine', 'Scott', 'Samantha', 'Brandon', 'Debra', 'Benjamin', 'Rachel',
+					'Samuel', 'Carolyn', 'Frank', 'Janet', 'Gregory', 'Virginia', 'Raymond', 'Maria', 'Alexander', 'Heather',
+					'Patrick', 'Diane', 'Jack', 'Julie', 'Dennis', 'Joyce', 'Jerry', 'Victoria', 'Tyler', 'Kelly'
+				];
+				
+				const lastInitials = ['A.', 'B.', 'C.', 'D.', 'E.', 'F.', 'G.', 'H.', 'I.', 'J.', 'K.', 'L.', 'M.', 'N.', 'O.', 'P.', 'Q.', 'R.', 'S.', 'T.', 'U.', 'V.', 'W.', 'X.', 'Y.', 'Z.'];
+				
+				const packages = [
+					{name: 'Basic Package', min: 100, max: 999, weight: 60}, // 60% chance
+					{name: 'Premium Package', min: 1000, max: 4999, weight: 30}, // 30% chance
+					{name: 'VIP Package', min: 5000, max: 25000, weight: 10} // 10% chance
+				];
+				
+				// Weighted random selection for more realistic distribution
+				function getRandomPackage() {
+					const totalWeight = packages.reduce((sum, pkg) => sum + pkg.weight, 0);
+					let random = Math.random() * totalWeight;
+					
+					for (let pkg of packages) {
+						random -= pkg.weight;
+						if (random <= 0) {
+							return pkg;
+						}
+					}
+					return packages[0]; // fallback
+				}
+				
+				// More realistic amount generation
+				function getRealisticAmount(packageType) {
+					if (packageType.name === 'Basic Package') {
+						// Common amounts: 100, 150, 200, 250, 300, 500, 750
+						const commonAmounts = [100, 150, 200, 250, 300, 350, 400, 500, 600, 750, 800, 900];
+						if (Math.random() < 0.7) {
+							return commonAmounts[Math.floor(Math.random() * commonAmounts.length)];
+						}
+						return Math.floor(Math.random() * (packageType.max - packageType.min + 1)) + packageType.min;
+					} else if (packageType.name === 'Premium Package') {
+						// Common amounts: 1000, 1500, 2000, 2500, 3000
+						const commonAmounts = [1000, 1200, 1500, 1800, 2000, 2500, 3000, 3500, 4000];
+						if (Math.random() < 0.6) {
+							return commonAmounts[Math.floor(Math.random() * commonAmounts.length)];
+						}
+						return Math.floor(Math.random() * (packageType.max - packageType.min + 1)) + packageType.min;
+					} else {
+						// VIP amounts: 5000, 7500, 10000, 15000, 20000
+						const commonAmounts = [5000, 7500, 10000, 12500, 15000, 20000, 25000];
+						if (Math.random() < 0.8) {
+							return commonAmounts[Math.floor(Math.random() * commonAmounts.length)];
+						}
+						return Math.floor(Math.random() * (packageType.max - packageType.min + 1)) + packageType.min;
+					}
+				}
+				
+				// Statistics tracking
+				let dailyTotal = 247850;
+				let activeInvestors = 1247;
+				
+				function updateStatistics(amount) {
+					dailyTotal += amount;
+					if (Math.random() < 0.3) { // 30% chance to increase investor count
+						activeInvestors++;
+					}
+					
+					// Update display
+					const totalEl = document.querySelector('.col-md-6 div h4');
+					const investorsEl = document.querySelector('.col-md-6:last-child div h4');
+					
+					if (totalEl) {
+						totalEl.textContent = '$' + dailyTotal.toLocaleString();
+					}
+					if (investorsEl) {
+						investorsEl.textContent = activeInvestors.toLocaleString();
+					}
+				}
+				
+				function addNewInvestment() {
+					const feed = document.getElementById('investmentFeed');
+					if (!feed) return;
+					
+					const country = countries[Math.floor(Math.random() * countries.length)];
+					const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+					const lastInitial = lastInitials[Math.floor(Math.random() * lastInitials.length)];
+					const name = `${firstName} ${lastInitial}`;
+					const packageType = getRandomPackage();
+					const amount = getRealisticAmount(packageType);
+					
+					// Update statistics
+					updateStatistics(amount);
+					
+					const investmentHTML = `
+						<div class="investment-item" style="border-bottom: 1px solid #ddd; padding: 10px 0; animation: slideInLeft 0.5s ease-out; background: linear-gradient(to right, #f8fff8, #ffffff);">
+							<div style="display: flex; align-items: center;">
+								<img src="${country.flag}" alt="${country.name}" style="width: 16px; height: 12px; margin-right: 8px; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); object-fit: cover;">
+								<div style="flex: 1;">
+									<strong style="color: #2c3e50; font-size: 14px;">${name}</strong> from <strong style="color: #3498db;">${country.name}</strong>
+									<div style="color: #7f8c8d; font-size: 12px; margin-top: 2px;">
+										<i class="fa fa-check-circle" style="color: #27ae60; margin-right: 3px;"></i>
+										Invested $${amount.toLocaleString()} in ${packageType.name}
+									</div>
+								</div>
+								<div style="color: #27ae60; font-weight: bold; font-size: 15px; background: #e8f5e8; padding: 4px 8px; border-radius: 4px;">
+									$${amount.toLocaleString()}
+								</div>
+							</div>
+							<div style="color: #95a5a6; font-size: 11px; margin-top: 5px;">
+								<i class="fa fa-clock-o" style="margin-right: 3px;"></i>Just now
+							</div>
+						</div>
+					`;
+					
+					feed.insertAdjacentHTML('afterbegin', investmentHTML);
+					
+					// Remove old items (keep only 8)
+					const items = feed.querySelectorAll('.investment-item');
+					if (items.length > 8) {
+						items[items.length - 1].remove();
+					}
+					
+					// Update time stamps with more realistic timing
+					items.forEach((item, index) => {
+						const timeEl = item.querySelector('div:last-child');
+						if (timeEl && index > 0) {
+							let timeText;
+							if (index === 1) {
+								timeText = `${Math.floor(Math.random() * 3) + 1} minutes ago`;
+							} else if (index <= 3) {
+								timeText = `${Math.floor(Math.random() * 5) + 3} minutes ago`;
+							} else if (index <= 5) {
+								timeText = `${Math.floor(Math.random() * 10) + 8} minutes ago`;
+							} else {
+								timeText = `${Math.floor(Math.random() * 20) + 15} minutes ago`;
+							}
+							timeEl.innerHTML = `<i class="fa fa-clock-o" style="margin-right: 3px;"></i>${timeText}`;
+						}
+					});
+				}
+				
+				// Continuous investment simulation with varying intervals
+				function scheduleNextInvestment() {
+					// Random interval between 5-12 seconds for more realistic flow
+					const interval = Math.random() * 7000 + 5000;
+					setTimeout(() => {
+						addNewInvestment();
+						scheduleNextInvestment(); // Schedule the next one
+					}, interval);
+				}
+				
+				// Start the continuous investment feed
+				scheduleNextInvestment();
+				
+				// Also add an investment immediately when page loads
+				setTimeout(addNewInvestment, 2000);
+			}
+			
+			// Initialize on page load
+			$(document).ready(function() {
+				initForexChart();
+				updateInvestmentFeed();
+			});
+			
+			</script>
+			
+			<style>
+			@keyframes slideInLeft {
+				from {
+					transform: translateX(-100%);
+					opacity: 0;
+				}
+				to {
+					transform: translateX(0);
+					opacity: 1;
+				}
+			}
+			
+			.investment-item:hover {
+				background-color: #f0f0f0;
+				transition: background-color 0.3s ease;
+			}
+			
+			#forexChart {
+				border: 2px solid #00ff88;
+				box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+			}
+			</style>				
 				
 			</script>
 		
