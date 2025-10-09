@@ -44,9 +44,7 @@
 						'basic_range_max' => $settings['basic_max'],
 						'premium_range_min' => $settings['premium_min'],
 						'premium_range_max' => $settings['premium_max'],
-						'vip_range_min' => $settings['vip_min'],
-						'profit_percentage' => '70',
-						'shopping_percentage' => '30'
+						'vip_range_min' => $settings['vip_min']
 					);
 				}
 			}
@@ -77,9 +75,7 @@
 			'basic_range_max' => '999',
 			'premium_range_min' => '1000',
 			'premium_range_max' => '4999',
-			'vip_range_min' => '5000',
-			'profit_percentage' => '70',
-			'shopping_percentage' => '30'
+			'vip_range_min' => '5000'
 		);
 		
 		foreach($defaults as $name => $value) {
@@ -148,15 +144,13 @@
 		// Calculate package-wise return rate
 		$returnRate = getPackageReturnRate($totalInvestment, $settings);
 		
-		// Calculate profit amounts
+		// Calculate profit amounts (removed shopping balance)
 		$dailyReturn = ($totalInvestment * $returnRate) / 100;
-		$profitAmount = $dailyReturn * (floatval($settings['profit_percentage']) / 100);
-		$shoppingAmount = $dailyReturn * (floatval($settings['shopping_percentage']) / 100);
+		$profitAmount = $dailyReturn; // Full amount goes to profit, no shopping split
 		
 		// Don't exceed remaining return limit
 		if($profitAmount > $remainK) {
 			$profitAmount = $remainK;
-			$shoppingAmount = $profitAmount * (floatval($settings['shopping_percentage']) / floatval($settings['profit_percentage']));
 		}
 		
 		if($profitAmount > 0) {
@@ -164,13 +158,13 @@
 			$checkPrev = mysqli_num_rows($mysqli->query("SELECT * FROM `game_return` WHERE `user`='".$memberid."' AND DATE(`date`)='".$PresentDate."'"));
 			
 			if($checkPrev < 1) {
-				// Insert daily return record
-				$insertSQL = "INSERT INTO `game_return`(`user`, `play_id`, `curent_bal`, `shop`, `bonus_bal`, `date`) VALUES ('".$memberid."','".$upgradeQuery['serial']."','".$profitAmount."','".$shoppingAmount."','".$returnRate."','".$PresentDate."')";
+				// Insert daily return record (removed shopping amount)
+				$insertSQL = "INSERT INTO `game_return`(`user`, `play_id`, `curent_bal`, `shop`, `bonus_bal`, `date`) VALUES ('".$memberid."','".$upgradeQuery['serial']."','".$profitAmount."','0','".$returnRate."','".$PresentDate."')";
 				
 				$result = $mysqli->query($insertSQL);
 				if($result) {
-					// Add to user's view/wallet
-					$description = "$$profitAmount ({$returnRate}%) Daily Investment Return + $$shoppingAmount Shopping Bonus";
+					// Add to user's view/wallet (removed shopping bonus reference)
+					$description = "$$profitAmount ({$returnRate}%) Daily Investment Return";
 					$viewSQL = "INSERT INTO `view`(`user`, `date`, `description`, `amount`, `types`) VALUES ('".$memberid."', '".$PresentDate."', '".$description."', '".$profitAmount."','credit')";
 					$mysqli->query($viewSQL);
 					
