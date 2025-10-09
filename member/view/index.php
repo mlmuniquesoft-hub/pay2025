@@ -144,7 +144,7 @@
 							<div class="statistics-box" style="background-color:#ffc107d9">
 								<div class="mb-15">
 									<i class="pull-left ico-icon icon-md icon-warning">
-										<i class="fa fa-calendar-check-o" style="font-size: 49px; color: #ffc107;"></i>
+										<i class="fa fa-calendar-check-o" style="font-size: 49px; color: #ffc107;"></i> 
 									</i>
 									<div class="stats">
 										<h3 class="boldy mb-5" style="color:#5bec74!important;font-size: 18px;">$<span id="DailyROIIncome">0.00</span></h3>

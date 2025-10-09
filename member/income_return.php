@@ -1,4 +1,8 @@
 <?php
+	// Suppress PHP warnings for AJAX JSON responses
+	error_reporting(E_ERROR | E_PARSE);
+	ini_set('display_errors', 0);
+	
     session_start(); 
     if(!isset($_SESSION['roboMember'])){
     	header("Location:logout.php");
@@ -32,12 +36,12 @@
 	function getPoolReferIncome($user) {
 		global $mysqli;
 		try {
-			$tableCheck = $mysqli->query("SHOW TABLES LIKE 'pool_refer_income'");
+			$tableCheck = $mysqli->query("SHOW TABLES LIKE 'commission_record'");
 			if ($tableCheck->num_rows == 0) {
 				return 0;
 			}
-			
-			$result = $mysqli->query("SELECT SUM(amount) as total FROM pool_refer_income WHERE user='$user'");
+
+			$result = $mysqli->query("SELECT SUM(amount) as total FROM commission_record WHERE user='$user' AND type='activation'");
 			if (!$result) {
 				return 0;
 			}
@@ -52,12 +56,12 @@
 	function getDailyROIIncome($user) {
 		global $mysqli;
 		try {
-			$tableCheck = $mysqli->query("SHOW TABLES LIKE 'daily_roi_income'");
+			$tableCheck = $mysqli->query("SHOW TABLES LIKE 'game_return'");
 			if ($tableCheck->num_rows == 0) {
 				return 0;
 			}
-			
-			$result = $mysqli->query("SELECT SUM(amount) as total FROM daily_roi_income WHERE user='$user'");
+
+			$result = $mysqli->query("SELECT SUM(curent_bal) as total FROM game_return WHERE user='$user'");
 			if (!$result) {
 				return 0;
 			}
@@ -72,12 +76,12 @@
 	function getReferGenerationIncome($user) {
 		global $mysqli;
 		try {
-			$tableCheck = $mysqli->query("SHOW TABLES LIKE 'refer_generation_income'");
+			$tableCheck = $mysqli->query("SHOW TABLES LIKE 'commission_record'");
 			if ($tableCheck->num_rows == 0) {
 				return 0;
 			}
 			
-			$result = $mysqli->query("SELECT SUM(amount) as total FROM refer_generation_income WHERE user='$user'");
+			$result = $mysqli->query("SELECT SUM(amount) as total FROM commission_record WHERE user='$user' AND type='trading'");
 			if (!$result) {
 				return 0;
 			}
@@ -92,12 +96,12 @@
 	function getGenerationROIIncome($user) {
 		global $mysqli;
 		try {
-			$tableCheck = $mysqli->query("SHOW TABLES LIKE 'generation_roi_income'");
+			$tableCheck = $mysqli->query("SHOW TABLES LIKE 'generation_income'");
 			if ($tableCheck->num_rows == 0) {
 				return 0;
 			}
-			
-			$result = $mysqli->query("SELECT SUM(amount) as total FROM generation_roi_income WHERE user='$user'");
+
+			$result = $mysqli->query("SELECT SUM(amount) as total FROM generation_income WHERE user='$user'");
 			if (!$result) {
 				return 0;
 			}
@@ -256,6 +260,12 @@
 		if (!$uiyre || !is_array($uiyre)) {
 			$uiyre = array('final' => 0, 'in' => 0, 'out' => 0, 'shop' => 0);
 		}
+		
+		// Ensure all required keys exist
+		$uiyre['final'] = isset($uiyre['final']) ? $uiyre['final'] : 0;
+		$uiyre['in'] = isset($uiyre['in']) ? $uiyre['in'] : 0;
+		$uiyre['out'] = isset($uiyre['out']) ? $uiyre['out'] : 0;
+		$uiyre['shop'] = isset($uiyre['shop']) ? $uiyre['shop'] : 0;
 		
 	$returnAmn['bOTqTY']=$BotAmn;
 	$returnAmn['RemainReturn']=RemainingReturn($user) ?: 0;
