@@ -155,7 +155,7 @@ $i=0;
 
         <!-- SIDEBAR - START -->
 
-        <?php require_once("../part/sidebar2.php"); ?>
+        <?php require_once("../part/sidebar.php"); ?>
         <!--  SIDEBAR - END -->
 
         <!-- START CONTENT -->
@@ -181,30 +181,66 @@ $i=0;
 		<div class="row" >
 		<div class="col-xs-12" style="padding:0px;margin:0px;">
 			<style>
-			/* Additional tree page layout fixes */
+			/* Tree page layout fixes - AGGRESSIVE sidebar control */
 			.page-container {
-				display: flex !important;
-				flex-direction: row !important;
+				display: block !important;
 				width: 100% !important;
 				min-height: 100vh !important;
 			}
 			
-			.page-sidebar {
-				flex: 0 0 250px !important;
-				order: 1 !important;
-			}
-			
 			#main-content {
-				flex: 1 !important;
-				order: 2 !important;
-				margin-left: 0 !important;
 				padding: 20px !important;
 				overflow-x: auto !important;
 			}
 			
-			/* Hide any duplicate sidebars */
-			.page-sidebar:nth-of-type(2) {
+			/* FORCE hide any duplicate/extra sidebars */
+			.page-sidebar:nth-child(n+2) {
 				display: none !important;
+				visibility: hidden !important;
+			}
+			
+			/* Mobile responsive - FORCE hide sidebar by default */
+			@media (max-width: 768px) {
+				.page-sidebar {
+					display: block !important;
+					position: fixed !important;
+					left: -250px !important; /* Start completely off-screen */
+					top: 0 !important;
+					height: 100vh !important;
+					width: 250px !important;
+					transition: left 0.3s ease !important;
+					z-index: 1000 !important;
+				}
+				
+				/* Show sidebar when not collapsed */
+				.page-sidebar.expandit,
+				body:not(.sidebar-collapsed) .page-sidebar {
+					left: 0 !important;
+				}
+				
+				#main-content {
+					margin-left: 0 !important;
+					width: 100% !important;
+				}
+			}
+			
+			/* Desktop behavior */
+			@media (min-width: 769px) {
+				body.sidebar-collapsed .page-sidebar {
+					left: -250px !important;
+				}
+				
+				body:not(.sidebar-collapsed) .page-sidebar {
+					left: 0 !important;
+				}
+				
+				body:not(.sidebar-collapsed) #main-content {
+					margin-left: 250px !important;
+				}
+				
+				body.sidebar-collapsed #main-content {
+					margin-left: 0 !important;
+				}
 			}
 			
 			/* Center the tree properly */
@@ -231,7 +267,7 @@ $i=0;
 				display: table !important;
 			}
 			
-			/* When sidebar is collapsed */
+			/* When sidebar is collapsed - desktop behavior */
 			body.sidebar-collapsed .page-container {
 				margin-left: 0 !important;
 			}

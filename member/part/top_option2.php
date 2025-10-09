@@ -79,6 +79,77 @@ if(isset($_SESSION['roboMember']) && isset($mysqli)) {
                 }
             </style>
         </div>
+        
+        <!-- Mobile Sidebar Fix CSS -->
+        <style>
+        /* Fix mobile sidebar display issues */
+        @media (max-width: 767px) {
+            /* Ensure sidebar has proper background and visibility */
+            .page-sidebar {
+                background: #2c3e50 !important; /* Proper dark background instead of magenta */
+                color: #fff !important;
+                z-index: 9999 !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 250px !important;
+                height: 100vh !important;
+                transform: translateX(-100%) !important;
+                transition: transform 0.3s ease !important;
+                overflow-y: auto !important;
+                box-shadow: 2px 0 5px rgba(0,0,0,0.1) !important;
+            }
+            
+            /* Show sidebar when expanded */
+            .page-sidebar.expandit {
+                transform: translateX(0) !important;
+            }
+            
+            /* Ensure sidebar content is visible */
+            .page-sidebar .page-sidebar-wrapper {
+                background: rgba(0, 0, 0, 0.3) !important;
+                color: #fff !important;
+                height: 100% !important;
+                padding-top: 60px !important;
+            }
+            
+            .page-sidebar .wraplist {
+                background: rgba(0, 0, 0, 0.3) !important;
+                color: #fff !important;
+                margin-top: 0 !important;
+            }
+            
+            .page-sidebar .wraplist li a {
+                color: #fff !important;
+                text-decoration: none !important;
+            }
+            
+            .page-sidebar .wraplist li a:hover {
+                background: rgba(255,255,255,0.1) !important;
+                color: #fff !important;
+            }
+            
+            /* Overlay for mobile when sidebar is open */
+            body.sidebar-open::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 9998;
+                display: block;
+            }
+            
+            /* Ensure main content shifts properly */
+            #main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+        }
+        </style>
+        
         <div class='quick-area'>
             <div class='pull-left'>
                 <ul class="info-menu left-links list-inline list-unstyled">
