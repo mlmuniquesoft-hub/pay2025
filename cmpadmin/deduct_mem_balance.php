@@ -74,8 +74,8 @@
 										<!-- /.panel-heading -->
 										<div class="panel-body">
 											<div class="row">
-												<p style="color: red;font-size:16px;"><?php echo $_GET['msg']; ?></p>
-												<p style="color: red;font-size:16px;"><?php echo $_SESSION['msg']; ?></p>
+												<p style="color: red;font-size:16px;"><?php echo isset($_GET['msg']) ? $_GET['msg'] : ''; ?></p>
+												<p style="color: red;font-size:16px;"><?php echo isset($_SESSION['msg']) ? $_SESSION['msg'] : ''; ?></p>
 												<form class="form-horizontal" action="search_by_member_action.php" method="post">
 													<div class="form-group">
 														<label class="col-sm-4 control-label">User Id :</label>
@@ -92,36 +92,41 @@
 													</div>
 												</form> 
 													<?php
-													$member_id=$_GET['member3'];
-													$query = "select * from member where user='".$member_id."' ";
-													$result= $mysqli->query($query);
-													$row = mysqli_fetch_array($result);	
-													$query1 = "select * from `profile` where user='".$row['log_user']."' ";
-													$result1= $mysqli->query($query1);
-													$row1 = mysqli_fetch_array($result1);
-													$query2 = "select * from balance where user='".$member_id."' ";
-													$result2= $mysqli->query($query2);
-													$row2 = mysqli_fetch_array($result2);	
-													$Decudt=mysqli_fetch_assoc($mysqli->query("SELECT SUM(`amount`) AS asda FROM `bal_deduct` WHERE `user`='".$member_id."'"));
-													if($member_id!=''){
+													if(isset($_GET['member3']) && !empty($_GET['member3'])) {
+														$member_id=$_GET['member3'];
+														$query = "select * from member where user='".$member_id."' ";
+														$result= $mysqli->query($query);
+														$row = mysqli_fetch_array($result);	
+														
+														if($row) {
+															$query1 = "select * from `profile` where user='".$row['log_user']."' ";
+															$result1= $mysqli->query($query1);
+															$row1 = mysqli_fetch_array($result1);
+															$query2 = "select * from balance where user='".$member_id."' ";
+															$result2= $mysqli->query($query2);
+															$row2 = mysqli_fetch_array($result2);	
+															$Decudt=mysqli_fetch_assoc($mysqli->query("SELECT SUM(`amount`) AS asda FROM `bal_deduct` WHERE `user`='".$member_id."'"));
+														}
+													}
+													if(isset($_GET['member3']) && !empty($_GET['member3']) && isset($row) && $row){
 													?> 	  	
 												<form class="form-horizontal" action="bal_deduct_action.php" method="post">
 													<div class="form-group">
 														<label class="col-sm-4 control-label">User Id :</label>
 														<div class="col-sm-8">
-															<input type="text" name="user_id" class="form-control" value="<?php echo $row["user"];?>" placeholder="User Id" readonly />
+															<input type="text" name="user_id" class="form-control" value="<?php echo isset($row["user"]) ? $row["user"] : ''; ?>" placeholder="User Id" readonly />
 														</div>
 													</div>
 													<div class="form-group">
 														<label class="col-sm-4 control-label">Curent Balance:</label>
 														<div class="col-sm-8">
-															<input type="text" name="ddd" class="form-control" value="<?php echo $row2["final_taka"];?>" placeholder="Balance" readonly />
+															<input type="text" name="ddd" class="form-control" value="<?php echo isset($row2["final_taka"]) ? $row2["final_taka"] : '0'; ?>" placeholder="Balance" readonly />
 														</div>
 													</div>
 													<div class="form-group">
 														<label class="col-sm-4 control-label">Previous Deduct:</label>
 														<div class="col-sm-8">
-															<input type="text" name="ddd22" class="form-control" value="<?php echo $Decudt["asda"];?>" placeholder="Balance" readonly />
+															<input type="text" name="ddd22" class="form-control" value="<?php echo isset($Decudt["asda"]) ? $Decudt["asda"] : '0'; ?>" placeholder="Balance" readonly />
 														</div>
 													</div>
 													
