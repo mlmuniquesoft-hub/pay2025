@@ -55,16 +55,16 @@
                                 <div class="box login" style="background-color: #16a8b100!important;">
                                     <!-- Loading State -->
                                     <div class="content-body" id="ContentLoading" style="padding-top:30px;background-color:#1080881f;">
-										<h3 class="text-center alert alert-info" style="color:black;background: #17a2b8;border-radius: 10%;line-height: 2;font-weight: bold;">
-											<i class="fa fa-spinner fa-spin"></i> Verifying Your Account... <br/>
+										<div class="text-center alert alert-info" style="color:black;background: #17a2b8;border-radius: 10%;line-height: 2;font-weight: bold;">
+											<h3><i class="fa fa-spinner fa-spin"></i> Verifying Your Account...</h3>
 											<p style="font-size:15px;color:black;">Please wait while we verify your email address</p>
-										</h3>
+										</div>
                                     </div>
                                     
                                     <!-- Success State -->
                                     <div class="content-body" id="Content0" style="padding-top:30px;background-color:#1080881f;display:none;">
-										<h3 class="text-center alert alert-success" style="color:black;background: #95f403;border-radius: 10%;line-height: 2;font-weight: bold;">
-											<i class="fa fa-check-circle"></i> Email Verification Successful! <br/>
+										<div class="text-center alert alert-success" style="color:black;background: #95f403;border-radius: 10%;line-height: 2;font-weight: bold;">
+											<h3><i class="fa fa-check-circle"></i> Email Verification Successful!</h3>
 											<p style="font-size:15px;color:black;">
 												Your account has been successfully verified!<br/>
 												Account details have been sent to your email.<br/>
@@ -78,37 +78,37 @@
 													<i class="fa fa-sign-in"></i> Manual Login
 												</a>
 											</div>
-										</h3>
+										</div>
                                     </div>
                                     
                                     <!-- Already Verified State -->
 									<div class="content-body" id="Content1" style="padding-top:30px;background-color:#1080881f;display:none;">
-										<h3 class="text-center alert alert-warning" style="color:black;border-radius: 10%;line-height: 2;font-weight: bold;">
-											<i class="fa fa-info-circle"></i> Your Account Already Verified <br/>
+										<div class="text-center alert alert-warning" style="color:black;border-radius: 10%;line-height: 2;font-weight: bold;">
+											<h3><i class="fa fa-info-circle"></i> Your Account Already Verified</h3>
 											<p style="font-size:15px;color:black;">
 												Please Check Your Email For Account Details
 											</p>
-										</h3>
+										</div>
                                     </div>
                                     
                                     <!-- Not Found/Expired State -->
 									<div class="content-body" id="Content2" style="padding-top:30px;background-color:#1080881f;display:none;">
-										<h3 class="text-center alert alert-danger" style="color:black;border-radius: 10%;line-height: 2;font-weight: bold;">
-											<i class="fa fa-exclamation-triangle"></i> Verification Link Expired <br/>
+										<div class="text-center alert alert-danger" style="color:black;border-radius: 10%;line-height: 2;font-weight: bold;">
+											<h3><i class="fa fa-exclamation-triangle"></i> Verification Link Expired</h3>
 											<p style="font-size:15px;color:black;">
 												Please Contact Support For Assistance
 											</p>
-										</h3>
+										</div>
                                     </div>
                                     
                                     <!-- Error State -->
 									<div class="content-body" id="ContentError" style="padding-top:30px;background-color:#1080881f;display:none;">
-										<h3 class="text-center alert alert-danger" style="color:black;border-radius: 10%;line-height: 2;font-weight: bold;">
-											<i class="fa fa-times-circle"></i> Verification Failed <br/>
+										<div class="text-center alert alert-danger" style="color:black;border-radius: 10%;line-height: 2;font-weight: bold;">
+											<h3><i class="fa fa-times-circle"></i> Verification Failed</h3>
 											<p style="font-size:15px;color:black;">
 												An error occurred during verification. Please try again or contact support.
 											</p>
-										</h3>
+										</div>
                                     </div>
 									
 								
@@ -179,13 +179,14 @@
 					return;
 				}
 				
-				// Ensure we're working with the right content ID
-				let contentId = "Content" + rer.toString().trim();
-				console.log('Showing content with ID:', contentId);
+				// Function to handle auto-login failure
+				function handleAutoLoginFailure() {
+					$("#autoLoginMessage").text("Please login manually to access your account.");
+					$("#autoLoginProgress").hide();
+					$("#Content0").find('.btn').show();
+				}
 				
-				$("#" + contentId).show();
-				
-				// Log which message should be displayed
+				// Handle different verification response codes
 				if(rer == 0) {
 					console.log('First-time verification successful - showing success message and auto-login');
 					
@@ -249,19 +250,15 @@
 						});
 					}, 3000); // Wait 3 seconds before auto-login
 					
-					// Function to handle auto-login failure
-					function handleAutoLoginFailure() {
-						$("#autoLoginMessage").text("Please login manually to access your account.");
-						$("#autoLoginProgress").hide();
-						$("#Content0").find('.btn').show();
-					}
-					
 				} else if(rer == 1) {
 					console.log('Account already verified - showing already verified message');
+					$("#Content1").show();
 				} else if(rer == 2) {
 					console.log('Verification failed - showing error message');
+					$("#Content2").show();
 				} else {
 					console.log('Unknown response code:', rer);
+					$("#ContentError").show();
 				}
 				
 				// Add a small delay to ensure the message is visible
