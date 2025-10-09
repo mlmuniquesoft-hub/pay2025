@@ -147,11 +147,95 @@
 										<i class="fa fa-calendar-check-o" style="font-size: 49px; color: #ffc107;"></i> 
 									</i>
 									<div class="stats">
-										<h3 class="boldy mb-5" style="color:#5bec74!important;font-size: 18px;">$<span id="DailyROIIncome">0.00</span></h3>
-										<span style="font-size: 12px;">Daily ROI Income</span>
+										<h3 class="boldy mb-5" style="color:#5bec74!important;font-size: 18px;">
+											$<?php 
+											// Show double the upgrade table investment amount
+											if($memberInfo['paid']==1){
+												$upgradeAmount = $jkfghkd['pack_amn'] * 2; // Double the investment
+												echo number_format($upgradeAmount, 2);
+											} else {
+												echo "0.00";
+											}
+											?>
+										</h3>
+										<div style="margin-top: 5px;">
+											<small style="color: #fff; font-size: 10px;">
+												Remaining: $<?php 
+												if($memberInfo['paid']==1){
+													$remaining = RemainingReturn($member);
+													echo number_format($remaining, 2);
+												} else {
+													echo "0.00";
+												}
+												?>
+											</small>
+										</div>
+										<div style="margin-top: 3px;">
+											<small style="color: #28a745; font-size: 10px;">
+												<?php 
+												if($memberInfo['paid']==1){
+													if(RemainingReturn($member) > 0){
+														echo "ROI Active";
+													} else {
+														echo "ROI Completed";
+													}
+												} else {
+													echo "ROI Off";
+												}
+												?>
+											</small>
+										</div>
 									</div>
 								</div>
 								<span class="crypto3"><canvas width="239" height="60"></canvas></span>
+							</div>
+						</div>
+						
+						<div class="col-lg-3 col-sm-6 col-xs-12" style="display: none;">
+							<div class="statistics-box" style="background-color:#28a745d9">
+								<div class="mb-15">
+									<i class="pull-left ico-icon icon-md icon-success">
+										<i class="fa fa-coins" style="font-size: 49px; color: #28a745;"></i> 
+									</i>
+									<div class="stats">
+										<h3 class="boldy mb-5" style="color:#5bec74!important;font-size: 18px;">
+											$<?php 
+											// Show investment amount (original pack amount)
+											if($memberInfo['paid']==1){
+												$investmentAmount = $jkfghkd['pack_amn']; // Original investment
+												echo number_format($investmentAmount, 2);
+											} else {
+												echo "0.00";
+											}
+											?>
+										</h3>
+										<span style="font-size: 12px;">Investment Amount (Original Package)</span>
+										<div style="margin-top: 5px;">
+											<small style="color: #fff; font-size: 10px;">
+												Package: <?php 
+												if($memberInfo['paid']==1){
+													echo $jkfghkd['pack'];
+												} else {
+													echo "No Package";
+												}
+												?>
+											</small>
+										</div>
+										<div style="margin-top: 3px;">
+											<small style="color: #ffc107; font-size: 10px;">
+												<?php 
+												if($memberInfo['paid']==1){
+													$activeDays = 365; // Assuming 365 days active period
+													echo "Active: " . $activeDays . " Days";
+												} else {
+													echo "Not Active";
+												}
+												?>
+											</small>
+										</div>
+									</div>
+								</div>
+								<span class="crypto1"><canvas width="239" height="60"></canvas></span>
 							</div>
 						</div>
 						
@@ -295,43 +379,61 @@
 				<div class="content-body pb10">
 					<div class="row">
 						<div class="col-md-6 col-xs-12 mb-20">
-							<div id="pie-chart-left" style="height: 300px;"></div>
+							<div class="custom-chart-container" style="height: 300px; background: rgba(26,75,181,0.1); border-radius: 10px; padding: 20px;">
+								<h4 style="color: #fff; text-align: center; margin-bottom: 20px;">Completion Progress</h4>
+								<div class="progress-circle" style="position: relative; width: 150px; height: 150px; margin: 0 auto;">
+									<?php 
+									$completedPer = floor(RemainingReturnPer($member)+RemainingReturnPer($member)*0.50);
+									$strokeDasharray = 2 * 3.14159 * 60; // circumference
+									$strokeDashoffset = $strokeDasharray - ($completedPer / 100) * $strokeDasharray;
+									?>
+									<svg width="150" height="150" style="transform: rotate(-90deg);">
+										<circle cx="75" cy="75" r="60" stroke="rgba(255,255,255,0.2)" stroke-width="10" fill="none"/>
+										<circle cx="75" cy="75" r="60" stroke="#1a4bb5" stroke-width="10" fill="none"
+											stroke-dasharray="<?php echo $strokeDasharray; ?>" 
+											stroke-dashoffset="<?php echo $strokeDashoffset; ?>"
+											stroke-linecap="round"/>
+									</svg>
+									<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #fff;">
+										<div style="font-size: 24px; font-weight: bold;"><?php echo $completedPer; ?>%</div>
+										<div style="font-size: 12px;">Completed</div>
+									</div>
+								</div>
+							</div>
 						</div>
 						<div class="col-md-6 col-xs-12 mb-20">
-							<div id="pie-chart-right" style="height: 300px;"></div>
-						</div>
-						<div class="col-md-6 col-xs-12">
-							<div class="token-info">
-								<div class="info-wrapper three" style="background-color: #1a4bb5;">
-									<div class="token-descr">
-										<h3 class="bold mt-0 mb-0"><?php echo floor(RemainingReturnPer($member)+RemainingReturnPer($member)*.50);?>%</h3>
-										Completed
+							<div class="custom-chart-container" style="height: 300px; background: rgba(40,167,69,0.1); border-radius: 10px; padding: 20px;">
+								<h4 style="color: #fff; text-align: center; margin-bottom: 20px;">Bot Status</h4>
+								<div class="progress-circle" style="position: relative; width: 150px; height: 150px; margin: 0 auto;">
+									<?php 
+									$botWorking = ($memberInfo['paid']==1) ? 200 : 0;
+									$botMax = 300; // max scale for visualization
+									$botPer = min(($botWorking / $botMax) * 100, 100);
+									$strokeDasharray2 = 2 * 3.14159 * 60;
+									$strokeDashoffset2 = $strokeDasharray2 - ($botPer / 100) * $strokeDasharray2;
+									?>
+									<svg width="150" height="150" style="transform: rotate(-90deg);">
+										<circle cx="75" cy="75" r="60" stroke="rgba(255,255,255,0.2)" stroke-width="10" fill="none"/>
+										<circle cx="75" cy="75" r="60" stroke="#28a745" stroke-width="10" fill="none"
+											stroke-dasharray="<?php echo $strokeDasharray2; ?>" 
+											stroke-dashoffset="<?php echo $strokeDashoffset2; ?>"
+											stroke-linecap="round"/>
+									</svg>
+									<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #fff;">
+										<div style="font-size: 24px; font-weight: bold;"><?php echo $botWorking; ?>%</div>
+										<div style="font-size: 12px;">Bot Working</div>
 									</div>
 								</div>
 							</div>
 						</div>
+						
+						<!-- Additional Summary Cards -->
 						<div class="col-md-6 col-xs-12">
 							<div class="token-info">
-								<div class="info-wrapper five" style="background-color: #1a4bb5;">
-									<div class="token-descr">
-										<h3 class="bold mt-0 mb-0"><?php 
-										if($memberInfo['paid']==1){
-											echo 400;//RemainingReturn($member);
-										}else{
-											echo 0;
-										}
-										?>%</h3>
-										Bot Working
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-6 col-xs-12">
-							<div class="token-info">
-								<div class="info-wrapper two" style="background-color: #1a4bb5;">
+								<div class="info-wrapper two" style="background-color: #28a745;">
 									<div class="token-descr">
 										<h3 style="font-size: 15px;padding: 6px 0px;" class="bold mt-0 mb-0">$<?php echo TtalIncome($member)+TtalShopping($member); ?></h3>
-										<span style="font-size: 13px;">Received</span>
+										<span style="font-size: 13px;">Total Received</span>
 									</div>
 								</div>
 							</div>
@@ -339,10 +441,10 @@
 						
 						<div class="col-md-6 col-xs-12">
 							<div class="token-info">
-								<div class="info-wrapper default" style="background-color: #1a4bb5;">
+								<div class="info-wrapper default" style="background-color: #dc3545;">
 									<div class="token-descr">
 										<h3 style="font-size: 15px;padding: 6px 0px;" class="bold mt-0 mb-0">$<?php echo number_format(RemainingReturn($member)-TtalShopping($member),2,'.',''); ?></h3>
-										Working....
+										<span style="font-size: 13px;">Still Working</span>
 									</div>
 								</div>
 							</div>
