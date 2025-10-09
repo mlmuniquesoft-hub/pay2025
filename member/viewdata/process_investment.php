@@ -5,6 +5,196 @@ ini_set('display_errors', 1);
 include '../../db/db.php';
 include '../../db/functions.php';
 
+// Include PHPMailer
+require_once '../../phpmailer/vendor/autoload.php';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+// Function to send investment confirmation email
+function sendInvestmentConfirmationEmail($memberUser, $amount, $packageName, $invoiceNum) {
+    global $mysqli;
+    
+    // Get member details including email
+    $memberQuery = $mysqli->query("SELECT m.*, p.email, p.name FROM `member` m 
+                                   LEFT JOIN `profile` p ON m.log_user = p.user 
+                                   WHERE m.user='$memberUser'");
+    $memberData = mysqli_fetch_assoc($memberQuery);
+    
+    if (!$memberData || !$memberData['email']) {
+        error_log("No email found for member: $memberUser");
+        return false;
+    }
+    
+    $memberName = $memberData['name'] ?? $memberUser;
+    $memberEmail = $memberData['email'];
+    
+    $mail = new PHPMailer(true);
+    
+    try {
+        // Server settings
+        $mail->isSMTP();
+        $mail->CharSet = 'UTF-8';
+        $mail->Host = 'localhost';
+        $mail->Port = 25;
+        $mail->SMTPSecure = 'tls';
+        $mail->SMTPOptions = array(
+            'ssl' => array(
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            )
+        );
+        $mail->SMTPAuth = true;
+        $mail->Username = 'info@capitolmoneypay.com';
+        $mail->Password = 'Mm123678@#';
+        
+        // Recipients
+        $mail->setFrom('info@capitolmoneypay.com', 'Capitol Money Pay');
+        $mail->addAddress($memberEmail, $memberName);
+        
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = "Investment Confirmation - $" . number_format($amount, 2) . " ($packageName)";
+        
+        // Calculate expected returns
+        $dailyReturn = 0;
+        if($amount >= 100 && $amount <= 999) {
+            $dailyReturn = 0.5;
+        } elseif($amount >= 1000 && $amount <= 4999) {
+            $dailyReturn = 0.7;
+        } else {
+            $dailyReturn = 1.0;
+        }
+        
+        $expectedReturn = $amount * 2.0;
+        $dailyEarning = ($amount * $dailyReturn / 100);
+        $weeklyEarning = $dailyEarning * 5;
+        $monthlyEarning = $weeklyEarning * 4;
+        $investmentDate = date('Y-m-d H:i:s');
+        
+        $emailBody = "
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
+                .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+                .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+                .content { padding: 30px; }
+                .summary-box { background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0; }
+                .returns-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0; }
+                .return-item { background: #28a745; color: white; padding: 15px; border-radius: 8px; text-align: center; }
+                .return-item.blue { background: #17a2b8; }
+                .return-item.yellow { background: #ffc107; color: black; }
+                .return-item.red { background: #dc3545; }
+                .footer { background: #333; color: white; padding: 20px; text-align: center; }
+                .important { background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; padding: 15px; margin: 20px 0; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>🎉 Investment Confirmed!</h1>
+                    <h2>Capitol Money Pay</h2>
+                </div>
+                
+                <div class='content'>
+                    <h3>Dear $memberName,</h3>
+                    <p>Your investment has been successfully processed and confirmed. Here are the details:</p>
+                    
+                    <div class='summary-box'>
+                        <h3>📊 Investment Summary</h3>
+                        <table style='width: 100%; border-collapse: collapse;'>
+                            <tr style='border-bottom: 1px solid #ddd;'>
+                                <td style='padding: 10px; font-weight: bold;'>Invoice Number:</td>
+                                <td style='padding: 10px;'>$invoiceNum</td>
+                            </tr>
+                            <tr style='border-bottom: 1px solid #ddd;'>
+                                <td style='padding: 10px; font-weight: bold;'>Package:</td>
+                                <td style='padding: 10px;'>$packageName</td>
+                            </tr>
+                            <tr style='border-bottom: 1px solid #ddd;'>
+                                <td style='padding: 10px; font-weight: bold;'>Investment Amount:</td>
+                                <td style='padding: 10px; color: #28a745; font-weight: bold;'>$" . number_format($amount, 2) . "</td>
+                            </tr>
+                            <tr style='border-bottom: 1px solid #ddd;'>
+                                <td style='padding: 10px; font-weight: bold;'>Investment Date:</td>
+                                <td style='padding: 10px;'>$investmentDate</td>
+                            </tr>
+                            <tr>
+                                <td style='padding: 10px; font-weight: bold;'>Status:</td>
+                                <td style='padding: 10px; color: #28a745; font-weight: bold;'>✅ ACTIVE</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <h3>💰 Expected Returns</h3>
+                    <div class='returns-grid'>
+                        <div class='return-item'>
+                            <h4>Daily Return</h4>
+                            <h3>$dailyReturn%</h3>
+                            <p>$" . number_format($dailyEarning, 2) . "/day</p>
+                        </div>
+                        <div class='return-item blue'>
+                            <h4>Weekly Return</h4>
+                            <h3>Mon-Fri</h3>
+                            <p>$" . number_format($weeklyEarning, 2) . "/week</p>
+                        </div>
+                        <div class='return-item yellow'>
+                            <h4>Monthly Est.</h4>
+                            <h3>4 Weeks</h3>
+                            <p>$" . number_format($monthlyEarning, 2) . "/month</p>
+                        </div>
+                        <div class='return-item red'>
+                            <h4>Total Return</h4>
+                            <h3>2.0x</h3>
+                            <p>$" . number_format($expectedReturn, 2) . " total</p>
+                        </div>
+                    </div>
+                    
+                    <div class='important'>
+                        <h4>🏆 Commission Structure</h4>
+                        <p><strong>Level 1:</strong> 8% - Direct Referrals</p>
+                        <p><strong>Level 2:</strong> 1% - 2nd Level Upline</p>
+                        <p><strong>Level 3:</strong> 1% - 3rd Level Upline</p>
+                        <p><em>Total: 10% distributed across 3 levels</em></p>
+                    </div>
+                    
+                    <div class='important'>
+                        <h4>📋 Important Information</h4>
+                        <ul>
+                            <li>Returns will start from the next business day</li>
+                            <li>Daily returns are credited Monday through Friday</li>
+                            <li>You can monitor your investment progress in your dashboard</li>
+                            <li>Commission payments to your sponsors have been processed</li>
+                        </ul>
+                    </div>
+                    
+                    <p>Thank you for your investment in Capitol Money Pay!</p>
+                    <p>Best regards,<br><strong>Capitol Money Pay Team</strong></p>
+                </div>
+                
+                <div class='footer'>
+                    <p>This is an automated email. Please do not reply to this email.</p>
+                    <p>&copy; " . date('Y') . " Capitol Money Pay. All rights reserved.</p>
+                    <p>🌐 <a href='https://capitolmoneypay.com' style='color: #ffc107;'>capitolmoneypay.com</a></p>
+                </div>
+            </div>
+        </body>
+        </html>";
+        
+        $mail->Body = $emailBody;
+        
+        $mail->send();
+        error_log("Investment confirmation email sent to: $memberEmail");
+        return true;
+        
+    } catch (Exception $e) {
+        error_log("Email sending failed: " . $mail->ErrorInfo);
+        return false;
+    }
+}
+
 // Check if user is logged in
 if (!isset($_SESSION['roboMember']) || empty($_SESSION['roboMember'])) {
     header('Location: ../../login/');
@@ -318,7 +508,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         $mysqli->commit();
-        $_SESSION['success'] = "🎉 Investment successful! You invested $" . number_format($amount, 2) . " in the $packageName. Returns will start from the next business day.";
+        
+        // Send email notification after successful investment
+        sendInvestmentConfirmationEmail($member, $amount, $packageName, $invoiceNum);
+        
+        $_SESSION['success'] = "🎉 Investment successful! You invested $" . number_format($amount, 2) . " in the $packageName. Returns will start from the next business day. Confirmation email sent!";
         
     } catch (Exception $e) {
         $mysqli->rollback();
