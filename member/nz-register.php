@@ -2,6 +2,15 @@
 	session_start();
 	$_SESSION['token']="dfgdfgdf";
 	require_once("../db/db.php");
+	
+	// Check if this is a logged-in user trying to register a new member
+	$isLoggedInRegistration = false;
+	$currentUser = '';
+	if(isset($_SESSION['roboMember'])) {
+		$isLoggedInRegistration = true;
+		$currentUser = $_SESSION['roboMember'];
+	}
+	
 	if(isset($_GET['uuss'])){
 		$counrt=$_GET['uuss'];
 		$InfoCountry=mysqli_fetch_assoc($mysqli->query("SELECT * FROM `country` WHERE `name`='".$counrt."'"));
@@ -14,7 +23,7 @@
 <html lang="en">
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
 <head>
-    <meta property="og:title" content="Capitol Money Pay Signup">
+    <meta property="og:title" content="<?php echo $isLoggedInRegistration ? 'Register New Member' : 'Capitol Money Pay Signup'; ?>">
 	<meta property="og:description" content="Capitol Money Pay Best Place For Your Fixed Earning With Robot">
 	<meta property="og:image" content="https://capitolmoneypay.com/assets/images/cmp-logo.svg">
 	<meta property="og:url" content="https://capitolmoneypay.com/member/nz-register.php">
@@ -24,7 +33,7 @@
 	
 	<meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Capitol Money Pay Signup</title>
+    <title><?php echo $isLoggedInRegistration ? 'Register New Member - Capitol Money Pay' : 'Capitol Money Pay Signup'; ?></title>
     <meta content="Capitol Money Pay Best Place For Your Fixed Earning With Robot" name="description" />
     <meta content="Capitol Money Pay" name="author" />
 
@@ -193,8 +202,20 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
                                 <div class="login-form-header flex align-items-center">
                                      <img src="../data/crypto-dash/signup.png" alt="login-icon" style="max-width:64px">
                                      <div class="login-header">
-                                         <h4 class="bold" style="color: #dcb413;">Signup Now!</h4>
-                                         <h4><small>Enter your data to register.</small></h4>
+                                         <h4 class="bold" style="color: #dcb413;">
+                                             <?php echo $isLoggedInRegistration ? 'Register New Member' : 'Signup Now!'; ?>
+                                         </h4>
+                                         <h4><small><?php echo $isLoggedInRegistration ? 'Register a new member in your team.' : 'Enter your data to register.'; ?></small></h4>
+                                         <?php if($isLoggedInRegistration): ?>
+                                             <div style="margin: 10px 0;">
+                                                 <a href="index.php" class="btn btn-primary" style="background: #28a745; border: none; padding: 6px 16px; border-radius: 4px; color: white; text-decoration: none; font-size: 12px; margin-right: 8px;">
+                                                     <i class="fa fa-dashboard"></i> Dashboard
+                                                 </a>
+                                                 <a href="tree/index.php" class="btn btn-info" style="background: #17a2b8; border: none; padding: 6px 16px; border-radius: 4px; color: white; text-decoration: none; font-size: 12px;">
+                                                     <i class="fa fa-sitemap"></i> Tree View
+                                                 </a>
+                                             </div>
+                                         <?php endif; ?>
                                      </div>
                                 </div>
                                
@@ -230,8 +251,8 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
                                                         <div class="controls">
                                                             <select class="form-control" name="position" id="position" style="background-color: #e7ebf5;" required>
 																<option value="">Select Position</option>
-																<option value="1" <?php if(isset($UserId[2]) && $UserId[2]=='1'){echo 'selected';} ?>>1 - Left</option>
-																<option value="2" <?php if(isset($UserId[2]) && $UserId[2]=='2'){echo 'selected';} ?>>2 - Right</option>
+																<option value="1" <?php if(isset($UserId[0]) && $UserId[0]=='1'){echo 'selected';} ?>>1 - Left</option>
+																<option value="2" <?php if(isset($UserId[0]) && $UserId[0]=='2'){echo 'selected';} ?>>2 - Right</option>
 															</select>
 															<span id="PositionError" style="color: red; font-size: 12px;"></span>
 															<small style="color: #fff240;">Position 1 = Left side, Position 2 = Right side</small>
@@ -241,13 +262,13 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 													<div class="form-group">
                                                         <label class="form-label">Placement ID <span style="color: red;">*</span></label>
                                                         <div class="controls">
-                                                            <input type="text" class="form-control" value="<?php echo isset($UserId[1]) ? $UserId[1] : ''; ?>" name="placement_id" id="placement_id" placeholder="Enter Placement ID" style="background-color: #e7ebf5;" required />
+                                                            <input type="text" class="form-control" value="<?php echo isset($UserId[2]) ? $UserId[2] : ''; ?>" name="placement_id" id="placement_id" placeholder="Enter Placement ID" style="background-color: #e7ebf5;" required />
                                                             <span id="PlacementError" style="color: red; font-size: 12px;"></span>
 															<small style="color: #fff240;">Enter the member ID under whom you want to be placed</small>
                                                         </div>
                                                     </div>
 													
-													<input type='hidden' name="poss" value='<?php if(isset($UserId[2]) && $UserId[2]!=''){echo $UserId[2];}else{echo 1;} ?>'  />
+													<input type='hidden' name="poss" value='<?php if(isset($UserId[0]) && $UserId[0]!=''){echo $UserId[0];}else{echo 1;} ?>'  />
 														<?php //}else{ ?>
 														<!--<input type="hidden" value="<?php //echo 'robotrade'; ?>" name="sponsor_id" id="sponsor_id" />
 														<input type='hidden' name="poss" value='1'  />-->
@@ -321,9 +342,17 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
 														
 													</div>
                                                     <div class="text-center">
-                                                        <button type="button" id="submitTest" class="btn btn-primary mt-10 btn-corner right-15">Sign up</button>
-                                                        <button id="submit" style="display:none" class="btn btn-primary mt-10 btn-corner right-15">Sign up</button>
-                                                        <a href="nz-login.html" style="background:#d2cd19" class="btn mt-10 btn-corner signup">Login</a>
+                                                        <button type="button" id="submitTest" class="btn btn-primary mt-10 btn-corner right-15">
+                                                            <?php echo $isLoggedInRegistration ? 'Register Member' : 'Sign up'; ?>
+                                                        </button>
+                                                        <button id="submit" style="display:none" class="btn btn-primary mt-10 btn-corner right-15">
+                                                            <?php echo $isLoggedInRegistration ? 'Register Member' : 'Sign up'; ?>
+                                                        </button>
+                                                        <?php if(!$isLoggedInRegistration): ?>
+                                                            <a href="nz-login.html" style="background:#d2cd19" class="btn mt-10 btn-corner signup">Login</a>
+                                                        <?php else: ?>
+                                                            <a href="index.php" style="background:#d2cd19" class="btn mt-10 btn-corner signup">Cancel</a>
+                                                        <?php endif; ?>
                                                     </div>
 
                                                 </div>
@@ -670,7 +699,33 @@ Dear traders,The Covid-19 has wreaked havoc on lives and livelihoods around the 
     <!-- reCAPTCHA disabled for localhost development -->
     <!-- <script src="https://www.google.com/recaptcha/api.js?render=6LfTCbIUAAAAACb_PpflJsnEXymUtTIYUZY62HrA"></script> -->
 	<script src="js/signup.js"></script>
-	<script >
+	<script>
+		// Set logged-in status for JavaScript
+		window.isLoggedInRegistration = <?php echo $isLoggedInRegistration ? 'true' : 'false'; ?>;
+		window.currentUser = "<?php echo $currentUser; ?>";
+		
+		// Override success redirect for logged-in users
+		if(window.isLoggedInRegistration) {
+			$(document).ready(function() {
+				// Modify the success handler to redirect to dashboard instead
+				let originalAjax = $.ajax;
+				$.ajax = function(options) {
+					if(options.url === '/login/signup_save.php') {
+						let originalSuccess = options.success;
+						options.success = function(response) {
+							if(response.sts === 'success' && window.isLoggedInRegistration) {
+								// Override redirect for logged-in users
+								response.redirect = 'index.php';
+								$("#Mess").html('<i class="fa fa-check-circle"></i> ' + response.mess + '<br><small>Redirecting to dashboard...</small>');
+							}
+							if(originalSuccess) originalSuccess.call(this, response);
+						};
+					}
+					return originalAjax.call(this, options);
+				};
+			});
+		}
+		
 		$(".shfsd").on("click", function(){
 			let dfgfd=$(this).val();
 			if(dfgfd==2){

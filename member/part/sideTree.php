@@ -1,5 +1,5 @@
 <?php
-	function InfoPartTree($user,$upline){
+	function InfoPartTree($user,$upline,$position = 1){
 		global $mysqli;
 		 $coolk="#FFF";
 		if($user!=''){
@@ -44,19 +44,19 @@
 				$name="Add Here";
 				$user="Add Here";
 				$photo="img/add.png";
-				$link="#register.php?spon=".base64_encode(isset($_SESSION['winMember']) ? $_SESSION['winMember'] : '') ."&place=".base64_encode($upline);
+				$link="../nz-register.php?keys=".base64_encode($position."/".($_SESSION['roboMember'] ?? '')."/".$upline);
 			}
 		}else{
 			$color="#90909a";
 			$name="Add Here";
 			$user="Add Here";
 			$photo="img/add.png";
-			$link="#register.php?spon=".base64_encode(isset($_SESSION['winMember']) ? $_SESSION['winMember'] : '') ."&place=".base64_encode($upline);
+			$link="../nz-register.php?keys=".base64_encode($position."/".($_SESSION['roboMember'] ?? '')."/".$upline);
 		}
 ?>
 	<div class="node" style="border-radius: 7px;cursor: default;min-width:110px !important;height:auto !important;">
-		<a href="<?php echo $link; ?>" id="level-0">
-			<img style="width:70px!important;height:70px!important;border-radius: 0%!important;border: 2px solid #454552 !important;" class="tree_icon" src="<?php echo $photo; ?>" alt="<?php echo $user; ?>" id="userlink_<?php echo $user; ?>" onclick="getGenologyTree('<?php echo $user; ?>',event);"  title="<?php echo $name; ?>">
+		<a href="<?php echo $link; ?>" id="level-0" <?php if($user == "Add Here") echo 'target="_blank"'; ?>>
+			<img style="width:70px!important;height:70px!important;border-radius: 0%!important;border: 2px solid #454552 !important;" class="tree_icon" src="<?php echo $photo; ?>" alt="<?php echo $user; ?>" id="userlink_<?php echo $user; ?>" <?php if($user != "Add Here") echo 'onclick="getGenologyTree(\''.$user.'\',event);"'; ?> title="<?php echo $name; ?>">
 		</a>
 		
 		<div class="username" style="color:<?php echo $coolk; ?>;border-radius: 10px; border:2px solid #FFF; margin-top: 2px;background: <?php echo $color;?> !important;"><?php echo $user; ?>
@@ -121,7 +121,7 @@
 								<tr class="node-cells">
 									<td class="node-cell" colspan="4">
 										<?php 
-										InfoPartTree($userLeftt['left'],$user);
+										InfoPartTree($userLeftt['left'],$user,1);
 										$userLeftt1=leftRightww12($userLeftt['left'], "member");
 										
 										// Ensure keys exist for userLeftt1
@@ -145,7 +145,7 @@
 								<tr class="node-cells">
 									<td class="node-cell" colspan="4">
 										<?php 
-											InfoPartTree($userLeftt['right'],$user);
+											InfoPartTree($userLeftt['right'],$user,2);
 											$userLeftt2=leftRightww12($userLeftt['right'], "member");
 											
 											// Ensure keys exist for userLeftt2
