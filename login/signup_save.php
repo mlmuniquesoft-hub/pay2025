@@ -68,13 +68,13 @@ try {
 			$poss = $_POST['poss'];	
 			
 			// Debug: Check what values we're receiving
-			$debug_upline_id = isset($_POST['upline_id']) ? $_POST['upline_id'] : 'NOT_SET';
+			$debug_placement_id = isset($_POST['placement_id']) ? $_POST['placement_id'] : 'NOT_SET';
 			$debug_sponsor_id = $_POST['sponsor_id'];
 			
-			// Manual placement - use upline directly from form input, fallback to sponsor if not provided
-			// IMPORTANT: upline_id is the PLACEMENT ID (where user will be placed in tree)
+			// Manual placement - use placement_id directly from form input, fallback to sponsor if not provided
+			// IMPORTANT: placement_id is the PLACEMENT ID (where user will be placed in tree)
 			// sponsor_id is the REFERRER (who gets commission)
-			$uplinkabc = isset($_POST['upline_id']) && !empty(trim($_POST['upline_id'])) ? trim($_POST['upline_id']) : $referrence0;
+			$uplinkabc = isset($_POST['placement_id']) && !empty(trim($_POST['placement_id'])) ? trim($_POST['placement_id']) : $referrence0;
 			$placement0 = strtolower($uplinkabc);
 			
 			$uplink0 = mb_convert_case($uplinkabc, MB_CASE_LOWER, "UTF-8");
@@ -210,7 +210,7 @@ try {
 			
 			if($check3 > 0){
 				$rett['sts']='error';
-				$rett['mess']="The $positionText position under placement ID: $uplink0 is already occupied. Please choose a different placement ID or position. (Debug: sponsor=$debug_sponsor_id, upline_received=$debug_upline_id, final_uplink=$uplink0)";
+				$rett['mess']="The $positionText position under placement ID: $uplink0 is already occupied. Please choose a different placement ID or position. (Debug: sponsor=$debug_sponsor_id, placement_received=$debug_placement_id, final_uplink=$uplink0)";
 				die(json_encode($rett));
 			}
 			
