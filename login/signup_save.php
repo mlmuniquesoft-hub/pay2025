@@ -38,22 +38,22 @@ try {
 					count_user($result2['user'], $rrr, $posiit);
 				}
 			}
-			function SearchPlace($user,$position){
-				global $mysqli;
-				$rett=array();
-				$cgghh=$mysqli->query("SELECT * FROM `member` WHERE `upline`='".$user."' AND `position`='".$position."'");
-				$CheckSponsor=mysqli_num_rows($cgghh);
-				if($CheckSponsor>0){
-					$nextId=mysqli_fetch_assoc($cgghh);
-					count_user($nextId['user'], $rett, $position);
-				}else{
-					array_push($rett,$user);
-				}
-				
-				return $rett;
+		// Manual Placement System - SearchPlace function kept for compatibility but not used
+		// Users now manually select their exact upline and position
+		function SearchPlace($user,$position){
+			global $mysqli;
+			$rett=array();
+			$cgghh=$mysqli->query("SELECT * FROM `member` WHERE `upline`='".$user."' AND `position`='".$position."'");
+			$CheckSponsor=mysqli_num_rows($cgghh);
+			if($CheckSponsor>0){
+				$nextId=mysqli_fetch_assoc($cgghh);
+				count_user($nextId['user'], $rett, $position);
+			}else{
+				array_push($rett,$user);
 			}
 			
-			// Validate and sanitize form inputs
+			return $rett;
+		}			// Validate and sanitize form inputs
 			if(!isset($_POST['sponsor_id']) || !isset($_POST['poss']) || !isset($_POST['log_id']) || 
 			   !isset($_POST['full_name']) || !isset($_POST['email']) || !isset($_POST['password']) || 
 			   !isset($_POST['re_password']) || !isset($_POST['Password_tr'])) {
@@ -66,11 +66,9 @@ try {
 			$referrenceabc = trim($_POST['sponsor_id']);
 			$referrence0 = mb_convert_case($referrenceabc, MB_CASE_LOWER, "UTF-8");
 			$poss = $_POST['poss'];	
-			$InfoPlaceId=SearchPlace($referrence0,$poss);
-			$iii=count($InfoPlaceId);
-			$placement0 =strtolower($InfoPlaceId[$iii-1]);
-			
-			$uplinkabc = $placement0;
+			// Manual placement - use upline directly from form input, fallback to sponsor if not provided
+			$uplinkabc = isset($_POST['upline_id']) && !empty(trim($_POST['upline_id'])) ? trim($_POST['upline_id']) : $referrence0;
+			$placement0 = strtolower($uplinkabc);
 			
 			$uplink0 = mb_convert_case($uplinkabc, MB_CASE_LOWER, "UTF-8");
 			$position_0001 = $poss;	
@@ -189,24 +187,28 @@ try {
 				die(json_encode($rett));
 			}
 			
-			$query3="SELECT position,upline FROM member WHERE  upline='$uplink0'";
+			// Check if selected position is available for manual placement
+			$query3="SELECT position,upline FROM member WHERE upline='$uplink0' AND position='$position_0001'";
 			$result3=$mysqli->query($query3);
-			$row3=mysqli_fetch_array($result3);
-			$placement_po = isset($row3['position']) ? $row3['position'] : '';	
 			$check3 = mysqli_num_rows($result3);
+			
 			if($position_0001==''){
 				$rett['sts']='error';
-				$rett['mess']="Blank Left/Right Position Please Select Anyone";
+				$rett['mess']="Please select Left or Right position";
 				die(json_encode($rett));
-			}	
-			if($check3==2){
+			}
+			
+			if($check3 > 0){
 				$rett['sts']='error';
-				$rett['mess']="Both Position is Already Filled.Please choose another Uplink !!! $uplink0";
+				$rett['mess']="The $position_0001 position under $uplink0 is already occupied. Please choose a different upline or position.";
 				die(json_encode($rett));
-			}	
-			if($placement_po==$position_0001){
+			}
+			
+			// Additional check: Verify the upline exists and can accept downlines
+			$checkUplineExists = $mysqli->query("SELECT user FROM member WHERE user='$uplink0'");
+			if(mysqli_num_rows($checkUplineExists) == 0){
 				$rett['sts']='error';
-				$rett['mess']="$position_0001 Position is Already Filled.Please choose another Position or Uplink !!!";
+				$rett['mess']="Invalid upline ID: $uplink0. Please verify the upline user ID.";
 				die(json_encode($rett));
 			}	
 				
