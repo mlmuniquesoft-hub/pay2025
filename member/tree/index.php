@@ -155,14 +155,14 @@ $i=0;
 
         <!-- SIDEBAR - START -->
 
-        <?php require_once("../part/sidebar.php"); ?>
+        <?php require_once("../part/sidebar2.php"); ?>
         <!--  SIDEBAR - END -->
         
         <!-- Fix navigation links for tree subdirectory -->
         <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Fix sidebar navigation links to point to correct parent directory
-            const sidebarLinks = document.querySelectorAll('.page-sidebar a[href^="index.php"]');
+            const sidebarLinks = document.querySelectorAll('.page-sidebar-tree a[href^="index.php"]');
             sidebarLinks.forEach(function(link) {
                 const href = link.getAttribute('href');
                 if (href.startsWith('index.php')) {
@@ -207,7 +207,7 @@ $i=0;
 		<div class="row" >
 		<div class="col-xs-12" style="padding:0px;margin:0px;">
 			<style>
-			/* Tree page layout fixes - AGGRESSIVE sidebar control */
+			/* Tree page layout fixes for sidebar2 - DEBUG MODE */
 			.page-container {
 				display: block !important;
 				width: 100% !important;
@@ -217,31 +217,32 @@ $i=0;
 			#main-content {
 				padding: 20px !important;
 				overflow-x: auto !important;
+				transition: margin-left 0.3s ease !important;
 			}
 			
-			/* FORCE hide any duplicate/extra sidebars */
-			.page-sidebar:nth-child(n+2) {
+			/* Hide old sidebar classes that might conflict */
+			.page-sidebar:not(.page-sidebar-tree) {
 				display: none !important;
-				visibility: hidden !important;
 			}
 			
-			/* Mobile responsive - FORCE hide sidebar by default */
+			/* FORCE SHOW sidebar2 for debugging */
+			.page-sidebar-tree {
+				display: block !important;
+				position: fixed !important;
+				left: 0 !important;
+				top: 0 !important;
+				height: 100vh !important;
+				width: 250px !important;
+				background: #2c3e50 !important;
+				z-index: 1000 !important;
+				transform: translateX(0) !important;
+				transition: transform 0.3s ease !important;
+			}
+			
+			/* Mobile responsive - sidebar2 behavior */
 			@media (max-width: 768px) {
-				.page-sidebar {
-					display: block !important;
-					position: fixed !important;
-					left: -250px !important; /* Start completely off-screen */
-					top: 0 !important;
-					height: 100vh !important;
-					width: 250px !important;
-					transition: left 0.3s ease !important;
-					z-index: 1000 !important;
-				}
-				
-				/* Show sidebar when not collapsed */
-				.page-sidebar.expandit,
-				body:not(.sidebar-collapsed) .page-sidebar {
-					left: 0 !important;
+				.page-sidebar-tree.sidebar-collapsed {
+					transform: translateX(-100%) !important;
 				}
 				
 				#main-content {
@@ -252,19 +253,19 @@ $i=0;
 			
 			/* Desktop behavior */
 			@media (min-width: 769px) {
-				body.sidebar-collapsed .page-sidebar {
-					left: -250px !important;
+				.page-sidebar-tree.sidebar-collapsed {
+					transform: translateX(-100%) !important;
 				}
 				
-				body:not(.sidebar-collapsed) .page-sidebar {
-					left: 0 !important;
+				.page-sidebar-tree:not(.sidebar-collapsed) {
+					transform: translateX(0) !important;
 				}
 				
-				body:not(.sidebar-collapsed) #main-content {
+				#main-content {
 					margin-left: 250px !important;
 				}
 				
-				body.sidebar-collapsed #main-content {
+				body:has(.page-sidebar-tree.sidebar-collapsed) #main-content {
 					margin-left: 0 !important;
 				}
 			}
@@ -419,6 +420,49 @@ $i=0;
         }
     }
     titlebar(0);
+		</script>
+		
+		<script>
+		// Initialize the new sidebar2 functionality after page loads
+		$(document).ready(function() {
+			console.log('Tree page: Initializing new sidebar2 functionality');
+			
+			// Initialize the toggle functionality for both buttons
+			function toggleSidebar() {
+				console.log('Tree page: Toggle function called');
+				
+				var sidebar = $('.page-sidebar-tree');
+				var mainContent = $('#main-content');
+				var topbar = $('.page-topbar');
+				
+				// Toggle the sidebar
+				if (sidebar.hasClass('sidebar-collapsed')) {
+					// Open sidebar
+					sidebar.removeClass('sidebar-collapsed');
+					mainContent.removeClass('sidebar-collapsed');
+					if (topbar.length) {
+						topbar.removeClass('sidebar-collapsed');
+					}
+					console.log('Tree page: Sidebar opened');
+				} else {
+					// Close sidebar
+					sidebar.addClass('sidebar-collapsed');
+					mainContent.addClass('sidebar-collapsed');
+					if (topbar.length) {
+						topbar.addClass('sidebar-collapsed');
+					}
+					console.log('Tree page: Sidebar closed');
+				}
+			}
+			
+			// Bind to both toggle buttons
+			$('#sidebar-toggle-tree, .sidebar_toggle').off('click').on('click', function(e) {
+				e.preventDefault();
+				toggleSidebar();
+			});
+			
+			console.log('Tree page: Sidebar2 toggle setup complete');
+		});
 		</script>
 		
 		

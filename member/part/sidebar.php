@@ -45,109 +45,6 @@
                             <span class="title">Upgrade Package</span>
                         </a>
                     </li>
-					<li class="" style="display: none;">
-                        <a href="https://capitolmoneypay.com/product/" target="blank">
-                            <i class="fa fa-shopping-cart">
-                                
-                            </i>
-                            <span class="title">Products</span>
-                        </a>
-                    </li>
-					<li class="" style="display: none;">
-                        <a href="javascript:;">
-                             <i class="fa fa-shopping-cart">
-                                
-                            </i>
-                            <span class="title">Buy Products</span>
-                            <span class="arrow "></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a class="" href="index.php?route=buynow&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Buy Products'); ?>">Buy Now</a>
-                            </li>
-							</ul>
-                    </li>
-					<li class="" style="display: none;">
-                        <a href="index.php?route=schedule_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Trader Plans'); ?>">
-                            <img src="/image/dcrypto.jpg" style="width:30px;height:20px" />
-                            <span class="title">Crypto Trading</span>
-                        </a>
-                    </li>
-					
-					<?php 
-						// PHP 8.2 compatibility: Check variables exist and have valid values
-						if(isset($memberInfo) && is_array($memberInfo) && isset($memberInfo['pack']) && $memberInfo['pack'] > 0){ 
-							if(isset($member) && function_exists('RemainingReturn') && RemainingReturn($member) > 0){
-					?>
-					<style>
-						.lds-ellipsis {
-						  display: inline-block;
-						  position: relative;
-						  width: 58px;
-						  height: 36px;
-						  margin-top:-30px;
-						}
-						.lds-ellipsis div {
-						  position: absolute;
-						  top: 27px;
-						  width: 11px;
-						  height: 11px;
-						  border-radius: 50%;
-						  background: #fff;
-						  animation-timing-function: cubic-bezier(0, 1, 1, 0);
-						}
-						.lds-ellipsis div:nth-child(1) {
-						  left: 6px;
-						  animation: lds-ellipsis1 0.6s infinite;
-						}
-						.lds-ellipsis div:nth-child(2) {
-						  left: 6px;
-						  animation: lds-ellipsis2 0.6s infinite;
-						}
-						.lds-ellipsis div:nth-child(3) {
-						  left: 26px;
-						  animation: lds-ellipsis2 0.6s infinite;
-						}
-						.lds-ellipsis div:nth-child(4) {
-						  left: 45px;
-						  animation: lds-ellipsis3 0.6s infinite;
-						}
-						@keyframes lds-ellipsis1 {
-						  0% {
-							transform: scale(0);
-						  }
-						  100% {
-							transform: scale(1);
-						  }
-						}
-						@keyframes lds-ellipsis3 {
-						  0% {
-							transform: scale(1);
-						  }
-						  100% {
-							transform: scale(0);
-						  }
-						}
-						@keyframes lds-ellipsis2 {
-						  0% {
-							transform: translate(0, 0);
-						  }
-						  100% {
-							transform: translate(19px, 0);
-						  }
-						}
-
-					</style>
-                    <li class="" style="display: none;">
-                        <a href="index.php?route=turbo_bots&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Turbo Bots'); ?>">
-                            <i class="fa fa-superpowers">
-                                
-                            </i>
-                            <span class="title">Turbo Bots</span>
-							<span class="label label-accent"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></span>
-                        </a>
-                    </li>
-					<?php } } ?>
 					<li class="">
                         <a href="javascript:;">
                             <i class="fa fa-share-alt">
@@ -264,7 +161,8 @@
 							</li>
 							
 						</ul>
-					</li>					<li class="">
+					</li>					
+					<li class="">
 						<a href="javascript:;">
 							<i class="fa fa-exchange">
 								
@@ -311,7 +209,8 @@
 								</a>
 							</li>
 						</ul>
-					</li>					<li class="">
+					</li>					
+					<li class="">
                         <a href="index.php?route=common_question&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('FAQ'); ?>">
                             <i class="fa fa-linode">
                               

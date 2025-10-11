@@ -1,337 +1,428 @@
-<div class="page-sidebar fixedscroll" style="background-image:url('../image/blockchain.jpg');margin-top: 0px;">
-
-            <!-- MAIN MENU - START -->
-			
-            <div class="page-sidebar-wrapper crypto" id="main-menu-wrapper" >
-				
-                <ul class='wraplist' style="margin-top:60px;background:rgba(0, 0, 0, 0.38)">
-			
-                    <li class='menusection'>Main</li>
-                    <li class="">
-                        <a href="../index.php?route=index&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Robo Trade Dashboard'); ?>">
-                            <i class="fa fa-dashboard">
-                                
-                            </i>
-                            <span class="title">Dashboard</span>
-                        </a>
-                    </li>
-					
-                    <li class="">
-                        <a href="javascript:;">
-                             <i class="fa fa-user">
-                                
-                            </i>
-                            <span class="title">Profile</span>
-                            <span class="arrow "></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a class="" href="../index.php?route=profile&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('User Profile'); ?>">Trader Profile</a>
-                            </li>
-							<li>
-                                <a class="" href="../index.php?route=edit_profile&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Profile Edit'); ?>">Personal Settings</a>
-                            </li>
-							
-                            <li>
-                                <a class="" href="../index.php?route=security&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Account Security'); ?>">Account Settings</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="">
-                        <a href="../index.php?route=trade_plan&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Trader Plans'); ?>">
-                            <i class="fa fa-shopping-cart">
-                                
-                            </i>
-                            <span class="title">Upgrade Package</span>
-                        </a>
-                    </li>
-					<li class="" style="display: none;">
-                        <a href="https://capitolmoneypay.com/product/" target="blank">
-                            <i class="fa fa-shopping-cart">
-                                
-                            </i>
-                            <span class="title">Nzrobo Product</span>
-                        </a>
-                    </li>
-                    <?php 
-						if($memberInfo['pack']>0){ 
-							if(RemainingReturn($member)>0){
-					?>
-					<style>
-						.lds-ellipsis {
-						  display: inline-block;
-						  position: relative;
-						  width: 58px;
-						  height: 36px;
-						  margin-top:-30px;
-						}
-						.lds-ellipsis div {
-						  position: absolute;
-						  top: 27px;
-						  width: 11px;
-						  height: 11px;
-						  border-radius: 50%;
-						  background: #fff;
-						  animation-timing-function: cubic-bezier(0, 1, 1, 0);
-						}
-						.lds-ellipsis div:nth-child(1) {
-						  left: 6px;
-						  animation: lds-ellipsis1 0.6s infinite;
-						}
-						.lds-ellipsis div:nth-child(2) {
-						  left: 6px;
-						  animation: lds-ellipsis2 0.6s infinite;
-						}
-						.lds-ellipsis div:nth-child(3) {
-						  left: 26px;
-						  animation: lds-ellipsis2 0.6s infinite;
-						}
-						.lds-ellipsis div:nth-child(4) {
-						  left: 45px;
-						  animation: lds-ellipsis3 0.6s infinite;
-						}
-						@keyframes lds-ellipsis1 {
-						  0% {
-							transform: scale(0);
-						  }
-						  100% {
-							transform: scale(1);
-						  }
-						}
-						@keyframes lds-ellipsis3 {
-						  0% {
-							transform: scale(1);
-						  }
-						  100% {
-							transform: scale(0);
-						  }
-						}
-						@keyframes lds-ellipsis2 {
-						  0% {
-							transform: translate(0, 0);
-						  }
-						  100% {
-							transform: translate(19px, 0);
-						  }
-						}
-
-					</style>
-                    <li class="" style="display: none;">
-                        <a href="../index.php?route=turbo_bots&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Turbo Bots'); ?>">
-                            <i class="fa fa-superpowers">
-                                
-                            </i>
-                            <span class="title">Turbo Bots</span>
-							<span class="label label-accent"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></span>
-                        </a>
-                    </li>
-					<?php } } ?>
-					<li class="">
-                        <a href="javascript:;">
-                            <i class="fa fa-share-alt">
-                               
-                            </i>
-                            <span class="title">Networks</span>
-                            <span class="arrow "></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a class="" href="../index.php?route=sponsor_list&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Sponsor Team'); ?>">Sponsor List</a>
-                            </li>
-                            <li>
-                                 <a class="" href="../index.php?route=unilevel_view&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Unilevel View'); ?>">Unilevel</a>
-                            </li>
-                            <li>
-                                 <a class="" href="../index.php?route=tree_view&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Tree View'); ?>">My Tree</a>
-                            </li>
-                            
-                        </ul>
-                    </li>
-					<?php
-						$MemberIDf=strtolower($_SESSION['roboMember']);
-						if($MemberIDf=='kalroys'){
-					?>
-					<li class="">
-                        <a href="javascript:;">
-                            <i class="fa fa-share-alt"></i>
-                            <span class="title">Team Info</span>
-                            <span class="arrow "></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a class="" href="../index.php?route=member_list&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Member List'); ?>">Member List</a>
-                            </li>
-                            <li style="display:none;">
-                                <a class="" href="../index.php?route=member_today&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Member Today'); ?>">Member Today</a>
-                            </li>
-                            <li style="display:none;">
-                                <a class="" href="../index.php?route=tree_view&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Tree View'); ?>">My Tree</a>
-                            </li>
-                        </ul>
-                    </li>
-					<?php } ?>
-					<li class="">
-                        <a href="javascript:;">
-                            <i class="fa fa-money">
-                                
-                            </i>
-                            <span class="title">Earnings</span>
-                            <span class="arrow "></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a class="" href="../index.php?route=sponsor_honor&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Sponsor Honor'); ?>">Sponsor Honor</a>
-                            </li>
-							<li>
-                                <a class="" href="../index.php?route=matching_bonus&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Matching Bonus'); ?>">Matching Bonus</a>
-                            </li>
-							
-                            <li>
-                                <a class="" href="../index.php?route=bot_income&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('D.Bot Trading'); ?>">D.Bot Trading</a>
-                            </li>
-                            <li>
-                                <a class="" href="../index.php?route=generation_bonus&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Generation Bonus'); ?>">Generation Bonus</a>
-                            </li>
-							<?php
-								$jkhgfd=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) as touu FROM `upgrade` WHERE `user`='".$member."'"));
-								if($jkhgfd['touu']>=3000){
-							?>
-							 <li>
-                                <a class="" href="../index.php?route=global_bonus&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Generation Bonus'); ?>">Global Bonus</a>
-                            </li>
-							<?php } ?>
-                        </ul>
-                    </li>
-					<li class="">
-						<a href="javascript:;">
-							<i class="fa fa-dollar">
-								
-							</i>
-							<span class="title">Financial</span>
-							<span class="arrow "></span>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a class="" href="../index.php?route=wallet_user&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Add Wallet/User'); ?>">
-									<i class="fa fa-plus-circle" style="margin-right: 5px; color: #28a745;"></i>
-									Add Wallet
-								</a>
-								<ul class="sub-sub-menu">
-									<li>
-										<a class="" href="../index.php?route=wallet_user&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Add Bitcoin Wallet'); ?>">
-											<i class="fa fa-bitcoin" style="margin-right: 5px; color: #f7931a;"></i>
-											Bitcoin Wallet
-										</a>
-									</li>
-								</ul>
-							</li>
-							<li>
-								<a class="" href="../index.php?route=withdraw&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Withdraw Fund '); ?>">
-									<i class="fa fa-minus-circle" style="margin-right: 5px; color: #dc3545;"></i>
-									Withdraw
-								</a>
-							</li>
-							<li>
-								<a class="" href="../index.php?route=transfer&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Transfer Fund '); ?>">
-									<i class="fa fa-exchange" style="margin-right: 5px; color: #6f42c1;"></i>
-									Transfer
-								</a>
-							</li>
-							
-						</ul>
-					</li>					<li class="">
-						<a href="javascript:;">
-							<i class="fa fa-exchange">
-								
-							</i>
-							<span class="title">Transaction History</span>
-							<span class="arrow "></span>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a class="" href="../index.php?route=deposit_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('All Deposit History'); ?>">
-									<i class="fa fa-plus-square" style="margin-right: 5px; color: #28a745;"></i>
-									All Deposits
-								</a>
-							</li>
-							<li>
-								<a class="" href="../index.php?route=deposit&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Manual Deposits'); ?>">
-									<i class="fa fa-file-image-o" style="margin-right: 5px; color: #17a2b8;"></i>
-									Manual Deposits
-								</a>
-							</li>
-							<li>
-								<a class="" href="../index.php?route=withdraw_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Withdraw History'); ?>">
-									<i class="fa fa-minus-square" style="margin-right: 5px; color: #dc3545;"></i>
-									Withdrawals
-								</a>
-							</li>
-							
-							<li>
-								<a class="" href="../index.php?route=transfer_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Transfer History'); ?>">
-									<i class="fa fa-arrow-right" style="margin-right: 5px; color: #6f42c1;"></i>
-									Transfers
-								</a>
-							</li>
-							<li>
-								<a class="" href="../index.php?route=activation_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Activation Report'); ?>">
-									<i class="fa fa-rocket" style="margin-right: 5px; color: #f59e0b;"></i>
-									Activations
-								</a>
-							</li>
-							<li>
-								<a class="" href="../index.php?route=receive_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Receive History'); ?>">
-									<i class="fa fa-arrow-left" style="margin-right: 5px; color: #20c997;"></i>
-									Received
-								</a>
-							</li>
-						</ul>
-					</li>					<li class="">
-                        <a href="../index.php?route=common_question&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('FAQ'); ?>">
-                            <i class="fa fa-linode">
-                              
-                            </i>
-                            <span class="title">Ranks</span>
-                        </a>
-                    </li>
-					<li class="" style="display:none;">
-                        <a href="../index.php?route=support&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Support Request'); ?>">
-                            <i class="fa fa-question-circle">
-                               
-                            </i>
-                            <span class="title">Support</span>
-                        </a>
-                    </li>
-					<li class="">
-                        <a href="../logout.php">
-                            <i class="fa fa-arrow-left" >
-                                
-                            </i>
-                            <span class="title">Logout</span>
-                        </a>
-                    </li>
-					<!-- <li class="GooleTrans" style="">
-                        <div id="google_translate_element"></div>
-                    </li> -->
-					
-					
-                </ul>
-            </div>
-            <!-- MAIN MENU - END -->
+<div class="page-sidebar-tree" id="tree-sidebar">
+    <!-- MAIN MENU - START -->
+    <div class="page-sidebar-wrapper-tree" id="main-menu-wrapper-tree">
+        <div class="sidebar-header-tree">
+            <button class="sidebar-close-btn" id="closeSidebarTree">&times;</button>
         </div>
-		<style>
-			#google_translate_element img{
-				width:80px;
-			}
-			#google_translate_element{
-				color:white;
-			}
-		</style>
-		<!-- Temporarily disabled Google Translate to test dropdown functionality
-		<script type="text/javascript">
-			function googleTranslateElementInit() {
-			  new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
-			}
-			</script>
-		<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-		-->
+        
+        <ul class='wraplist-tree' style="margin-top:60px;background:rgba(0, 0, 0, 0.38)">
+            <li class='menusection-tree'>Main</li>
+            <li class="">
+                <a href="../index.php?route=index&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Robo Trade Dashboard'); ?>">
+                    <i class="fa fa-dashboard"></i>
+                    <span class="title">Dashboard</span>
+                </a>
+            </li>
+            
+            <li class="">
+                <a href="javascript:;" class="has-submenu">
+                     <i class="fa fa-user"></i>
+                    <span class="title">Profile</span>
+                    <span class="arrow"></span>
+                </a>
+                <ul class="sub-menu-tree">
+                    <li>
+                        <a href="../index.php?route=profile&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('User Profile'); ?>">Trader Profile</a>
+                    </li>
+                    <li>
+                        <a href="../index.php?route=edit_profile&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Profile Edit'); ?>">Personal Settings</a>
+                    </li>
+                    <li>
+                        <a href="../index.php?route=security&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Account Security'); ?>">Account Settings</a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li class="">
+                <a href="../index.php?route=trade_plan&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Trader Plans'); ?>">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span class="title">Upgrade Package</span>
+                </a>
+            </li>
+            
+            <li class="">
+                <a href="javascript:;" class="has-submenu">
+                    <i class="fa fa-line-chart"></i>
+                    <span class="title">Binary Tree</span>
+                    <span class="arrow"></span>
+                </a>
+                <ul class="sub-menu-tree">
+                    <li>
+						<a class="" href="index.php?route=sponsor_list&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Sponsor Team'); ?>">Sponsor List</a>
+					</li>
+					<li>
+						<a class="" href="index.php?route=unilevel_view&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Unilevel View'); ?>">Unilevel</a>
+					</li>
+					<li>
+						<a class="" href="index.php?route=tree_view&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Tree View'); ?>">My Tree</a>
+					</li>
+                </ul>
+            </li>
+            
+            <li class="">
+                <a href="javascript:;" class="has-submenu">
+                    <i class="fa fa-money"></i>
+                    <span class="title">Financial</span>
+                    <span class="arrow"></span>
+                </a>
+                <ul class="sub-menu-tree">
+					<li>
+						<a class="" href="index.php?route=wallet_user&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Add Wallet/User'); ?>">Add Wallet</a>
+					</li>
+					<li class="">
+						<ul class="sub-menu">
+							<li>
+								<a class="" href="index.php?route=deposit&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Deposit Fund'); ?>">
+									<i class="fa fa-bitcoin" style="margin-right: 5px; color: #f7931a;"></i>
+									Add Funds
+								</a>
+							</li>
+							<li>
+								<a class="" href="index.php?route=deposit_history&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Deposit Status'); ?>">
+									<i class="fa fa-clock-o" style="margin-right: 5px; color: #ffc107;"></i>
+									Pending Status
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a class="" href="index.php?route=withdraw&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Withdraw Fund '); ?>">
+							<i class="fa fa-minus-circle" style="margin-right: 5px; color: #dc3545;"></i>
+							Withdraw
+						</a>
+					</li>
+					<li>
+						<a class="" href="index.php?route=transfer&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Transfer Fund '); ?>">
+							<i class="fa fa-exchange" style="margin-right: 5px; color: #6f42c1;"></i>
+							Transfer
+						</a>
+					</li>
+                </ul>
+            </li>
+            
+            <li class="">
+                <a href="javascript:;" class="has-submenu">
+                    <i class="fa fa-bar-chart"></i>
+                    <span class="title">Reports</span>
+                    <span class="arrow"></span>
+                </a>
+                <ul class="sub-menu-tree">
+                    <li>
+						<a class="" href="index.php?route=deposit_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('All Deposit History'); ?>">
+							<i class="fa fa-plus-square" style="margin-right: 5px; color: #28a745;"></i>
+							All Deposits
+						</a>
+					</li>
+					<li>
+						<a class="" href="index.php?route=deposit&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Manual Deposits'); ?>">
+							<i class="fa fa-file-image-o" style="margin-right: 5px; color: #17a2b8;"></i>
+							Manual Deposits
+						</a>
+					</li>
+					<li>
+						<a class="" href="index.php?route=withdraw_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Withdraw History'); ?>">
+							<i class="fa fa-minus-square" style="margin-right: 5px; color: #dc3545;"></i>
+							Withdrawals
+						</a>
+					</li>
+					
+					<li>
+						<a class="" href="index.php?route=transfer_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Transfer History'); ?>">
+							<i class="fa fa-arrow-right" style="margin-right: 5px; color: #6f42c1;"></i>
+							Transfers
+						</a>
+					</li>
+					<li>
+						<a class="" href="index.php?route=activation_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Activation Report'); ?>">
+							<i class="fa fa-rocket" style="margin-right: 5px; color: #f59e0b;"></i>
+							Activations
+						</a>
+					</li>
+					<li>
+						<a class="" href="index.php?route=receive_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Receive History'); ?>">
+							<i class="fa fa-arrow-left" style="margin-right: 5px; color: #20c997;"></i>
+							Received
+						</a>
+					</li>
+                </ul>
+            </li>
+            
+            <li class="">
+				<a href="index.php?route=common_question&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('FAQ'); ?>">
+					<i class="fa fa-linode">
+						
+					</i>
+					<span class="title">Ranks</span>
+				</a>
+			</li>
+            
+            <li class="">
+                <a href="../logout.php">
+                    <i class="fa fa-sign-out"></i>
+                    <span class="title">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- MAIN MENU - END -->
+</div>
+
+<!-- Tree Sidebar Styles -->
+<style>
+.page-sidebar-tree {
+    position: fixed;
+    top: 0;
+    left: -280px; /* Start hidden */
+    width: 280px;
+    height: 100vh;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    z-index: 9999;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+    overflow-y: auto;
+}
+
+.page-sidebar-tree.show {
+    left: 0; /* Show when toggled */
+}
+
+.page-sidebar-wrapper-tree {
+    padding: 0;
+    height: 100%;
+}
+
+.sidebar-header-tree {
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sidebar-close-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    transition: background 0.3s ease;
+}
+
+.sidebar-close-btn:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.wraplist-tree {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background: rgba(0,0,0,0.3);
+}
+
+.wraplist-tree li {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.wraplist-tree li a {
+    color: #ecf0f1;
+    text-decoration: none;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.wraplist-tree li a:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    text-decoration: none;
+}
+
+.wraplist-tree li a i {
+    margin-right: 12px;
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+}
+
+.wraplist-tree li a .title {
+    flex: 1;
+}
+
+.wraplist-tree li a .arrow {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+}
+
+.wraplist-tree li a .arrow:after {
+    content: '▼';
+    font-size: 10px;
+}
+
+.wraplist-tree li a.active .arrow {
+    transform: rotate(180deg);
+}
+
+.sub-menu-tree {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background: rgba(0,0,0,0.2);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.sub-menu-tree.show {
+    max-height: 300px; /* Adjust as needed */
+}
+
+.sub-menu-tree li a {
+    padding: 10px 20px 10px 50px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.02);
+}
+
+.menusection-tree {
+    color: #95a5a6 !important;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 15px 20px 8px 20px;
+    letter-spacing: 1px;
+}
+
+/* Overlay when sidebar is open */
+.sidebar-overlay-tree {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.sidebar-overlay-tree.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Responsive behavior */
+@media (max-width: 768px) {
+    .page-sidebar-tree {
+        width: 260px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-sidebar-tree {
+        width: 240px;
+    }
+}
+</style>
+
+<!-- Tree Sidebar JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Tree Sidebar 2.0 Initializing...');
+    
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay-tree';
+    document.body.appendChild(overlay);
+    
+    const sidebar = document.getElementById('tree-sidebar');
+    const toggleBtn = document.querySelector('.sidebar_toggle');
+    const closeBtn = document.getElementById('closeSidebarTree');
+    
+    // Toggle function
+    function toggleSidebar() {
+        const isOpen = sidebar.classList.contains('show');
+        console.log('Toggle sidebar - Currently:', isOpen ? 'open' : 'closed');
+        
+        if (isOpen) {
+            // Close sidebar
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+            document.body.style.overflow = '';
+            console.log('Sidebar closed');
+        } else {
+            // Open sidebar
+            sidebar.classList.add('show');
+            overlay.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Prevent body scroll
+            console.log('Sidebar opened');
+        }
+    }
+    
+    // Bind toggle button
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Toggle button clicked');
+            toggleSidebar();
+        });
+    }
+    
+    // Bind close button
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Close button clicked');
+            toggleSidebar();
+        });
+    }
+    
+    // Close on overlay click
+    overlay.addEventListener('click', function() {
+        console.log('Overlay clicked');
+        toggleSidebar();
+    });
+    
+    // Handle submenu toggles
+    const submenuToggles = document.querySelectorAll('.has-submenu');
+    submenuToggles.forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            const submenu = this.nextElementSibling;
+            const isActive = this.classList.contains('active');
+            
+            // Close all other submenus
+            submenuToggles.forEach(function(otherToggle) {
+                if (otherToggle !== toggle) {
+                    otherToggle.classList.remove('active');
+                    const otherSubmenu = otherToggle.nextElementSibling;
+                    if (otherSubmenu) {
+                        otherSubmenu.classList.remove('show');
+                    }
+                }
+            });
+            
+            // Toggle current submenu
+            if (isActive) {
+                this.classList.remove('active');
+                submenu.classList.remove('show');
+            } else {
+                this.classList.add('active');
+                submenu.classList.add('show');
+            }
+        });
+    });
+    
+    // Close sidebar on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('show')) {
+            toggleSidebar();
+        }
+    });
+    
+    console.log('Tree Sidebar 2.0 Initialized Successfully!');
+});
+</script>
