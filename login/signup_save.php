@@ -63,10 +63,12 @@ try {
 			}
 			
 			$country0 = isset($_POST['country']) ? $_POST['country'] : '';
-			$referrenceabc = trim($_POST['sponsor_id']);
+			$referrenceabc = trim($_POST['sponsor_id']); // This is the SPONSOR (referrer)
 			$referrence0 = mb_convert_case($referrenceabc, MB_CASE_LOWER, "UTF-8");
 			$poss = $_POST['poss'];	
 			// Manual placement - use upline directly from form input, fallback to sponsor if not provided
+			// IMPORTANT: upline_id is the PLACEMENT ID (where user will be placed in tree)
+			// sponsor_id is the REFERRER (who gets commission)
 			$uplinkabc = isset($_POST['upline_id']) && !empty(trim($_POST['upline_id'])) ? trim($_POST['upline_id']) : $referrence0;
 			$placement0 = strtolower($uplinkabc);
 			
@@ -159,12 +161,12 @@ try {
 			$check1 = mysqli_num_rows($result1);	
 			if($uplink0==''){
 				$rett['sts']='error';
-				$rett['mess']="Blank Uplink/Placement User ID";
+				$rett['mess']="Blank Placement ID. Please specify where to place this user in the tree.";
 				die(json_encode($rett));
 			}
 			if($check1==0){
 				$rett['sts']='error';
-				$rett['mess']="Invalid Uplink/Placement User ID";
+				$rett['mess']="Invalid Placement ID: $uplink0. This user does not exist for placement.";
 				die(json_encode($rett));
 			}
 			if($position_0001==''){
@@ -198,17 +200,20 @@ try {
 				die(json_encode($rett));
 			}
 			
+			// Convert position number to text for better error messages
+			$positionText = ($position_0001 == '1') ? 'Left' : (($position_0001 == '2') ? 'Right' : $position_0001);
+			
 			if($check3 > 0){
 				$rett['sts']='error';
-				$rett['mess']="The $position_0001 position under $uplink0 is already occupied. Please choose a different upline or position.";
+				$rett['mess']="The $positionText position under placement ID: $uplink0 is already occupied. Please choose a different placement ID or position.";
 				die(json_encode($rett));
 			}
 			
-			// Additional check: Verify the upline exists and can accept downlines
+			// Additional check: Verify the placement ID exists and can accept downlines
 			$checkUplineExists = $mysqli->query("SELECT user FROM member WHERE user='$uplink0'");
 			if(mysqli_num_rows($checkUplineExists) == 0){
 				$rett['sts']='error';
-				$rett['mess']="Invalid upline ID: $uplink0. Please verify the upline user ID.";
+				$rett['mess']="Invalid placement ID: $uplink0. Please verify the placement user ID exists.";
 				die(json_encode($rett));
 			}	
 				
