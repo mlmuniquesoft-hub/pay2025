@@ -66,6 +66,11 @@ try {
 			$referrenceabc = trim($_POST['sponsor_id']); // This is the SPONSOR (referrer)
 			$referrence0 = mb_convert_case($referrenceabc, MB_CASE_LOWER, "UTF-8");
 			$poss = $_POST['poss'];	
+			
+			// Debug: Check what values we're receiving
+			$debug_upline_id = isset($_POST['upline_id']) ? $_POST['upline_id'] : 'NOT_SET';
+			$debug_sponsor_id = $_POST['sponsor_id'];
+			
 			// Manual placement - use upline directly from form input, fallback to sponsor if not provided
 			// IMPORTANT: upline_id is the PLACEMENT ID (where user will be placed in tree)
 			// sponsor_id is the REFERRER (who gets commission)
@@ -205,7 +210,7 @@ try {
 			
 			if($check3 > 0){
 				$rett['sts']='error';
-				$rett['mess']="The $positionText position under placement ID: $uplink0 is already occupied. Please choose a different placement ID or position.";
+				$rett['mess']="The $positionText position under placement ID: $uplink0 is already occupied. Please choose a different placement ID or position. (Debug: sponsor=$debug_sponsor_id, upline_received=$debug_upline_id, final_uplink=$uplink0)";
 				die(json_encode($rett));
 			}
 			
