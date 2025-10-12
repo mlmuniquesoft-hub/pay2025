@@ -207,7 +207,7 @@ $i=0;
 		<div class="row" >
 		<div class="col-xs-12" style="padding:0px;margin:0px;">
 			<style>
-			/* Tree page layout fixes for sidebar2 - DEBUG MODE */
+			/* Tree page layout fixes for sidebar2 - DEFAULT CLOSED */
 			.page-container {
 				display: block !important;
 				width: 100% !important;
@@ -218,6 +218,7 @@ $i=0;
 				padding: 20px !important;
 				overflow-x: auto !important;
 				transition: margin-left 0.3s ease !important;
+				margin-left: 0 !important; /* Default: no sidebar margin */
 			}
 			
 			/* Hide old sidebar classes that might conflict */
@@ -225,48 +226,46 @@ $i=0;
 				display: none !important;
 			}
 			
-			/* FORCE SHOW sidebar2 for debugging */
+			/* FORCE sidebar2 to start CLOSED */
 			.page-sidebar-tree {
 				display: block !important;
 				position: fixed !important;
-				left: 0 !important;
+				left: -280px !important; /* Start hidden by default */
 				top: 0 !important;
 				height: 100vh !important;
-				width: 250px !important;
+				width: 280px !important;
 				background: #2c3e50 !important;
 				z-index: 1000 !important;
 				transform: translateX(0) !important;
-				transition: transform 0.3s ease !important;
+				transition: left 0.3s ease !important;
 			}
 			
-			/* Mobile responsive - sidebar2 behavior */
+			/* Show sidebar when toggled */
+			.page-sidebar-tree.show {
+				left: 0 !important;
+			}
+			
+			/* Desktop behavior */
+			@media (min-width: 769px) {
+				#main-content {
+					margin-left: 0 !important; /* Default: full width */
+				}
+				
+				/* Only adjust margin when sidebar is shown */
+				body:has(.page-sidebar-tree.show) #main-content {
+					margin-left: 280px !important;
+				}
+			}
+			
+			/* Mobile behavior */
 			@media (max-width: 768px) {
-				.page-sidebar-tree.sidebar-collapsed {
-					transform: translateX(-100%) !important;
+				.page-sidebar-tree {
+					left: -280px !important; /* Always start closed on mobile */
 				}
 				
 				#main-content {
 					margin-left: 0 !important;
 					width: 100% !important;
-				}
-			}
-			
-			/* Desktop behavior */
-			@media (min-width: 769px) {
-				.page-sidebar-tree.sidebar-collapsed {
-					transform: translateX(-100%) !important;
-				}
-				
-				.page-sidebar-tree:not(.sidebar-collapsed) {
-					transform: translateX(0) !important;
-				}
-				
-				#main-content {
-					margin-left: 250px !important;
-				}
-				
-				body:has(.page-sidebar-tree.sidebar-collapsed) #main-content {
-					margin-left: 0 !important;
 				}
 			}
 			
@@ -423,45 +422,11 @@ $i=0;
 		</script>
 		
 		<script>
-		// Initialize the new sidebar2 functionality after page loads
+		// Sidebar2 now handles its own toggle functionality
+		// This script is for tree-specific features only
 		$(document).ready(function() {
-			console.log('Tree page: Initializing new sidebar2 functionality');
-			
-			// Initialize the toggle functionality for both buttons
-			function toggleSidebar() {
-				console.log('Tree page: Toggle function called');
-				
-				var sidebar = $('.page-sidebar-tree');
-				var mainContent = $('#main-content');
-				var topbar = $('.page-topbar');
-				
-				// Toggle the sidebar
-				if (sidebar.hasClass('sidebar-collapsed')) {
-					// Open sidebar
-					sidebar.removeClass('sidebar-collapsed');
-					mainContent.removeClass('sidebar-collapsed');
-					if (topbar.length) {
-						topbar.removeClass('sidebar-collapsed');
-					}
-					console.log('Tree page: Sidebar opened');
-				} else {
-					// Close sidebar
-					sidebar.addClass('sidebar-collapsed');
-					mainContent.addClass('sidebar-collapsed');
-					if (topbar.length) {
-						topbar.addClass('sidebar-collapsed');
-					}
-					console.log('Tree page: Sidebar closed');
-				}
-			}
-			
-			// Bind to both toggle buttons
-			$('#sidebar-toggle-tree, .sidebar_toggle').off('click').on('click', function(e) {
-				e.preventDefault();
-				toggleSidebar();
-			});
-			
-			console.log('Tree page: Sidebar2 toggle setup complete');
+			console.log('Tree page: Basic initialization complete');
+			// Tree page specific code can go here if needed
 		});
 		</script>
 		

@@ -325,6 +325,17 @@
     visibility: visible;
 }
 
+/* Desktop behavior - sidebar closed by default */
+@media (min-width: 769px) {
+    .page-sidebar-tree {
+        left: -280px !important; /* Default closed on desktop too */
+    }
+    
+    .page-sidebar-tree.show {
+        left: 0 !important; /* Show when toggled */
+    }
+}
+
 /* Mobile responsive behavior */
 @media (max-width: 768px) {
     .page-sidebar-tree {
@@ -372,51 +383,75 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.appendChild(overlay);
     
     const sidebar = document.getElementById('tree-sidebar');
-    const toggleBtn = document.querySelector('.sidebar_toggle');
     const closeBtn = document.getElementById('closeSidebarTree');
     
     // Toggle function
     function toggleSidebar() {
+        console.log('🎯 Toggle sidebar function called');
+        if (!sidebar) {
+            console.error('❌ Sidebar element not found!');
+            return;
+        }
+        
         const isOpen = sidebar.classList.contains('show');
-        console.log('Toggle sidebar - Currently:', isOpen ? 'open' : 'closed');
+        console.log('🔄 Toggle sidebar - Currently:', isOpen ? 'open' : 'closed');
         
         if (isOpen) {
             // Close sidebar
             sidebar.classList.remove('show');
             overlay.classList.remove('show');
             document.body.style.overflow = '';
-            console.log('Sidebar closed');
+            console.log('✅ Sidebar closed');
         } else {
             // Open sidebar
             sidebar.classList.add('show');
             overlay.classList.add('show');
-            document.body.style.overflow = 'hidden'; // Prevent body scroll
-            console.log('Sidebar opened');
+            document.body.style.overflow = 'hidden';
+            console.log('✅ Sidebar opened');
         }
     }
     
-    // Bind toggle button
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', function(e) {
+    // Use event delegation on document to catch all toggle button clicks
+    document.addEventListener('click', function(e) {
+        // Check if clicked element or its parent is a toggle button
+        const toggleBtn = e.target.closest('.sidebar_toggle, [data-toggle="sidebar"], .fa-bars');
+        
+        if (toggleBtn) {
+            console.log('🎯 Toggle button clicked via event delegation!', toggleBtn);
             e.preventDefault();
             e.stopPropagation();
-            console.log('Toggle button clicked');
             toggleSidebar();
-        });
-    }
+            return false;
+        }
+    });
+    
+    // Also bind directly for extra safety
+    setTimeout(function() {
+        const directToggleBtn = document.querySelector('.sidebar_toggle');
+        if (directToggleBtn) {
+            console.log('🔧 Direct binding to toggle button:', directToggleBtn);
+            directToggleBtn.onclick = function(e) {
+                console.log('🎯 Direct onclick triggered!');
+                e.preventDefault();
+                e.stopPropagation();
+                toggleSidebar();
+                return false;
+            };
+        }
+    }, 500);
     
     // Bind close button
     if (closeBtn) {
         closeBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            console.log('Close button clicked');
+            console.log('❌ Close button clicked');
             toggleSidebar();
         });
     }
     
     // Close on overlay click
     overlay.addEventListener('click', function() {
-        console.log('Overlay clicked');
+        console.log('🖱️ Overlay clicked');
         toggleSidebar();
     });
     
@@ -457,6 +492,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    console.log('Tree Sidebar 2.0 Initialized Successfully!');
+    // Global function for manual testing
+    window.testSidebarToggle = function() {
+        console.log('🧪 Manual test function called');
+        toggleSidebar();
+    };
+    
+    console.log('✅ Tree Sidebar 2.0 Initialized Successfully!');
+    console.log('🧪 Test manually with: window.testSidebarToggle()');
 });
 </script>
