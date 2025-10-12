@@ -196,21 +196,33 @@
     border-bottom: 1px solid rgba(255,255,255,0.1);
     display: flex;
     justify-content: flex-end;
+    position: relative;
+    height: 60px;
 }
 
 .sidebar-close-btn {
-    background: none;
+    background: rgba(220, 53, 69, 0.8);
     border: none;
     color: #fff;
-    font-size: 24px;
+    font-size: 18px;
     cursor: pointer;
-    padding: 5px;
-    border-radius: 3px;
-    transition: background 0.3s ease;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 10001;
 }
 
 .sidebar-close-btn:hover {
-    background: rgba(255,255,255,0.1);
+    background: rgba(220, 53, 69, 1);
+    transform: scale(1.1);
 }
 
 .wraplist-tree {
@@ -313,16 +325,38 @@
     visibility: visible;
 }
 
-/* Responsive behavior */
+/* Mobile responsive behavior */
 @media (max-width: 768px) {
     .page-sidebar-tree {
-        width: 260px;
+        width: 280px;
+        left: -280px !important; /* Force closed on mobile */
+    }
+    
+    .page-sidebar-tree.show {
+        left: 0 !important; /* Show when toggled */
+    }
+    
+    /* Ensure close button is always visible on mobile */
+    .sidebar-close-btn {
+        display: block !important;
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        z-index: 10000;
+        background: rgba(0,0,0,0.5) !important;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }
 
 @media (max-width: 480px) {
     .page-sidebar-tree {
-        width: 240px;
+        width: 260px;
+        left: -260px !important;
     }
 }
 </style>
