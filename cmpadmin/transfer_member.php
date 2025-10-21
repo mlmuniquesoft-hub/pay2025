@@ -52,8 +52,8 @@
 									<!-- /.panel-heading -->
 									<div class="panel-body">
 										<div class="row">
-										<p style="color: red;font-size:16px;"><?php echo $_SESSION['msg']; ?></p>
-										<p style="color: green;font-size:16px;"><?php echo $_SESSION['msg1']; ?></p>
+										<p style="color: red;font-size:16px;"><?php echo isset($_SESSION['msg']) ? $_SESSION['msg'] : ''; ?></p>
+										<p style="color: green;font-size:16px;"><?php echo isset($_SESSION['msg1']) ? $_SESSION['msg1'] : ''; ?></p>
 <form class="form-horizontal" action="balance_transfer_action.php" method="post" method="post">
 	<div class="form-group">
 		<label class="col-sm-3 control-label">Member ID:</label>
