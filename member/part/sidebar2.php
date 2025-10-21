@@ -334,6 +334,15 @@
     .page-sidebar-tree.show {
         left: 0 !important; /* Show when toggled */
     }
+    /* Make overlay non-blocking on desktop */
+    .sidebar-overlay-tree {
+        pointer-events: none;
+        background: transparent;
+    }
+    .sidebar-overlay-tree.show {
+        opacity: 0; /* keep hidden on desktop */
+        visibility: hidden;
+    }
 }
 
 /* Mobile responsive behavior */
@@ -400,13 +409,23 @@ document.addEventListener('DOMContentLoaded', function() {
             // Close sidebar
             sidebar.classList.remove('show');
             overlay.classList.remove('show');
-            document.body.style.overflow = '';
+            // Only reset overflow on mobile where we set it
+            if (window.matchMedia('(max-width: 768px)').matches) {
+                document.body.style.overflow = '';
+            }
+            document.body.classList.remove('sidebar-open');
             console.log('✅ Sidebar closed');
         } else {
             // Open sidebar
             sidebar.classList.add('show');
             overlay.classList.add('show');
-            document.body.style.overflow = 'hidden';
+            // Only disable body scroll on mobile to avoid layout jumps on desktop
+            if (window.matchMedia('(max-width: 768px)').matches) {
+                document.body.style.overflow = 'hidden';
+            }
+            // Ensure sidebar appears above overlay and other elements
+            try { sidebar.style.zIndex = '11000'; overlay.style.zIndex = '10999'; } catch(e) {}
+            document.body.classList.add('sidebar-open');
             console.log('✅ Sidebar opened');
         }
     }
@@ -454,6 +473,17 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('🖱️ Overlay clicked');
         toggleSidebar();
     });
+
+    // Ensure sidebar and overlay are closed on page load
+    (function ensureClosedOnLoad(){
+        if (sidebar && sidebar.classList.contains('show')) sidebar.classList.remove('show');
+        if (overlay && overlay.classList.contains('show')) overlay.classList.remove('show');
+        // on desktop keep overlay non-blocking
+        if (window.matchMedia('(min-width: 769px)').matches) {
+            overlay.style.pointerEvents = 'none';
+            overlay.style.background = 'transparent';
+        }
+    })();
     
     // Handle submenu toggles
     const submenuToggles = document.querySelectorAll('.has-submenu');
