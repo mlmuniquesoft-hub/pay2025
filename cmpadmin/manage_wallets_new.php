@@ -12,10 +12,12 @@ if(isset($_POST['action'])) {
     $action = $_POST['action'];
     
     if($action == 'add_wallet') {
-        $crypto_type = strtoupper(mysqli_real_escape_string($mysqli, $_POST['crypto_type']));
+        // Use wallet_type to match existing manual_wallets schema
+        $wallet_type = strtoupper(mysqli_real_escape_string($mysqli, $_POST['crypto_type']));
         $wallet_address = mysqli_real_escape_string($mysqli, $_POST['wallet_address']);
         
-        $insert_sql = "INSERT INTO manual_wallets (crypto_type, wallet_address) VALUES ('$crypto_type', '$wallet_address')
+        // Insert or update using wallet_type and wallet_address
+        $insert_sql = "INSERT INTO manual_wallets (wallet_type, wallet_address) VALUES ('$wallet_type', '$wallet_address')
                        ON DUPLICATE KEY UPDATE wallet_address = VALUES(wallet_address)";
         
         if($mysqli->query($insert_sql)) {
@@ -55,8 +57,8 @@ if(isset($_POST['action'])) {
     exit();
 }
 
-// Get all wallets
-$wallets_result = $mysqli->query("SELECT * FROM manual_wallets ORDER BY crypto_type ASC");
+// Get all wallets ordered by wallet_type
+$wallets_result = $mysqli->query("SELECT * FROM manual_wallets ORDER BY wallet_type ASC, created_at DESC");
 ?>
 <!DOCTYPE html>
 <html>
@@ -171,7 +173,7 @@ $wallets_result = $mysqli->query("SELECT * FROM manual_wallets ORDER BY crypto_t
                                                         <tr>
                                                             <td><?php echo $wallet['id']; ?></td>
                                                             <td>
-                                                                <strong><?php echo $wallet['crypto_type']; ?></strong>
+                                                                <strong><?php echo $wallet['wallet_type']; ?></strong>
                                                             </td>
                                                             <td>
                                                                 <code><?php echo htmlspecialchars($wallet['wallet_address']); ?></code>
