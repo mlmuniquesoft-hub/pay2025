@@ -37,14 +37,20 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="">
-                        <a href="index.php?route=trade_plan&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Trader Plans'); ?>">
-                            <i class="fa fa-shopping-cart">
+					<li class="">
+						<a href="index.php?route=trade_plan&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Trader Plans'); ?>">
+							<i class="fa fa-shopping-cart">
                                 
-                            </i>
-                            <span class="title">Upgrade Package</span>
-                        </a>
-                    </li>
+							</i>
+							<span class="title">Upgrade Package</span>
+						</a>
+					</li>
+					<li class="">
+						<a href="index.php?route=deposit&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Add Funds'); ?>">
+							<i class="fa fa-bitcoin"></i>
+							<span class="title">Add Funds</span>
+						</a>
+					</li>
 					<li class="">
                         <a href="javascript:;">
                             <i class="fa fa-share-alt">
@@ -178,9 +184,9 @@
 								</a>
 							</li>
 							<li>
-								<a class="" href="index.php?route=deposit&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Manual Deposits'); ?>">
+								<a class="" href="index.php?route=deposit&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Add Funds'); ?>">
 									<i class="fa fa-file-image-o" style="margin-right: 5px; color: #17a2b8;"></i>
-									Manual Deposits
+									Add Funds
 								</a>
 							</li>
 							<li>

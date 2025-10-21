@@ -113,12 +113,12 @@
 							All Deposits
 						</a>
 					</li>
-					<li>
-						<a class="" href="index.php?route=deposit&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Manual Deposits'); ?>">
-							<i class="fa fa-file-image-o" style="margin-right: 5px; color: #17a2b8;"></i>
-							Manual Deposits
-						</a>
-					</li>
+                    <li>
+                        <a class="" href="index.php?route=deposit&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Add Funds'); ?>">
+                            <i class="fa fa-file-image-o" style="margin-right: 5px; color: #17a2b8;"></i>
+                            Add Funds
+                        </a>
+                    </li>
 					<li>
 						<a class="" href="index.php?route=withdraw_report&tild=<?php echo base64_encode(time()); ?>&title=<?php urlencode('Withdraw History'); ?>">
 							<i class="fa fa-minus-square" style="margin-right: 5px; color: #dc3545;"></i>
