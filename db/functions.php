@@ -273,6 +273,9 @@ $_SESSION['token']="uerutgeruioer";
 		$MemberTrans=mysqli_fetch_assoc($mysqli->query("SELECT SUM(ammount) AS asmTrans FROM `trans_receive` WHERE `user_trans`='".$user."' AND `type`='Transfer'"));
 		$MemberWithdraw=mysqli_fetch_assoc($mysqli->query("SELECT SUM(ammount) AS asmWithdraw FROM `trans_receive` WHERE `user_trans`='".$user."' AND `type`='Withdraw' AND `status`!='Cancel'"));
 		$MemberUpgrade=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS asmUpgrade FROM `upgrade` WHERE `user`='".$user."'"));
+		// Use helper to compute in/out/net totals from balance_record
+		$MemberActiveTotals = getBalanceRecordTotals($user);
+		$MemberActive = array('takaActive' => $MemberActiveTotals['net']);
 		$MemberUpgradeCharge=mysqli_fetch_assoc($mysqli->query("SELECT SUM(charge) AS asmChhr FROM `upgrade` WHERE `user`='".$user."'"));
 		$bal_deduct=mysqli_fetch_assoc($mysqli->query("SELECT SUM(amount) AS amount FROM `bal_deduct` WHERE `user`='".$user."' AND `active`='1'"));
 		//$MemberProductAdj=mysqli_fetch_assoc($mysqli->query("SELECT SUM(adj_bal) AS pro_pur FROM `order` WHERE `user_id`='".$user."'"));
@@ -283,9 +286,31 @@ $_SESSION['token']="uerutgeruioer";
 		$rett['in']=$TotalIn;
 		$rett['out']=$TotalOut;
 		// $rett['shop']=$FinalShopping;
-		$rett['final']=$FinalAmount; 
+		$rett['final']=$FinalAmount+$MemberActive['takaActive'];
 		return $rett;
 	}
+
+/**
+ * Get aggregated totals from balance_record for a user
+ * Returns array: ['in' => total_in, 'out' => total_out, 'net' => in - out]
+ */
+function getBalanceRecordTotals($user){
+	global $mysqli;
+	// Sum positive taka as IN, negative taka as OUT (absolute)
+	$res = mysqli_fetch_assoc($mysqli->query(
+		"SELECT 
+			COALESCE(SUM(CASE WHEN taka >= 0 THEN taka ELSE 0 END),0) AS total_in, 
+			COALESCE(SUM(CASE WHEN taka < 0 THEN -taka ELSE 0 END),0) AS total_out, 
+			COALESCE(SUM(taka),0) AS net
+		FROM `balance_record` WHERE `user`='".$user."'"
+	));
+
+	// Ensure keys exist
+	$res['total_in'] = $res['total_in'] ?? 0;
+	$res['total_out'] = $res['total_out'] ?? 0;
+	$res['net'] = $res['net'] ?? 0;
+	return array('in' => $res['total_in'], 'out' => $res['total_out'], 'net' => $res['net']);
+}
 	
 	function finSecure(){
 		global $mysqli;
